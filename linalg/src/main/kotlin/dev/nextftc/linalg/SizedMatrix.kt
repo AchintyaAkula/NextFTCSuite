@@ -37,7 +37,7 @@ open class SizedMatrix<R : Nat, C : Nat> internal constructor(
 ) {
     @Suppress("UNCHECKED_CAST")
     constructor(data: Array<DoubleArray>) :
-            this(SimpleMatrix(data), natOf(data.size) as R, natOf(data.first().size) as C)
+        this(SimpleMatrix(data), natOf(data.size) as R, natOf(data.first().size) as C)
 
     companion object {
         /**
@@ -52,7 +52,7 @@ open class SizedMatrix<R : Nat, C : Nat> internal constructor(
          */
         @JvmStatic
         @Suppress("UNCHECKED_CAST")
-        fun <R: Nat, C: Nat> zero(rows: Int, cols: Int) : SizedMatrix<R, C> {
+        fun <R : Nat, C : Nat> zero(rows: Int, cols: Int): SizedMatrix<R, C> {
             val rNat = natOf(rows)
             val cNat = natOf(cols)
             return zero(rNat, cNat) as SizedMatrix<R, C>

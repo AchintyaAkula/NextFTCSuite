@@ -13,13 +13,14 @@ import dev.nextftc.units.unittypes.seconds
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class FunsiesTest : FunSpec({
-    test("funsies") {
-        val d = 10.0.meters
-        val t = 2.0.seconds
+class FunsiesTest :
+    FunSpec({
+        test("funsies") {
+            val d = 10.0.meters
+            val t = 2.0.seconds
 
-        val v = d / t
+            val v = d / t
 
-        v.magnitude shouldBe 5.0
-    }
-})
+            v.magnitude shouldBe 5.0
+        }
+    })
