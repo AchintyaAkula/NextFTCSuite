@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2025 Hermes FTC
+ * Copyright (c)  NextFTC Team
  *
- * Use of this source code is governed by an MIT-style
- * license that can be found in the LICENSE file at the root of this repository or at
- * https://opensource.org/licenses/MIT.
+ *  Use of this source code is governed by an BSD-3-clause
+ *  license that can be found in the LICENSE.md file at the root of this repository or at
+ *  https://opensource.org/license/bsd-3-clause.
  */
 
 @file:JvmName("Vectors")
