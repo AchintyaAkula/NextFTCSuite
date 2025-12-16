@@ -7,6 +7,8 @@ description = "A custom linear algebra library for NextControl."
 
 dependencies {
     implementation(libs.ejml)
+
+    testImplementation(libs.bundles.kotest)
 }
 
 nextFTCPublishing {
@@ -20,6 +22,8 @@ kotlin {
         freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
     }
 }
+
+tasks.withType<Test>().configureEach { useJUnitPlatform() }
 
 spotless {
     kotlin {

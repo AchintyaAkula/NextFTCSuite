@@ -1,3 +1,4 @@
+@file:JvmName("Naturals")
 package dev.nextftc.linalg
 
 /**
@@ -60,3 +61,20 @@ data object N10 : Nat {
 
 /** Type-level representation of an unknown/dynamic dimension */
 data class NDynamic(override val num: Int) : Nat
+
+/**
+ * Creates a [Nat] from a number.
+ */
+fun natOf(num: Int) = when (num) {
+    1 -> N1
+    2 -> N2
+    3 -> N3
+    4 -> N4
+    5 -> N5
+    6 -> N6
+    7 -> N7
+    8 -> N8
+    9 -> N9
+    10 -> N10
+    else -> NDynamic(num)
+}

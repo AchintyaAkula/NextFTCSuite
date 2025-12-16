@@ -27,6 +27,10 @@ open class SizedMatrix<R : Nat, C : Nat> internal constructor(
     internal val rowNat: R,
     internal val colNat: C,
 ) {
+    @Suppress("UNCHECKED_CAST")
+    constructor(data: Array<DoubleArray>) :
+            this(SimpleMatrix(data), natOf(data.size) as R, natOf(data.first().size) as C)
+
     companion object {
         /**
          * Creates a zero matrix with dimensions specified by the [Nat] type parameters.
@@ -34,6 +38,17 @@ open class SizedMatrix<R : Nat, C : Nat> internal constructor(
         @JvmStatic
         fun <R : Nat, C : Nat> zero(rows: R, cols: C): SizedMatrix<R, C> =
             SizedMatrix(SimpleMatrix(rows.num, cols.num), rows, cols)
+
+        /**
+         * Creates a zero matrix with dimensions [rows] x [cols].
+         */
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <R: Nat, C: Nat> zero(rows: Int, cols: Int) : SizedMatrix<R, C> {
+            val rNat = natOf(rows)
+            val cNat = natOf(cols)
+            return zero(rNat, cNat) as SizedMatrix<R, C>
+        }
 
         /**
          * Creates an identity matrix with dimensions [size] x [size].
