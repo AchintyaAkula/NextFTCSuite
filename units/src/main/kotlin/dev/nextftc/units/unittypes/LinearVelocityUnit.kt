@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -37,9 +37,11 @@ val MetersPerSecond = LinearVelocityUnit(Meters, Seconds)
 val KilometersPerHour = LinearVelocityUnit(Kilometers, Hours)
 val MilesPerHour = LinearVelocityUnit(Miles, Hours)
 val FeetPerSecond = LinearVelocityUnit(Feet, Seconds)
+val InchesPerSecond = LinearVelocityUnit(Inches, Seconds)
 
 // Extension properties for Double
 inline val Double.metersPerSecond get() = MetersPerSecond.of(this)
 inline val Double.kilometersPerHour get() = KilometersPerHour.of(this)
 inline val Double.milesPerHour get() = MilesPerHour.of(this)
 inline val Double.feetPerSecond get() = FeetPerSecond.of(this)
+inline val Double.inchesPerSecond get() = InchesPerSecond.of(this)

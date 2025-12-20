@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings>
+  <settings default="BSD-3 License header">
     <module2copyright>
-      <element module="All" copyright="BSD-3 License header" />
+      <element module="Project Source Files" copyright="BSD-3 License header" />
     </module2copyright>
   </settings>
 </component>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -66,4 +66,6 @@ internal constructor(override val magnitude: Double, override val unit: TorqueUn
         val angularVelocityInRadPerSec = angularVelocity.baseUnitMagnitude
         return Power(torqueInNm * angularVelocityInRadPerSec, dev.nextftc.units.unittypes.Watts)
     }
+
+    override fun toString() = toShortString()
 }

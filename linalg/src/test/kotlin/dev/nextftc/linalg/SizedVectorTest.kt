@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -17,7 +17,7 @@ class SizedVectorTest :
     FunSpec({
         context("Construction") {
             test("zero vector has all zeros") {
-                val v = SizedVector.zero(N3)
+                val v = Vector.zero(N3)
                 v.dimension shouldBe 3
                 v[0] shouldBe 0.0
                 v[1] shouldBe 0.0
@@ -25,7 +25,7 @@ class SizedVectorTest :
             }
 
             test("of vararg creates vector with given values") {
-                val v = SizedVector.of(N3, 1.0, 2.0, 3.0)
+                val v = Vector.of(N3, 1.0, 2.0, 3.0)
                 v.dimension shouldBe 3
                 v[0] shouldBe 1.0
                 v[1] shouldBe 2.0
@@ -33,7 +33,7 @@ class SizedVectorTest :
             }
 
             test("of collection creates vector") {
-                val v = SizedVector.of(N3, listOf(1.0, 2.0, 3.0))
+                val v = Vector.of(N3, listOf(1.0, 2.0, 3.0))
                 v.dimension shouldBe 3
                 v[0] shouldBe 1.0
                 v[1] shouldBe 2.0
@@ -42,7 +42,7 @@ class SizedVectorTest :
 
             test("of throws on size mismatch") {
                 shouldThrow<IllegalArgumentException> {
-                    SizedVector.of(N3, 1.0, 2.0)
+                    Vector.of(N3, 1.0, 2.0)
                 }
             }
 
@@ -106,7 +106,7 @@ class SizedVectorTest :
             test("plus adds vectors element-wise") {
                 val a = makeVector(1.0, 2.0, 3.0)
                 val b = makeVector(4.0, 5.0, 6.0)
-                val c: SizedVector<N3> = a + b
+                val c: Vector<N3> = a + b
                 c[0] shouldBe 5.0
                 c[1] shouldBe 7.0
                 c[2] shouldBe 9.0
@@ -115,7 +115,7 @@ class SizedVectorTest :
             test("minus subtracts vectors element-wise") {
                 val a = makeVector(4.0, 5.0, 6.0)
                 val b = makeVector(1.0, 2.0, 3.0)
-                val c: SizedVector<N3> = a - b
+                val c: Vector<N3> = a - b
                 c[0] shouldBe 3.0
                 c[1] shouldBe 3.0
                 c[2] shouldBe 3.0
@@ -139,7 +139,7 @@ class SizedVectorTest :
 
             test("scalar times vector from left") {
                 val v = makeVector(1.0, 2.0, 3.0)
-                val result: SizedVector<N3> = 2.0 * v
+                val result: Vector<N3> = 2.0 * v
                 result[0] shouldBe 2.0
                 result[1] shouldBe 4.0
                 result[2] shouldBe 6.0
@@ -147,7 +147,7 @@ class SizedVectorTest :
 
             test("int scalar times vector from left") {
                 val v = makeVector(1.0, 2.0, 3.0)
-                val result: SizedVector<N3> = 2 * v
+                val result: Vector<N3> = 2 * v
                 result[0] shouldBe 2.0
                 result[1] shouldBe 4.0
                 result[2] shouldBe 6.0
@@ -177,8 +177,8 @@ class SizedVectorTest :
 
         context("Type safety") {
             test("operations preserve dimension type") {
-                val v3: SizedVector<N3> = makeVector(1.0, 2.0, 3.0)
-                val result: SizedVector<N3> = v3 + v3
+                val v3: Vector<N3> = makeVector(1.0, 2.0, 3.0)
+                val result: Vector<N3> = v3 + v3
                 result.dimension shouldBe 3
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -8,7 +8,13 @@
 
 package dev.nextftc.units
 
+import dev.nextftc.units.measuretypes.Mul
+import dev.nextftc.units.measuretypes.Per
+import dev.nextftc.units.unittypes.MulUnit
+import dev.nextftc.units.unittypes.PerUnit
 import kotlin.math.abs
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 import kotlin.math.withSign
 
 /**
@@ -122,6 +128,14 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
     /**
      * Absolute value of measure.
      *
+     * @return the absolute value of this measure in the same unit as this measure.
+     */
+    val absoluteValue: Measure<U>
+        get() = unit.of(magnitude.absoluteValue)
+
+    /**
+     * Absolute value of measure.
+     *
      * @param unit unit to use
      * @return the absolute value of this measure in the given unit
      */
@@ -134,7 +148,21 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
      * @param unit unit to use
      * @return the value of the measure in the given unit with the sign of the provided measure
      */
-    fun copySign(other: Measure<U>, unit: U): Double = this.into(unit).withSign(other.into(unit))
+    fun withSign(other: Measure<U>, unit: U): Double = this.into(unit).withSign(other.into(unit))
+
+    /**
+     * Take the sign of another measure. This measure's and the provided measure's signs are
+     * considered in this measure's unit.
+     *
+     * @param other measure from which to take sign
+     * @return the value of the measure with the sign of the provided measure
+     */
+    fun withSign(other: Measure<U>) = unit.of(this.into(unit).withSign(other.into(unit)))
+
+    /**
+     * Returns the sign of this measure.
+     */
+    val sign get() = magnitude.sign
 
     /**
      * Returns a measure equivalent to this one equal to zero minus its current value. For non-linear
@@ -184,12 +212,28 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
     operator fun times(multiplier: Double): Measure<U>
 
     /**
+     * Multiplies this measure by a scalar unitless multiplier.
+     *
+     * @param multiplier the scalar multiplication factor
+     * @return the scaled result
+     */
+    operator fun times(multiplier: Number): Measure<U> = times(multiplier.toDouble())
+
+    /**
      * Divides this measure by a scalar and returns the result.
      *
      * @param divisor the value to divide by
      * @return the division result
      */
     operator fun div(divisor: Double): Measure<U>
+
+    /**
+     * Divides this measure by a scalar and returns the result.
+     *
+     * @param divisor the value to divide by
+     * @return the division result
+     */
+    operator fun div(divisor: Number): Measure<U> = div(divisor.toDouble())
 
     /**
      * Divides this measure by another measure and returns the ratio as a dimensionless value.
@@ -210,12 +254,10 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
      * @param other the other measure to multiply by
      * @return a Mul measurement representing the product of the two measures
      */
-    operator fun <V : Unit<V>> times(other: Measure<V>): dev.nextftc.units.measuretypes.Mul<U, V> {
+    operator fun <V : Unit<V>> times(other: Measure<V>): Mul<U, V> {
         val mulUnit =
-            dev.nextftc.units.unittypes
-                .MulUnit(this.unit, other.unit)
-        return dev.nextftc.units.measuretypes
-            .Mul(this.magnitude * other.magnitude, mulUnit)
+            MulUnit(this.unit, other.unit)
+        return Mul(this.magnitude * other.magnitude, mulUnit)
     }
 
     /**
@@ -230,12 +272,10 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
      * @param other the other measure to divide by
      * @return a Per measurement representing the ratio of the two measures
      */
-    operator fun <V : Unit<V>> div(other: Measure<V>): dev.nextftc.units.measuretypes.Per<U, V> {
+    operator fun <V : Unit<V>> div(other: Measure<V>): Per<U, V> {
         val perUnit =
-            dev.nextftc.units.unittypes
-                .PerUnit(this.unit, other.unit)
-        return dev.nextftc.units.measuretypes
-            .Per(this.magnitude / other.magnitude, perUnit)
+            PerUnit(this.unit, other.unit)
+        return Per(this.magnitude / other.magnitude, perUnit)
     }
 
     /**
@@ -295,7 +335,7 @@ interface Measure<U : Unit<U>> : Comparable<Measure<U>> {
             abs(baseUnitMagnitude - other.baseUnitMagnitude) <= EQUIVALENCE_THRESHOLD
     }
 
-    override fun compareTo(other: Measure<U>): Int =
+    override operator fun compareTo(other: Measure<U>): Int =
         this.baseUnitMagnitude.compareTo(other.baseUnitMagnitude)
 
     /**

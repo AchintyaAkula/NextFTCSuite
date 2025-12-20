@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -106,4 +106,6 @@ internal constructor(private val duration: Duration, override val unit: TimeUnit
      * @return the angular velocity achieved
      */
     operator fun times(acceleration: AngularAcceleration): AngularVelocity = acceleration * this
+
+    override fun toString() = toShortString()
 }

@@ -8,6 +8,8 @@ description = "A WPIMath inspired library for controls and other math classes an
 dependencies {
     api(project(":units"))
     api(project(":linalg"))
+
+    testImplementation(libs.bundles.kotest)
 }
 
 nextFTCPublishing {
@@ -22,6 +24,8 @@ kotlin {
     }
 }
 
+tasks.withType<Test>().configureEach { useJUnitPlatform() }
+
 spotless {
     kotlin {
         ktlint().editorConfigOverride(
@@ -30,7 +34,7 @@ spotless {
                 "indent_size" to "4",
                 "continuation_indent_size" to "4",
                 "ktlint_standard_no-wildcard-imports" to "disabled",
-                "max_line_length" to "100",
+                "max_line_length" to "120",
             ),
         )
     }

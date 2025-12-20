@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -12,7 +12,9 @@ import dev.nextftc.units.Measure
 import dev.nextftc.units.unittypes.DistanceUnit
 import dev.nextftc.units.unittypes.LinearVelocityUnit
 import dev.nextftc.units.unittypes.PerUnit
+import dev.nextftc.units.unittypes.Seconds
 import dev.nextftc.units.unittypes.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Immutable measurement of linear velocity (distance per time).
@@ -65,4 +67,6 @@ class LinearVelocity(magnitude: Double, unit: LinearVelocityUnit) :
             )
         return LinearAcceleration(magnitude / time.magnitude, accelerationUnit)
     }
+
+    override fun toString() = toShortString()
 }

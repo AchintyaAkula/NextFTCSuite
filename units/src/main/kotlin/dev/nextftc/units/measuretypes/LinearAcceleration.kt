@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -72,4 +72,6 @@ class LinearAcceleration(magnitude: Double, unit: LinearAccelerationUnit) :
         val massInKg = mass.baseUnitMagnitude
         return Force(accelerationInMps2 * massInKg, dev.nextftc.units.unittypes.Newtons)
     }
+
+    override fun toString() = toShortString()
 }

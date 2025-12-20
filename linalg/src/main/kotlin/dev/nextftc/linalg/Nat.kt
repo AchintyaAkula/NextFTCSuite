@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -12,7 +12,7 @@ package dev.nextftc.linalg
 
 /**
  * Type-level natural numbers for compile-time matrix dimension checking.
- * Use these as generic bounds on [SizedMatrix] to ensure dimensional correctness at compile time.
+ * Use these as generic bounds on [Matrix] to ensure dimensional correctness at compile time.
  */
 sealed interface Nat {
     val num: Int

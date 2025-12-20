@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -34,6 +34,7 @@ class LinearAccelerationUnit(velocity: LinearVelocityUnit, time: TimeUnit) :
 // Common linear acceleration units
 val MetersPerSecondSquared = LinearAccelerationUnit(MetersPerSecond, Seconds)
 val FeetPerSecondSquared = LinearAccelerationUnit(FeetPerSecond, Seconds)
+val InchesPerSecondSquared = LinearAccelerationUnit(InchesPerSecond, Seconds)
 
 // Standard gravity constant (approximately 9.80665 m/s²)
 const val STANDARD_GRAVITY_MPS2 = 9.80665
@@ -41,3 +42,4 @@ const val STANDARD_GRAVITY_MPS2 = 9.80665
 // Extension properties for Double
 inline val Double.metersPerSecondSquared get() = MetersPerSecondSquared.of(this)
 inline val Double.feetPerSecondSquared get() = FeetPerSecondSquared.of(this)
+inline val Double.inchesPerSecondSquared get() = InchesPerSecondSquared.of(this)

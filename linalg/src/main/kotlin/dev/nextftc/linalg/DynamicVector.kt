@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -79,7 +79,7 @@ class DynamicVector internal constructor(simple: SimpleMatrix) : DynamicMatrix(s
     override operator fun times(scalar: Double): DynamicVector = DynamicVector(simple.scale(scalar))
 
     /** Multiplies this vector by a scalar. */
-    override operator fun times(scalar: Int): DynamicVector = times(scalar.toDouble())
+    override operator fun times(scalar: Number): DynamicVector = times(scalar.toDouble())
 
     /** Computes the dot product of this vector with another vector. */
     fun dot(other: DynamicVector): Double = simple.transpose().mult(other.simple)[0, 0]

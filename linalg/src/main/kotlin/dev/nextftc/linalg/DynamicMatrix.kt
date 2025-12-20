@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  NextFTC Team
+ * Copyright (c) 2025 NextFTC Team
  *
  *  Use of this source code is governed by an BSD-3-clause
  *  license that can be found in the LICENSE.md file at the root of this repository or at
@@ -175,7 +175,13 @@ open class DynamicMatrix(internal val simple: SimpleMatrix) {
     /**
      * Multiplies this matrix by a scalar.
      */
-    open operator fun times(scalar: Int) = DynamicMatrix(simple * scalar.toDouble())
+    open operator fun times(scalar: Number) = DynamicMatrix(simple * scalar.toDouble())
+
+    /** Divides this matrix by a scalar. */
+    open operator fun div(scalar: Double) = times(1.0 / scalar)
+
+    /** Divides this matrix by a scalar. */
+    open operator fun div(scalar: Number) = times(1.0 / scalar.toDouble())
 
     /**
      * @usesMathJax
@@ -222,6 +228,35 @@ open class DynamicMatrix(internal val simple: SimpleMatrix) {
     fun slice(startRow: Int, endRow: Int, startCol: Int, endCol: Int) = DynamicMatrix(
         simple.extractMatrix(startRow, endRow, startCol, endCol),
     )
+
+    /**
+     * Computes the matrix exponential of this matrix,
+     * using the Padé approximant.
+     *
+     * Uses the formula:
+     * e^A ≈ (1 + A/2 + A²/9 + A³/72 + A⁴/1008 + A⁵/30240) / (1 - A/2 + A²/9 - A³/72 + A⁴/1008 - A⁵/30240)
+     *
+     * @return The matrix exponential of this matrix.
+     */
+    @Suppress("ktlint:standard:property-naming")
+    fun exp(): DynamicMatrix {
+        require(numRows == numColumns) { "Matrix must be square" }
+
+        val I = identity(numRows)
+        val A2 = this * this
+        val A3 = A2 * this
+        val A4 = A3 * this
+        val A5 = A4 * this
+
+        val numerator =
+            I + this * 0.5 + A2 * (1.0 / 9.0) + A3 * (1.0 / 72.0) + A4 * (1.0 / 1008.0) +
+                A5 * (1.0 / 30240.0)
+        val denominator =
+            I - this * 0.5 + A2 * (1.0 / 9.0) - A3 * (1.0 / 72.0) + A4 * (1.0 / 1008.0) -
+                A5 * (1.0 / 30240.0)
+
+        return denominator.solve(numerator)
+    }
 
     /**
      * Returns the LLT (Cholesky) decomposition of this matrix.
@@ -286,12 +321,12 @@ open class DynamicMatrix(internal val simple: SimpleMatrix) {
     override fun hashCode(): Int = simple.hashCode()
 
     /**
-     * Returns a [SizedMatrix] with the same dimensions as this matrix.
+     * Returns a [Matrix] with the same dimensions as this matrix.
      * The dimensions are checked at runtime.
      */
-    fun <R : Nat, C : Nat> toSizedMatrix(rows: R, cols: C): SizedMatrix<R, C> {
+    fun <R : Nat, C : Nat> toSizedMatrix(rows: R, cols: C): Matrix<R, C> {
         require(numRows == rows.num) { "Matrix has $numRows rows, expected ${rows.num}" }
         require(numColumns == cols.num) { "Matrix has $numColumns columns, expected ${cols.num}" }
-        return SizedMatrix(simple, rows, cols)
+        return Matrix(simple, rows, cols)
     }
 }
