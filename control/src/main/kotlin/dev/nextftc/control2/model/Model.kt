@@ -6,9 +6,9 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.model
+package dev.nextftc.control2.model
 
-import dev.nextftc.control.util.discretizeAB
+import dev.nextftc.control2.util.discretizeAB
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.Nat
 import dev.nextftc.linalg.Vector

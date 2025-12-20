@@ -6,7 +6,7 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.feedforward
+package dev.nextftc.control2.feedforward
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus

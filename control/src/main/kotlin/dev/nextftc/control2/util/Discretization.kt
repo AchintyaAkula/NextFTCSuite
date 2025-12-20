@@ -8,12 +8,11 @@
 
 @file:Suppress("ktlint:standard:property-naming")
 
-package dev.nextftc.control.util
+package dev.nextftc.control2.util
 
 import dev.nextftc.linalg.DynamicMatrix
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.Nat
-import dev.nextftc.linalg.exp
 
 /**
  * Discretizes a continuous-time system (A, B) to a discrete-time system (Ad, Bd).

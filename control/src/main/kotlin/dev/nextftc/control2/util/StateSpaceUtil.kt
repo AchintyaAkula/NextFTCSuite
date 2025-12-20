@@ -8,7 +8,7 @@
 
 @file:Suppress("ktlint:standard:property-naming")
 
-package dev.nextftc.control.util
+package dev.nextftc.control2.util
 
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.Nat

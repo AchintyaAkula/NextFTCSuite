@@ -8,12 +8,12 @@
 
 @file:Suppress("ktlint:standard:property-naming")
 
-package dev.nextftc.control.feedback
+package dev.nextftc.control2.feedback
 
-import dev.nextftc.control.model.LinearModel
-import dev.nextftc.control.util.discretizeAB
-import dev.nextftc.control.util.makeBrysonMatrix
-import dev.nextftc.control.util.solveDARE
+import dev.nextftc.control2.model.LinearModel
+import dev.nextftc.control2.util.discretizeAB
+import dev.nextftc.control2.util.makeBrysonMatrix
+import dev.nextftc.control2.util.solveDARE
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.N1
 import dev.nextftc.linalg.Nat
@@ -99,7 +99,7 @@ class LQRController<States : Nat, Inputs : Nat, Outputs : Nat> @JvmOverloads con
 }
 
 /**
- * Computes the optimal gain matrix K using [dev.nextftc.control.util.solveDARE].
+ * Computes the optimal gain matrix K using [dev.nextftc.control2.util.solveDARE].
  *
  * @return Pair of DARE solution X and K.
  */

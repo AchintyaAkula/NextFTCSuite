@@ -6,7 +6,7 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.model
+package dev.nextftc.control2.model
 
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.measuretypes.LinearAcceleration

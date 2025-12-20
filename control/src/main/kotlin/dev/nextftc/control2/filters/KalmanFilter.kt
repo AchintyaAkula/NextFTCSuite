@@ -8,13 +8,13 @@
 
 @file:Suppress("ktlint:standard:property-naming")
 
-package dev.nextftc.control.filters
+package dev.nextftc.control2.filters
 
-import dev.nextftc.control.model.LinearModel
-import dev.nextftc.control.util.discretizeAQ
-import dev.nextftc.control.util.discretizeR
-import dev.nextftc.control.util.makeCovarianceMatrix
-import dev.nextftc.control.util.solveDARE
+import dev.nextftc.control2.model.LinearModel
+import dev.nextftc.control2.util.discretizeAQ
+import dev.nextftc.control2.util.discretizeR
+import dev.nextftc.control2.util.makeCovarianceMatrix
+import dev.nextftc.control2.util.solveDARE
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.Nat
 import dev.nextftc.linalg.Vector

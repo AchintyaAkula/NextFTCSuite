@@ -6,10 +6,9 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.profiles
+package dev.nextftc.control2.profiles
 
-import dev.nextftc.control.model.MotionState
-import dev.nextftc.units.measuretypes.Distance
+import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.measuretypes.LinearAcceleration
 import dev.nextftc.units.measuretypes.LinearVelocity
 import dev.nextftc.units.unittypes.inchesPerSecond
@@ -17,7 +16,6 @@ import dev.nextftc.units.unittypes.inchesPerSecondSquared
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
-import kotlin.math.withSign
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 

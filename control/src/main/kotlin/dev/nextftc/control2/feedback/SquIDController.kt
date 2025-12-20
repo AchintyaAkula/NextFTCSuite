@@ -6,7 +6,7 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.feedback
+package dev.nextftc.control2.feedback
 
 import kotlin.math.abs
 import kotlin.math.sign

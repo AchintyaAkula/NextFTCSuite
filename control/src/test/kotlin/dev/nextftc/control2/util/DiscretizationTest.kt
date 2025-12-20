@@ -6,7 +6,7 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.util
+package dev.nextftc.control2.util
 
 import dev.nextftc.linalg.Matrix
 import dev.nextftc.linalg.N2

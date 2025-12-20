@@ -6,9 +6,9 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.profiles
+package dev.nextftc.control2.profiles
 
-import dev.nextftc.control.model.MotionState
+import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.Measure
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec

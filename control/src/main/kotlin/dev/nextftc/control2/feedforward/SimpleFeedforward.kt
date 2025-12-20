@@ -6,9 +6,9 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.control.feedforward
+package dev.nextftc.control2.feedforward
 
-import dev.nextftc.control.model.MotionState
+import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.unittypes.InchesPerSecond
 import dev.nextftc.units.unittypes.InchesPerSecondSquared
 import kotlin.math.sign
