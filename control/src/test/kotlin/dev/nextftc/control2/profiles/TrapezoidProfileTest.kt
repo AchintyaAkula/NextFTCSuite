@@ -8,7 +8,7 @@
 
 package dev.nextftc.control2.profiles
 
-import dev.nextftc.control2.model.MotionState
+import dev.nextftc.control2.model.LinearMotionState
 import dev.nextftc.units.Measure
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -28,36 +28,36 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfileConstraints") {
             test("should create valid constraints with positive values") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 constraints.maxVelocity.magnitude shouldBe 5.0
                 constraints.maxAcceleration.magnitude shouldBe 2.0
             }
 
             test("should accept zero values") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 0.0, maxAcceleration = 0.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 0.0, maxAcceleration = 0.0)
                 constraints.maxVelocity.magnitude shouldBe 0.0
                 constraints.maxAcceleration.magnitude shouldBe 0.0
             }
 
             test("should throw exception for negative maxVelocity") {
                 shouldThrow<IllegalArgumentException> {
-                    TrapezoidProfileConstraints(maxVelocity = -1.0, maxAcceleration = 2.0)
+                    TrapezoidProfileConstraints.linear(maxVelocity = -1.0, maxAcceleration = 2.0)
                 }
             }
 
             test("should throw exception for negative maxAcceleration") {
                 shouldThrow<IllegalArgumentException> {
-                    TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = -2.0)
+                    TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = -2.0)
                 }
             }
         }
 
         context("TrapezoidProfile basic functionality") {
             test("should start at initial state") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 val result = profile.calculate(0.seconds, initial, goal)
 
@@ -66,10 +66,10 @@ class TrapezoidProfileTest :
             }
 
             test("should reach goal state at end of profile") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -81,10 +81,10 @@ class TrapezoidProfileTest :
 
             test("should respect maximum velocity constraint") {
                 val maxVelocity = 5.0
-                val constraints = TrapezoidProfileConstraints(maxVelocity = maxVelocity, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = maxVelocity, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 50.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 50.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -99,10 +99,13 @@ class TrapezoidProfileTest :
 
             test("should respect maximum acceleration constraint") {
                 val maxAcceleration = 2.0
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = maxAcceleration)
+                val constraints = TrapezoidProfileConstraints.linear(
+                    maxVelocity = 5.0,
+                    maxAcceleration = maxAcceleration,
+                )
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 50.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 50.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -118,10 +121,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile motion types") {
             test("should generate full trapezoidal profile for long distance") {
-                val constraints = TrapezoidProfileConstraints(5.0, 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(5.0, 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 50.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 50.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -140,10 +143,10 @@ class TrapezoidProfileTest :
             }
 
             test("should generate triangular profile for short distance") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 10.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 10.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 5.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 5.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -162,10 +165,10 @@ class TrapezoidProfileTest :
             }
 
             test("should handle backward motion") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 10.0, velocity = 0.0)
-                val goal = MotionState(position = 0.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 10.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 0.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -178,10 +181,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile with non-zero initial velocity") {
             test("should handle positive initial velocity in forward direction") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 2.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 2.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -192,10 +195,10 @@ class TrapezoidProfileTest :
             }
 
             test("should handle positive initial velocity in backward direction") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 10.0, velocity = 2.0)
-                val goal = MotionState(position = 0.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 10.0, velocity = 2.0)
+                val goal = LinearMotionState(position = 0.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -207,10 +210,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile with non-zero goal velocity") {
             test("should reach non-zero goal velocity") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 3.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 3.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -223,10 +226,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile edge cases") {
             test("should handle zero distance movement") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 5.0, velocity = 0.0)
-                val goal = MotionState(position = 5.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 5.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 5.0, velocity = 0.0)
 
                 val result = profile.calculate(0.seconds, initial, goal)
 
@@ -235,10 +238,10 @@ class TrapezoidProfileTest :
             }
 
             test("should handle already at goal") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 10.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 10.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -247,10 +250,10 @@ class TrapezoidProfileTest :
             }
 
             test("should clamp initial velocity exceeding max velocity") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 10.0)
-                val goal = MotionState(position = 20.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 10.0)
+                val goal = LinearMotionState(position = 20.0, velocity = 0.0)
 
                 val result = profile.calculate(0.seconds, initial, goal)
 
@@ -261,10 +264,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile isFinished") {
             test("should not be finished at start") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
 
@@ -272,10 +275,10 @@ class TrapezoidProfileTest :
             }
 
             test("should be finished at total time") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -284,10 +287,10 @@ class TrapezoidProfileTest :
             }
 
             test("should be finished after total time") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -298,10 +301,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile timeLeftUntil") {
             test("should return zero time for current position") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val timeLeft = profile.timeLeftUntil(0.0)
@@ -310,10 +313,10 @@ class TrapezoidProfileTest :
             }
 
             test("should return positive time for target ahead") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val timeLeft = profile.timeLeftUntil(5.0)
@@ -322,10 +325,10 @@ class TrapezoidProfileTest :
             }
 
             test("should return negative time for target behind") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 5.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 5.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val timeLeft = profile.timeLeftUntil(3.0)
@@ -336,10 +339,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile continuity") {
             test("position should be continuous throughout profile") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 20.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 20.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -359,10 +362,10 @@ class TrapezoidProfileTest :
             }
 
             test("velocity should be continuous throughout profile") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 20.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 20.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime = profile.totalTime
@@ -384,10 +387,10 @@ class TrapezoidProfileTest :
 
         context("TrapezoidProfile totalTime property") {
             test("should have positive total time for non-zero movement") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
 
@@ -395,10 +398,10 @@ class TrapezoidProfileTest :
             }
 
             test("should have consistent total time across multiple calls") {
-                val constraints = TrapezoidProfileConstraints(maxVelocity = 5.0, maxAcceleration = 2.0)
+                val constraints = TrapezoidProfileConstraints.linear(maxVelocity = 5.0, maxAcceleration = 2.0)
                 val profile = TrapezoidProfile(constraints)
-                val initial = MotionState(position = 0.0, velocity = 0.0)
-                val goal = MotionState(position = 10.0, velocity = 0.0)
+                val initial = LinearMotionState(position = 0.0, velocity = 0.0)
+                val goal = LinearMotionState(position = 10.0, velocity = 0.0)
 
                 profile.calculate(0.seconds, initial, goal)
                 val totalTime1 = profile.totalTime

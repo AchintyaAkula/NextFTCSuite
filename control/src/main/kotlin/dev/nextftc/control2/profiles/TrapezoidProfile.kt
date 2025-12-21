@@ -9,8 +9,12 @@
 package dev.nextftc.control2.profiles
 
 import dev.nextftc.control2.model.MotionState
-import dev.nextftc.units.measuretypes.LinearAcceleration
-import dev.nextftc.units.measuretypes.LinearVelocity
+import dev.nextftc.units.Unit
+import dev.nextftc.units.measuretypes.Per
+import dev.nextftc.units.unittypes.PerUnit
+import dev.nextftc.units.unittypes.TimeUnit
+import dev.nextftc.units.unittypes.degreesPerSecond
+import dev.nextftc.units.unittypes.degreesPerSecondSquared
 import dev.nextftc.units.unittypes.inchesPerSecond
 import dev.nextftc.units.unittypes.inchesPerSecondSquared
 import kotlin.math.abs
@@ -25,19 +29,26 @@ import kotlin.time.DurationUnit
  * @property maxVelocity The maximum velocity of the profile.
  * @property maxAcceleration The maximum acceleration of the profile.
  */
-data class TrapezoidProfileConstraints(val maxVelocity: LinearVelocity, val maxAcceleration: LinearAcceleration) {
+data class TrapezoidProfileConstraints<U : Unit<U>>(
+    val maxVelocity: Per<U, TimeUnit>,
+    val maxAcceleration: Per<PerUnit<U, TimeUnit>, TimeUnit>,
+) {
     init {
         require(maxVelocity.magnitude >= 0.0) { "Constraints must be non-negative" }
         require(maxAcceleration.magnitude >= 0.0) { "Constraints must be non-negative" }
     }
 
-    constructor(
-        maxVelocity: Double,
-        maxAcceleration: Double,
-    ) : this(
-        maxVelocity.inchesPerSecond,
-        maxAcceleration.inchesPerSecondSquared,
-    )
+    companion object {
+        @JvmStatic fun linear(maxVelocity: Double, maxAcceleration: Double) = TrapezoidProfileConstraints(
+            maxVelocity.inchesPerSecond,
+            maxAcceleration.inchesPerSecondSquared,
+        )
+
+        @JvmStatic fun angular(maxVelocity: Double, maxAcceleration: Double) = TrapezoidProfileConstraints(
+            maxVelocity.degreesPerSecond,
+            maxAcceleration.degreesPerSecondSquared,
+        )
+    }
 }
 
 /**
@@ -53,12 +64,12 @@ data class TrapezoidProfileConstraints(val maxVelocity: LinearVelocity, val maxA
  * @param constraints The [TrapezoidProfileConstraints] that define the maximum velocity and
  *  acceleration for the profile.
  */
-class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
+class TrapezoidProfile<U : Unit<U>>(private val constraints: TrapezoidProfileConstraints<U>) {
     private val maxAccel = constraints.maxAcceleration.magnitude
 
     private var direction = 0
 
-    private var currentState = MotionState.ZERO
+    private lateinit var currentState: MotionState<U>
 
     private var endAccel = 0.0
     private var endVel = 0.0
@@ -79,7 +90,7 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
      *
      * @return The state of the profile at time [t].
      */
-    fun calculate(t: Duration, current: MotionState, goal: MotionState): MotionState {
+    fun calculate(t: Duration, current: MotionState<U>, goal: MotionState<U>): MotionState<U> {
         direction = if (shouldFlipAcceleration(current, goal)) -1 else 1
         currentState = direct(current)
         val directGoal = direct(goal)
@@ -91,7 +102,7 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
                 currentState.copy(
                     velocity = constraints.maxVelocity.withSign(
                         currentState.velocity,
-                    ) as LinearVelocity,
+                    ) as Per<U, TimeUnit>,
                 )
         }
 
@@ -101,13 +112,16 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
         val cutoffBegin = currentState.velocity.magnitude / maxAccel
         val cutoffDistBegin = cutoffBegin * cutoffBegin * maxAccel / 2.0
 
-        val cutoffEnd = directGoal.velocity.magnitude / maxAccel
+        val goalPosition = directGoal.position.into(current.position.unit)
+        val goalVelocity = directGoal.velocity.into(current.velocity.unit)
+
+        val cutoffEnd = goalVelocity / maxAccel
         val cutoffDistEnd = cutoffEnd * cutoffEnd * maxAccel / 2.0
 
         // Now we can calculate the parameters as if it was a full trapezoid instead
         // of a truncated one
         val fullTrapezoidDist =
-            cutoffDistBegin + (directGoal.position.magnitude - currentState.position.magnitude) +
+            cutoffDistBegin + (goalPosition - currentState.position.magnitude) +
                 cutoffDistEnd
         var accelerationTime = constraints.maxVelocity.magnitude / maxAccel
 
@@ -145,19 +159,19 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
                     )
             accel = 0.0
         } else if (timeSeconds <= endDecel) {
-            velocity = directGoal.velocity.magnitude + (endDecel - timeSeconds) * maxAccel
+            velocity = goalVelocity + (endDecel - timeSeconds) * maxAccel
             val timeLeft = endDecel - timeSeconds
             position =
-                directGoal.position.magnitude -
-                (directGoal.velocity.magnitude + timeLeft * maxAccel / 2.0) * timeLeft
+                goalPosition -
+                (goalVelocity + timeLeft * maxAccel / 2.0) * timeLeft
             accel = -maxAccel
         } else {
-            velocity = directGoal.velocity.magnitude
-            position = directGoal.position.magnitude
+            velocity = goalVelocity
+            position = goalPosition
             accel = 0.0
         }
 
-        return direct(MotionState(position, velocity, accel))
+        return direct(current.copy(position, velocity, accel))
     }
 
     /**
@@ -246,11 +260,11 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
      *
      * @return The transformed state with signs adjusted based on [direction].
      */
-    private fun direct(state: MotionState): MotionState {
+    private fun direct(state: MotionState<U>): MotionState<U> {
         val position = state.position * direction.toDouble()
         val velocity = state.velocity * direction.toDouble()
         val acceleration = state.acceleration * direction.toDouble()
-        return MotionState(position, velocity, acceleration)
+        return state.copy(position, velocity, acceleration)
     }
 
     companion object {
@@ -262,7 +276,7 @@ class TrapezoidProfile(private val constraints: TrapezoidProfileConstraints) {
          *
          * @return true if the goal position is less than the initial position, false otherwise.
          */
-        private fun shouldFlipAcceleration(initial: MotionState, goal: MotionState): Boolean =
+        private fun <U : Unit<U>> shouldFlipAcceleration(initial: MotionState<U>, goal: MotionState<U>): Boolean =
             initial.position > goal.position
     }
 }
