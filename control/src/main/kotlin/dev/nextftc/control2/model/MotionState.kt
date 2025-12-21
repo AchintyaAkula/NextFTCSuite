@@ -8,6 +8,8 @@
 
 package dev.nextftc.control2.model
 
+import dev.nextftc.linalg.Vector
+import dev.nextftc.linalg.makeVector
 import dev.nextftc.units.Measure
 import dev.nextftc.units.Unit
 import dev.nextftc.units.measuretypes.Angle
@@ -31,9 +33,16 @@ import dev.nextftc.units.unittypes.inchesPerSecondSquared
 /**
  * The kinematic state of a system, parameterized by position unit type.
  *
- * Velocity is derived as position per time, and acceleration as velocity per time.
+ * Represents the complete motion state of a system at a point in time, including
+ * position, velocity, and acceleration. Velocity is derived as position per time,
+ * and acceleration as velocity per time.
  *
- * @param U The position unit type
+ * This interface is generic over the position unit type, allowing it to be used
+ * for both linear motion (with [DistanceUnit]) and angular motion (with [AngleUnit]).
+ *
+ * @param U The position unit type (e.g., [DistanceUnit] for linear motion, [AngleUnit] for angular motion)
+ * @see LinearMotionState
+ * @see AngularMotionState
  */
 interface MotionState<U : Unit<U>> {
     /** The position of the system. */
@@ -45,12 +54,31 @@ interface MotionState<U : Unit<U>> {
     /** The acceleration of the system (velocity per time). */
     val acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit>
 
+    /**
+     * Creates a copy of this motion state with optionally modified values.
+     *
+     * @param position The new position (defaults to current position)
+     * @param velocity The new velocity (defaults to current velocity)
+     * @param acceleration The new acceleration (defaults to current acceleration)
+     * @return A new [MotionState] with the specified values
+     */
     fun copy(
         position: Measure<U> = this.position,
         velocity: Per<U, TimeUnit> = this.velocity,
         acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit> = this.acceleration,
     ): MotionState<U>
 
+    /**
+     * Creates a copy of this motion state with optionally modified values using raw doubles.
+     *
+     * The double values are interpreted in the same units as the current state's
+     * position, velocity, and acceleration.
+     *
+     * @param position The new position magnitude (defaults to current position magnitude)
+     * @param velocity The new velocity magnitude (defaults to current velocity magnitude)
+     * @param acceleration The new acceleration magnitude (defaults to current acceleration magnitude)
+     * @return A new [MotionState] with the specified values
+     */
     fun copy(
         position: Double = this.position.magnitude,
         velocity: Double = this.velocity.magnitude,
@@ -60,6 +88,16 @@ interface MotionState<U : Unit<U>> {
         this.velocity.unit.of(velocity),
         this.acceleration.unit.of(acceleration),
     )
+
+    /**
+     * Converts this motion state to a 3-element vector.
+     *
+     * The vector contains [position, velocity, acceleration] in that order,
+     * using the magnitude values in the current units.
+     *
+     * @return A [Vector] containing the position, velocity, and acceleration magnitudes
+     */
+    fun toVector() = makeVector(position.magnitude, velocity.magnitude, acceleration.magnitude)
 }
 
 /**
