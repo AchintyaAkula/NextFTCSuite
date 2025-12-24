@@ -52,7 +52,7 @@ data class SimpleFFCoefficients @JvmOverloads constructor(
  *
  * @param coefficients The [SimpleFFCoefficients] containing kS, kV, and kA gains.
  */
-class SimpleFeedforward<U : Unit<U>>(val coefficients: SimpleFFCoefficients) {
+class SimpleFeedforward(val coefficients: SimpleFFCoefficients) {
 
     /**
      * Calculates the feedforward output for a desired velocity and acceleration.
@@ -66,7 +66,7 @@ class SimpleFeedforward<U : Unit<U>>(val coefficients: SimpleFFCoefficients) {
         coefficients.kS * velocity.sign + coefficients.kV * velocity +
             coefficients.kA * acceleration
 
-    fun calculate(state: MotionState<U>) = calculate(
+    fun calculate(state: MotionState<*>) = calculate(
         state.velocity.magnitude,
         state.acceleration.magnitude,
     )

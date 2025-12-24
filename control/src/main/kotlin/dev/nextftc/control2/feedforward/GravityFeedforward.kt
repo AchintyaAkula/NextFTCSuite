@@ -10,9 +10,13 @@ package dev.nextftc.control2.feedforward
 
 import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.Unit
+import dev.nextftc.units.unittypes.AngleUnit
 import dev.nextftc.units.unittypes.Inches
 import dev.nextftc.units.unittypes.InchesPerSecond
 import dev.nextftc.units.unittypes.InchesPerSecondSquared
+import dev.nextftc.units.unittypes.Radians
+import dev.nextftc.units.unittypes.RadiansPerSecond
+import dev.nextftc.units.unittypes.RadiansPerSecondSquared
 import kotlin.math.cos
 import kotlin.math.sign
 
@@ -40,7 +44,7 @@ data class GravityFeedforwardParameters @JvmOverloads constructor(
  *
  * @param coefficients the [GravityFeedforwardParameters] containing the feedforward gains
  */
-class ElevatorFeedforward<U : Unit<U>>(val coefficients: GravityFeedforwardParameters) {
+class ElevatorFeedforward(val coefficients: GravityFeedforwardParameters) {
     /**
      * Calculates the feedforward output for the given velocity and acceleration.
      *
@@ -59,7 +63,7 @@ class ElevatorFeedforward<U : Unit<U>>(val coefficients: GravityFeedforwardParam
      * @param state the target motion state containing velocity and acceleration
      * @return the feedforward output
      */
-    fun calculate(state: MotionState<U>) = calculate(
+    fun calculate(state: MotionState<*>) = calculate(
         state.velocity.magnitude,
         state.acceleration.magnitude,
     )
@@ -74,7 +78,7 @@ class ElevatorFeedforward<U : Unit<U>>(val coefficients: GravityFeedforwardParam
  *
  * @param coefficients the [GravityFeedforwardParameters] containing the feedforward gains
  */
-class ArmFeedforward<U : Unit<U>>(val coefficients: GravityFeedforwardParameters) {
+class ArmFeedforward(val coefficients: GravityFeedforwardParameters) {
     /**
      * Calculates the feedforward output for the given position, velocity, and acceleration.
      *
@@ -94,9 +98,9 @@ class ArmFeedforward<U : Unit<U>>(val coefficients: GravityFeedforwardParameters
      * @param state the target motion state containing position, velocity, and acceleration
      * @return the feedforward output
      */
-    fun calculate(state: MotionState<U>) = calculate(
-        state.position.magnitude,
-        state.velocity.magnitude,
-        state.acceleration.magnitude,
+    fun calculate(state: MotionState<AngleUnit>) = calculate(
+        state.position.into(Radians),
+        state.velocity.into(RadiansPerSecond),
+        state.acceleration.into(RadiansPerSecondSquared),
     )
 }
