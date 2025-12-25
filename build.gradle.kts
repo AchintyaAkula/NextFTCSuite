@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin) apply false
     alias(libs.plugins.nextftc.publishing)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
 }
 
 allprojects {
@@ -24,4 +25,10 @@ subprojects {
             developer("Rowan McAlpin", "rowan@nextftc.dev", url = "https://rowanmcalpin.com")
         }
     }
+}
+
+dependencies {
+    dokka(project(":units"))
+    dokka(project(":linalg"))
+    dokka(project(":control"))
 }
