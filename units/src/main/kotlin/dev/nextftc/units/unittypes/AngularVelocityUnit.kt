@@ -31,7 +31,8 @@ class AngularVelocityUnit(angle: AngleUnit, time: TimeUnit) :
     override fun ofBaseUnits(baseUnitMagnitude: Double): AngularVelocity =
         of(this.fromBaseUnits(baseUnitMagnitude))
 
-    override fun per(time: TimeUnit): AngularAccelerationUnit = of(this, time) as AngularAccelerationUnit
+    override fun per(time: TimeUnit): AngularAccelerationUnit =
+        of(this, time) as AngularAccelerationUnit
 }
 
 // Common angular velocity units

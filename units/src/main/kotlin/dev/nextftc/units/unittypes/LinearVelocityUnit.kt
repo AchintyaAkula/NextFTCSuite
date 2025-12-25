@@ -34,7 +34,8 @@ class LinearVelocityUnit(distance: DistanceUnit, time: TimeUnit) :
     /**
      * Combines this velocity unit with a unit of time to create an acceleration unit.
      */
-    override fun per(time: TimeUnit): LinearAccelerationUnit = of(this, time) as LinearAccelerationUnit
+    override fun per(time: TimeUnit): LinearAccelerationUnit =
+        of(this, time) as LinearAccelerationUnit
 }
 
 // Common linear velocity units

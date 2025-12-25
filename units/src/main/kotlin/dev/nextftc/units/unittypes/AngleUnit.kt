@@ -74,7 +74,8 @@ class AngleUnit(
      * @param time the unit of time
      * @return the combined angular velocity unit
      */
-    override fun per(time: TimeUnit): AngularVelocityUnit = PerUnit.of(this, time) as AngularVelocityUnit
+    override fun per(time: TimeUnit): AngularVelocityUnit =
+        PerUnit.of(this, time) as AngularVelocityUnit
 }
 
 // Conversion constants
