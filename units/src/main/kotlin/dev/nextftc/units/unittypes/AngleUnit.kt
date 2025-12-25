@@ -26,7 +26,19 @@ class AngleUnit(
     unitName: String,
     unitSymbol: String,
 ) : Unit<AngleUnit>(baseUnit, toBaseConverter, fromBaseConverter, unitName, unitSymbol) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived angle unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Degrees` is defined relative to `Radians` using a
+     * multiplier of PI/180.
+     *
+     * @param baseUnit the unit to derive from (typically the base angle unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: AngleUnit,
         baseUnitEquivalent: Double,
         name: String,
@@ -62,7 +74,7 @@ class AngleUnit(
      * @param time the unit of time
      * @return the combined angular velocity unit
      */
-    override fun per(time: TimeUnit) = AngularVelocityUnit(this, time)
+    override fun per(time: TimeUnit): AngularVelocityUnit = PerUnit.of(this, time) as AngularVelocityUnit
 }
 
 // Conversion constants

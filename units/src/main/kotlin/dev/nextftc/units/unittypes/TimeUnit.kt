@@ -23,7 +23,19 @@ class TimeUnit(
     unitName: String,
     unitSymbol: String,
 ) : Unit<TimeUnit>(baseUnit, toBaseConverter, fromBaseConverter, unitName, unitSymbol) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived time unit from a base time unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Minutes` is defined relative to `Seconds` using a
+     * multiplier of 60.0.
+     *
+     * @param baseUnit the unit to derive from (typically the base time unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: TimeUnit,
         baseUnitEquivalent: Double,
         name: String,

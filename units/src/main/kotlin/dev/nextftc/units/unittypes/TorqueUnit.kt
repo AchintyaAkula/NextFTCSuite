@@ -33,7 +33,18 @@ class TorqueUnit(
     unitName,
     unitSymbol,
 ) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived torque unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `NewtonMeters` derivatives can be defined using appropriate multipliers.
+     *
+     * @param baseUnit the unit to derive from (typically the base torque unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: TorqueUnit,
         baseUnitEquivalent: Double,
         name: String,

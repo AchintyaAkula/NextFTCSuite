@@ -27,7 +27,19 @@ class DistanceUnit(
     unitName: String,
     unitSymbol: String,
 ) : Unit<DistanceUnit>(baseUnit, toBaseConverter, fromBaseConverter, unitName, unitSymbol) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived distance unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Millimeters` is defined relative to `Meters` using a
+     * multiplier of `1e-3`.
+     *
+     * @param baseUnit the unit to derive from (typically the base distance unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: DistanceUnit,
         baseUnitEquivalent: Double,
         name: String,
@@ -63,7 +75,7 @@ class DistanceUnit(
      * @param time the unit of time
      * @return the combined velocity unit
      */
-    override fun per(time: TimeUnit) = LinearVelocityUnit(this, time)
+    override fun per(time: TimeUnit): LinearVelocityUnit = PerUnit.of(this, time) as LinearVelocityUnit
 }
 
 // Conversion constants

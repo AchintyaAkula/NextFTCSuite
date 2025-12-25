@@ -26,7 +26,19 @@ class VoltageUnit(
     unitName: String,
     unitSymbol: String,
 ) : Unit<VoltageUnit>(baseUnit, toBaseConverter, fromBaseConverter, unitName, unitSymbol) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived voltage unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Millivolts` is defined relative to `Volts` using a
+     * multiplier of 1e-3.
+     *
+     * @param baseUnit the unit to derive from (typically the base voltage unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: VoltageUnit,
         baseUnitEquivalent: Double,
         name: String,

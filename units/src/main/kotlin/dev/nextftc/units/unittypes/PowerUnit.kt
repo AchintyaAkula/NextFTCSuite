@@ -33,7 +33,19 @@ class PowerUnit(
     unitName,
     unitSymbol,
 ) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived power unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Kilowatts` is defined relative to `Watts` using a
+     * multiplier of 1e3.
+     *
+     * @param baseUnit the unit to derive from (typically the base power unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: PowerUnit,
         baseUnitEquivalent: Double,
         name: String,

@@ -26,7 +26,7 @@ import dev.nextftc.units.measuretypes.Per
  * @param numerator the numerator unit (e.g., Meters, Miles)
  * @param denominator the denominator unit (e.g., Seconds, Hours)
  */
-open class PerUnit<N : Unit<N>, D : Unit<D>>(val numerator: N, val denominator: D) :
+open class PerUnit<N : Unit<N>, D : Unit<D>> internal constructor(val numerator: N, val denominator: D) :
     Unit<PerUnit<N, D>>(
         null,
         { value ->
@@ -71,5 +71,29 @@ open class PerUnit<N : Unit<N>, D : Unit<D>>(val numerator: N, val denominator: 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Per<N, D> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 
-    override fun per(time: TimeUnit) = PerUnit(this, time)
+    override fun per(time: TimeUnit): PerUnit<PerUnit<N, D>, TimeUnit> = of(this, time)
+
+    companion object {
+        private val cache: java.util.concurrent.ConcurrentHashMap<Pair<Unit<*>, Unit<*>>, PerUnit<*, *>> =
+            java.util.concurrent.ConcurrentHashMap()
+
+        /**
+         * Generic factory returns a cached PerUnit for the given numerator and denominator.
+         */
+        @Suppress("UNCHECKED_CAST")
+        fun <N : Unit<N>, D : Unit<D>> of(numerator: N, denominator: D): PerUnit<N, D> {
+            val key = Pair(numerator as Unit<*>, denominator as Unit<*>)
+            val created = cache.computeIfAbsent(key) {
+                // Prefer specialized classes when possible
+                when (numerator) {
+                    is DistanceUnit if denominator is TimeUnit -> LinearVelocityUnit(numerator, denominator)
+                    is AngleUnit if denominator is TimeUnit -> AngularVelocityUnit(numerator, denominator)
+                    is LinearVelocityUnit if denominator is TimeUnit -> LinearAccelerationUnit(numerator, denominator)
+                    is AngularVelocityUnit if denominator is TimeUnit -> AngularAccelerationUnit(numerator, denominator)
+                    else -> PerUnit(numerator, denominator)
+                }
+            }
+            return created as PerUnit<N, D>
+        }
+    }
 }

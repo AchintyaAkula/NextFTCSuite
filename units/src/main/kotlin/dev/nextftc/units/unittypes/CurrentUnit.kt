@@ -32,7 +32,19 @@ class CurrentUnit(
     unitName,
     unitSymbol,
 ) {
-    internal constructor(
+    /**
+     * Convenience constructor for defining a derived current unit from a base unit.
+     *
+     * This constructor creates a unit whose magnitude is a fixed multiple of the provided
+     * base unit. For example, `Milliamps` is defined relative to `Amps` using a
+     * multiplier of 1e-3.
+     *
+     * @param baseUnit the unit to derive from (typically the base current unit)
+     * @param baseUnitEquivalent how many base unit units are equal to one of this unit
+     * @param name the human-readable name of the unit
+     * @param symbol the short symbol used for the unit
+     */
+    constructor(
         baseUnit: CurrentUnit,
         baseUnitEquivalent: Double,
         name: String,
