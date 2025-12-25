@@ -55,16 +55,6 @@ class VoltageUnit(
      */
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<VoltageUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    /**
-     * Combines this unit with a unit of time. Not typically applicable for voltage.
-     *
-     * @param time the unit of time
-     * @return the combined unit
-     */
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Voltage per time units not yet implemented")
-    }
 }
 
 // Conversion constants

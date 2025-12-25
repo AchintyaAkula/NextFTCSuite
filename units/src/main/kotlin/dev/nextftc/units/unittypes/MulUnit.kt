@@ -61,16 +61,4 @@ open class MulUnit<N : Unit<N>, D : Unit<D>>(val first: N, val second: D) :
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Mul<N, D> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        if (first is TimeUnit && second is TimeUnit) {
-            return first
-        } else if (first is TimeUnit) {
-            return second
-        } else if (second is TimeUnit) {
-            return first
-        }
-
-        return PerUnit(this, time)
-    }
 }

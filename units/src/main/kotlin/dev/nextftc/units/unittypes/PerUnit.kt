@@ -71,5 +71,5 @@ open class PerUnit<N : Unit<N>, D : Unit<D>>(val numerator: N, val denominator: 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Per<N, D> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 
-    override fun per(time: TimeUnit): Unit<*> = PerUnit(this, time)
+    override fun per(time: TimeUnit) = PerUnit(this, time)
 }

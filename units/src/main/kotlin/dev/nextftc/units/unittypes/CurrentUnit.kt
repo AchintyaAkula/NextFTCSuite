@@ -49,10 +49,6 @@ class CurrentUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<CurrentUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Current rate units not yet implemented")
-    }
 }
 
 // Conversion constants

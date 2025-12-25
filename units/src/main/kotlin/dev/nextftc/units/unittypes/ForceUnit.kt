@@ -50,10 +50,6 @@ class ForceUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<ForceUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Force rate units not yet implemented")
-    }
 }
 
 // Conversion constants

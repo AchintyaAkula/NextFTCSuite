@@ -30,6 +30,11 @@ class LinearVelocityUnit(distance: DistanceUnit, time: TimeUnit) :
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): LinearVelocity =
         of(this.fromBaseUnits(baseUnitMagnitude))
+
+    /**
+     * Combines this velocity unit with a unit of time to create an acceleration unit.
+     */
+    override fun per(time: TimeUnit) = LinearAccelerationUnit(this, time)
 }
 
 // Common linear velocity units

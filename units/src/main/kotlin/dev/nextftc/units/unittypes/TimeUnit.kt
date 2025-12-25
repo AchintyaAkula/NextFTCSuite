@@ -62,17 +62,6 @@ class TimeUnit(
      */
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<TimeUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    /**
-     * Combines this unit with a unit of time. This often - but not always - results in a velocity.
-     * Subclasses should sharpen the return type to be unit-specific.
-     *
-     * @param time the unit of time
-     * @return the combined unit
-     */
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Not yet implemented")
-    }
 }
 
 // Conversion constants

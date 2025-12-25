@@ -50,10 +50,6 @@ class TorqueUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<TorqueUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Torque rate units not yet implemented")
-    }
 }
 
 // Conversion constants

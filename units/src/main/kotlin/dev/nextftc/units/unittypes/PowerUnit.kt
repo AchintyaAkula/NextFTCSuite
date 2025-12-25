@@ -50,10 +50,6 @@ class PowerUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<PowerUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Power rate units not yet implemented")
-    }
 }
 
 // Conversion constants

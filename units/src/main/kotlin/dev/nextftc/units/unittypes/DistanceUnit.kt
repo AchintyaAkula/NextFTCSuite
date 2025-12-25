@@ -63,9 +63,7 @@ class DistanceUnit(
      * @param time the unit of time
      * @return the combined velocity unit
      */
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Velocity units not yet implemented")
-    }
+    override fun per(time: TimeUnit) = LinearVelocityUnit(this, time)
 }
 
 // Conversion constants

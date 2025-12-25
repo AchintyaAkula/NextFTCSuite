@@ -53,11 +53,6 @@ class EnergyUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<EnergyUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        // Energy per time = Power
-        TODO("Should return PowerUnit")
-    }
 }
 
 // Conversion constants

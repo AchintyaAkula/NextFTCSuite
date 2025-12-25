@@ -37,10 +37,6 @@ class TemperatureUnit(
 
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<TemperatureUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
-
-    override fun per(time: TimeUnit): Unit<*> {
-        TODO("Temperature rate units not yet implemented")
-    }
 }
 
 // Temperature units with conversion formulas

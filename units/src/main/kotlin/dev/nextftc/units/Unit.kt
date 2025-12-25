@@ -8,6 +8,7 @@
 
 package dev.nextftc.units
 
+import dev.nextftc.units.unittypes.PerUnit
 import dev.nextftc.units.unittypes.TimeUnit
 import kotlin.math.abs
 
@@ -169,7 +170,8 @@ protected constructor(
      * @param time the unit of time
      * @return the combined unit
      */
-    abstract fun per(time: TimeUnit): Unit<*>
+    @Suppress("UNCHECKED_CAST")
+    open fun per(time: TimeUnit): PerUnit<U, TimeUnit> = PerUnit(this as U, time)
 
     /**
      * Checks if this unit is the base unit for its own system of measurement.
