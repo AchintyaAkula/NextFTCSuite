@@ -12,24 +12,10 @@ import dev.nextftc.linalg.Vector
 import dev.nextftc.linalg.makeVector
 import dev.nextftc.units.Measure
 import dev.nextftc.units.Unit
-import dev.nextftc.units.measuretypes.Angle
-import dev.nextftc.units.measuretypes.AngularAcceleration
-import dev.nextftc.units.measuretypes.AngularVelocity
-import dev.nextftc.units.measuretypes.Distance
-import dev.nextftc.units.measuretypes.LinearAcceleration
-import dev.nextftc.units.measuretypes.LinearVelocity
 import dev.nextftc.units.measuretypes.Per
-import dev.nextftc.units.unittypes.AngleUnit
-import dev.nextftc.units.unittypes.DistanceUnit
 import dev.nextftc.units.unittypes.PerUnit
-import dev.nextftc.units.unittypes.Radians
-import dev.nextftc.units.unittypes.RadiansPerSecond
-import dev.nextftc.units.unittypes.RadiansPerSecondSquared
 import dev.nextftc.units.unittypes.Seconds
 import dev.nextftc.units.unittypes.TimeUnit
-import dev.nextftc.units.unittypes.inches
-import dev.nextftc.units.unittypes.inchesPerSecond
-import dev.nextftc.units.unittypes.inchesPerSecondSquared
 
 /**
  * The kinematic state of a system, parameterized by position unit type.
@@ -43,19 +29,38 @@ import dev.nextftc.units.unittypes.inchesPerSecondSquared
  *
  * @param U The position unit type (e.g., [DistanceUnit] for linear motion, [AngleUnit] for angular motion)
  */
-data class MotionState<U : Unit<U>>(
+data class MotionState<U : Unit<U>> @JvmOverloads constructor(
     val position: Measure<U>,
-    val velocity: Per<U, TimeUnit>,
-    val acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit>,
+    val velocity: Per<U, TimeUnit> = position.unit.per(Seconds).of(0.0),
+    val acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit> = position.unit.per(Seconds).per(Seconds).of(0.0),
 ) {
-    constructor(
-        position: Double,
-        velocity: Double,
-        acceleration: Double,
+    /**
+     * Convenience constructor that accepts raw numeric magnitudes and a unit, converting them
+     * into strongly-typed `Measure` and `Per` values used by this class.
+     *
+     * All three numeric parameters default to `0.0`.
+     *
+     * Example:
+     * ```kotlin
+     * // Create a linear MotionState with position in inches, velocity in inches/sec,
+     * // and acceleration in inches/sec^2
+     * val s = MotionState(Inches, 12.0, 3.0, 0.5)
+     * ```
+     *
+     * @param unit the position unit (used to construct typed measures)
+     * @param position position magnitude in `unit`
+     * @param velocity velocity magnitude in `unit / second` (interpreted as `unit.per(Seconds)`)
+     * @param acceleration acceleration magnitude in `unit / second^2` (interpreted as `unit.per(Seconds).per(Seconds)`)
+     */
+    @JvmOverloads constructor(
         unit: U,
+        position: Double = 0.0,
+        velocity: Double = 0.0,
+        acceleration: Double = 0.0,
     ) : this(
         unit.of(position),
         unit.per(Seconds).of(velocity),
+        unit.per(Seconds).per(Seconds).of(acceleration),
     )
 
     /**
