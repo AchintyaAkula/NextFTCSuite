@@ -25,6 +25,7 @@ import dev.nextftc.units.unittypes.PerUnit
 import dev.nextftc.units.unittypes.Radians
 import dev.nextftc.units.unittypes.RadiansPerSecond
 import dev.nextftc.units.unittypes.RadiansPerSecondSquared
+import dev.nextftc.units.unittypes.Seconds
 import dev.nextftc.units.unittypes.TimeUnit
 import dev.nextftc.units.unittypes.inches
 import dev.nextftc.units.unittypes.inchesPerSecond
@@ -37,36 +38,25 @@ import dev.nextftc.units.unittypes.inchesPerSecondSquared
  * position, velocity, and acceleration. Velocity is derived as position per time,
  * and acceleration as velocity per time.
  *
- * This interface is generic over the position unit type, allowing it to be used
+ * This class is generic over the position unit type, allowing it to be used
  * for both linear motion (with [DistanceUnit]) and angular motion (with [AngleUnit]).
  *
  * @param U The position unit type (e.g., [DistanceUnit] for linear motion, [AngleUnit] for angular motion)
- * @see LinearMotionState
- * @see AngularMotionState
  */
-interface MotionState<U : Unit<U>> {
-    /** The position of the system. */
-    val position: Measure<U>
-
-    /** The velocity of the system (position per time). */
-    val velocity: Per<U, TimeUnit>
-
-    /** The acceleration of the system (velocity per time). */
-    val acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit>
-
-    /**
-     * Creates a copy of this motion state with optionally modified values.
-     *
-     * @param position The new position (defaults to current position)
-     * @param velocity The new velocity (defaults to current velocity)
-     * @param acceleration The new acceleration (defaults to current acceleration)
-     * @return A new [MotionState] with the specified values
-     */
-    fun copy(
-        position: Measure<U> = this.position,
-        velocity: Per<U, TimeUnit> = this.velocity,
-        acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit> = this.acceleration,
-    ): MotionState<U>
+data class MotionState<U : Unit<U>>(
+    val position: Measure<U>,
+    val velocity: Per<U, TimeUnit>,
+    val acceleration: Per<PerUnit<U, TimeUnit>, TimeUnit>,
+) {
+    constructor(
+        position: Double,
+        velocity: Double,
+        acceleration: Double,
+        unit: U,
+    ) : this(
+        unit.of(position),
+        unit.per(Seconds).of(velocity),
+    )
 
     /**
      * Creates a copy of this motion state with optionally modified values using raw doubles.
@@ -84,9 +74,9 @@ interface MotionState<U : Unit<U>> {
         velocity: Double = this.velocity.magnitude,
         acceleration: Double = this.acceleration.magnitude,
     ) = copy(
-        this.position.unit.of(position),
-        this.velocity.unit.of(velocity),
-        this.acceleration.unit.of(acceleration),
+        position = this.position.unit.of(position),
+        velocity = this.velocity.unit.of(velocity),
+        acceleration = this.acceleration.unit.of(acceleration),
     )
 
     /**
@@ -173,94 +163,4 @@ interface MotionState<U : Unit<U>> {
      * @return A new [MotionState] with each component divided by the divisor
      */
     operator fun div(divisor: Number) = div(divisor.toDouble())
-}
-
-/**
- * The linear motion state of an object (position in distance units).
- *
- * @property position The position of the object.
- * @property velocity The velocity of the object.
- * @property acceleration The acceleration of the object.
- */
-data class LinearMotionState @JvmOverloads constructor(
-    override val position: Distance = 0.0.inches,
-    override val velocity: LinearVelocity = 0.0.inchesPerSecond,
-    override val acceleration: LinearAcceleration = 0.0.inchesPerSecondSquared,
-) : MotionState<DistanceUnit> {
-
-    /**
-     * Creates a LinearMotionState with the given position, velocity, and acceleration.
-     *
-     * @param position Position, in inches
-     * @param velocity Velocity, in inches per second
-     * @param acceleration Acceleration, in inches per second squared
-     */
-    constructor(
-        position: Double = 0.0,
-        velocity: Double = 0.0,
-        acceleration: Double = 0.0,
-    ) : this(
-        position.inches,
-        velocity.inchesPerSecond,
-        acceleration.inchesPerSecondSquared,
-    )
-
-    override fun copy(
-        position: Measure<DistanceUnit>,
-        velocity: Per<DistanceUnit, TimeUnit>,
-        acceleration: Per<PerUnit<DistanceUnit, TimeUnit>, TimeUnit>,
-    ): LinearMotionState = LinearMotionState(
-        this.position.unit.of(position.into(this.position.unit)),
-        this.velocity.unit.of(velocity.into(this.velocity.unit)) as LinearVelocity,
-        this.acceleration.unit.of(acceleration.into(this.acceleration.unit)) as LinearAcceleration,
-    )
-
-    companion object {
-        val ZERO = LinearMotionState(0.0, 0.0, 0.0)
-    }
-}
-
-/**
- * The angular motion state of an object (position in angle units).
- *
- * @property position The angular position of the object.
- * @property velocity The angular velocity of the object.
- * @property acceleration The angular acceleration of the object.
- */
-data class AngularMotionState @JvmOverloads constructor(
-    override val position: Angle = Radians.of(0.0),
-    override val velocity: AngularVelocity = RadiansPerSecond.of(0.0),
-    override val acceleration: AngularAcceleration = RadiansPerSecondSquared.of(0.0),
-) : MotionState<AngleUnit> {
-
-    /**
-     * Creates an AngularMotionState with the given position, velocity, and acceleration.
-     *
-     * @param position Position, in radians
-     * @param velocity Velocity, in radians per second
-     * @param acceleration Acceleration, in radians per second squared
-     */
-    constructor(
-        position: Double = 0.0,
-        velocity: Double = 0.0,
-        acceleration: Double = 0.0,
-    ) : this(
-        Radians.of(position),
-        RadiansPerSecond.of(velocity),
-        RadiansPerSecondSquared.of(acceleration),
-    )
-
-    override fun copy(
-        position: Measure<AngleUnit>,
-        velocity: Per<AngleUnit, TimeUnit>,
-        acceleration: Per<PerUnit<AngleUnit, TimeUnit>, TimeUnit>,
-    ): AngularMotionState = AngularMotionState(
-        this.position.unit.of(position.into(this.position.unit)),
-        this.velocity.unit.of(velocity.into(this.velocity.unit)) as AngularVelocity,
-        this.acceleration.unit.of(acceleration.into(this.acceleration.unit)) as AngularAcceleration,
-    )
-
-    companion object {
-        val ZERO = AngularMotionState(0.0, 0.0, 0.0)
-    }
 }
