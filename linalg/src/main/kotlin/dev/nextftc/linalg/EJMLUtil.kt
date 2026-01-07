@@ -6,8 +6,6 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-@file:JvmName("Matrices")
-
 package dev.nextftc.linalg
 
 import org.ejml.simple.SimpleMatrix
