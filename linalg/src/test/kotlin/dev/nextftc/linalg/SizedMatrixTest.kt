@@ -357,6 +357,24 @@ class SizedMatrixTest :
                 result[0, 0] shouldBe 2.0
                 result[1, 1] shouldBe 8.0
             }
+
+            test("matrix times vector multiplies correctly") {
+                val a: Matrix<N2, N3> = Matrix.from(
+                    N2,
+                    N3,
+                    arrayOf(
+                        doubleArrayOf(1.0, 2.0, 3.0),
+                        doubleArrayOf(4.0, 5.0, 6.0),
+                    ),
+                )
+                val v3 = makeVector(7.0, 8.0, 9.0)
+                val r = a * v3
+
+                r.numRows shouldBe 2
+                r.numColumns shouldBe 1
+                r[0, 0] shouldBe (1.0 * 7.0 + 2.0 * 8.0 + 3.0 * 9.0)
+                r[1, 0] shouldBe (4.0 * 7.0 + 5.0 * 8.0 + 6.0 * 9.0)
+            }
         }
 
         context("Solve") {
@@ -392,6 +410,14 @@ class SizedMatrixTest :
                 val m3x2: Matrix<N3, N2> = m2x3.transpose
                 m3x2.numRows shouldBe 3
                 m3x2.numColumns shouldBe 2
+            }
+
+            test("matrix vector multiplication produces correct result type") {
+                val m2x3 = Matrix.zero(N2, N3)
+                val v3 = makeVector(0.0, 0.0, 0.0)
+                val v2 = m2x3 * v3
+
+                v2.numRows shouldBe 2
             }
         }
 
