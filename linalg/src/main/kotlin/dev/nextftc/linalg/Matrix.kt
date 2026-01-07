@@ -6,7 +6,7 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-@file:JvmName("SizedMatrices")
+@file:JvmName("Matrices")
 @file:Suppress("UNUSED_PARAMETER")
 
 package dev.nextftc.linalg
@@ -166,6 +166,13 @@ open class Matrix<R : Nat, C : Nat> internal constructor(
      */
     operator fun <K : Nat> times(other: Matrix<C, K>): Matrix<R, K> =
         Matrix(simple.mult(other.simple), rowNat, other.colNat)
+
+    /**
+     * Multiplies this matrix by a vector.
+     * The vector's length must be equal to [C].
+     */
+    operator fun times(other: Vector<C>): Vector<R> =
+        Vector(Matrix(simple.mult(other.simple), rowNat, N1))
 
     /** Multiplies this matrix by a scalar. */
     open operator fun times(scalar: Double): Matrix<R, C> =
