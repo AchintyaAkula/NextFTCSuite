@@ -25,7 +25,7 @@ class MatrixBuilderTest :
         }
 
         test("buildMatrix requires correct row count") {
-            shouldThrow<IllegalArgumentException> {
+            shouldThrow<IllegalStateException> {
                 buildMatrix(N3, N2) {
                     // natRows == 3 but we only provide 2 rows -> build() should throw
                     row(1.0, 2.0)
