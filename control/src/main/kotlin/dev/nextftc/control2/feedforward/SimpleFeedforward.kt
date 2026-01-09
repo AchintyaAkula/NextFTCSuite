@@ -12,6 +12,7 @@ import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.Unit
 import dev.nextftc.units.unittypes.InchesPerSecond
 import dev.nextftc.units.unittypes.InchesPerSecondSquared
+import dev.nextftc.units.unittypes.Seconds
 import kotlin.math.sign
 
 /**
@@ -66,9 +67,15 @@ class SimpleFeedforward(val coefficients: SimpleFFCoefficients) {
         coefficients.kS * velocity.sign + coefficients.kV * velocity +
             coefficients.kA * acceleration
 
-    fun calculate(state: MotionState<*>) = calculate(
-        state.velocity.magnitude,
-        state.acceleration.magnitude,
+    /**
+     * Calculates the feedforward output from a [MotionState].
+     *
+     * @param state the target motion state containing velocity and acceleration
+     * @return the feedforward output
+     */
+    fun <U : Unit<U>> calculate(state: MotionState<U>) = calculate(
+        state.velocity.into(state.velocity.unit),
+        state.acceleration.into(state.velocity.unit.per(Seconds)),
     )
 
     /**

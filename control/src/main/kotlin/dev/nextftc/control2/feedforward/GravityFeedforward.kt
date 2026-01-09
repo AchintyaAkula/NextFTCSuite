@@ -17,6 +17,7 @@ import dev.nextftc.units.unittypes.InchesPerSecondSquared
 import dev.nextftc.units.unittypes.Radians
 import dev.nextftc.units.unittypes.RadiansPerSecond
 import dev.nextftc.units.unittypes.RadiansPerSecondSquared
+import dev.nextftc.units.unittypes.Seconds
 import kotlin.math.cos
 import kotlin.math.sign
 
@@ -63,9 +64,9 @@ class ElevatorFeedforward(val coefficients: GravityFeedforwardParameters) {
      * @param state the target motion state containing velocity and acceleration
      * @return the feedforward output
      */
-    fun calculate(state: MotionState<*>) = calculate(
-        state.velocity.magnitude,
-        state.acceleration.magnitude,
+    fun <U : Unit<U>> calculate(state: MotionState<U>) = calculate(
+        state.velocity.into(state.velocity.unit),
+        state.acceleration.into(state.velocity.unit.per(Seconds)),
     )
 }
 
