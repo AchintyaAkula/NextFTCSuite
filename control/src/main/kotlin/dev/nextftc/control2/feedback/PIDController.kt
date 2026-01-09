@@ -11,6 +11,7 @@ package dev.nextftc.control2.feedback
 import kotlin.math.sign
 import kotlin.time.ComparableTimeMark
 import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 
 /**
  * Coefficients for a PID Controller/
@@ -59,7 +60,7 @@ class PIDController @JvmOverloads constructor(
     /**
      * Calculates the PID output
      *
-     * @param timestamp the current time
+     * @param timestamp the current time (default: TimeSource.Monotonic.markNow())
      * @param error the error in the target state; the difference between the desired
      *  state and the current state
      * @param errorDerivative the derivative of the error, or `null` to compute it automatically
@@ -69,7 +70,8 @@ class PIDController @JvmOverloads constructor(
      *
      * @return the PID output
      */
-    fun calculate(timestamp: ComparableTimeMark, error: Double, errorDerivative: Double?): Double {
+    @JvmOverloads
+    fun calculate(timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(), error: Double, errorDerivative: Double?): Double {
         if (lastTimestamp == null) {
             lastError = error
             lastTimestamp = timestamp
@@ -99,7 +101,7 @@ class PIDController @JvmOverloads constructor(
      *
      * This overload assumes the reference derivative is zero (i.e., the setpoint is constant).
      *
-     * @param timestamp the current time
+     * @param timestamp the current time (default: TimeSource.Monotonic.markNow())
      * @param reference the desired/target value (setpoint)
      * @param measured the current measured value
      * @param measuredDerivative the derivative of the measured value, or `null` to compute the
@@ -107,8 +109,9 @@ class PIDController @JvmOverloads constructor(
      *
      * @return the PID output
      */
+    @JvmOverloads
     fun calculate(
-        timestamp: ComparableTimeMark,
+        timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         reference: Double,
         measured: Double,
         measuredDerivative: Double?,
@@ -122,7 +125,7 @@ class PIDController @JvmOverloads constructor(
      * Calculates the PID output from a reference (setpoint) and measured value, with their
      * respective derivatives.
      *
-     * @param timestamp the current time
+     * @param timestamp the current time (default: TimeSource.Monotonic.markNow())
      * @param reference the desired/target value (setpoint)
      * @param measured the current measured value
      * @param referenceDerivative the derivative of the reference value (e.g., desired velocity)
@@ -130,8 +133,9 @@ class PIDController @JvmOverloads constructor(
      *
      * @return the PID output
      */
+    @JvmOverloads
     fun calculate(
-        timestamp: ComparableTimeMark,
+        timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         reference: Double,
         measured: Double,
         referenceDerivative: Double,
