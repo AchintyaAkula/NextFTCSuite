@@ -71,7 +71,11 @@ class PIDController @JvmOverloads constructor(
      * @return the PID output
      */
     @JvmOverloads
-    fun calculate(timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(), error: Double, errorDerivative: Double?): Double {
+    fun calculate(
+        timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
+        error: Double,
+        errorDerivative: Double?,
+    ): Double {
         if (lastTimestamp == null) {
             lastError = error
             lastTimestamp = timestamp

@@ -6,6 +6,8 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
+@file:Suppress("ktlint:standard:max-line-length")
+
 package dev.nextftc.linalg
 
 class MatrixBuilder<R : Nat, C : Nat> internal constructor(val natRows: R, val natCols: C) {
@@ -21,7 +23,6 @@ class MatrixBuilder<R : Nat, C : Nat> internal constructor(val natRows: R, val n
         return Matrix(rows.toTypedArray())
     }
 }
-
 
 /**
  * Builds a matrix with the given dimensions using a DSL-style initializer.
@@ -94,7 +95,9 @@ fun <C : Nat> matrixOf(
     row3: Vector<C>,
 ): Matrix<N4, C> {
     val cNat = row0.dimNat
-    require(row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat) { "All rows must have the same dimension" }
+    require(row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat) {
+        "All rows must have the same dimension"
+    }
     val data = Array(4) { r ->
         val v = when (r) {
             0 -> row0
@@ -116,7 +119,11 @@ fun <C : Nat> matrixOf(
     row4: Vector<C>,
 ): Matrix<N5, C> {
     val cNat = row0.dimNat
-    require(row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat && row4.dimNat == cNat) { "All rows must have the same dimension" }
+    require(
+        row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat && row4.dimNat == cNat,
+    ) {
+        "All rows must have the same dimension"
+    }
     val rows = arrayOf(row0, row1, row2, row3, row4)
     val data = Array(5) { r -> DoubleArray(cNat.num) { c -> rows[r][c] } }
     return Matrix.from(N5, cNat, data)
@@ -132,7 +139,10 @@ fun <C : Nat> matrixOf(
     row5: Vector<C>,
 ): Matrix<N6, C> {
     val cNat = row0.dimNat
-    require(row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat && row4.dimNat == cNat && row5.dimNat == cNat) { "All rows must have the same dimension" }
+    require(
+        row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat && row4.dimNat == cNat &&
+            row5.dimNat == cNat,
+    ) { "All rows must have the same dimension" }
     val rows = arrayOf(row0, row1, row2, row3, row4, row5)
     val data = Array(6) { r -> DoubleArray(cNat.num) { c -> rows[r][c] } }
     return Matrix.from(N6, cNat, data)
@@ -217,7 +227,8 @@ fun <C : Nat> matrixOf(
     val cNat = row0.dimNat
     require(
         row1.dimNat == cNat && row2.dimNat == cNat && row3.dimNat == cNat && row4.dimNat == cNat &&
-            row5.dimNat == cNat && row6.dimNat == cNat && row7.dimNat == cNat && row8.dimNat == cNat && row9.dimNat == cNat,
+            row5.dimNat == cNat && row6.dimNat == cNat && row7.dimNat == cNat && row8.dimNat == cNat &&
+            row9.dimNat == cNat,
     ) { "All rows must have the same dimension" }
     val rows = arrayOf(row0, row1, row2, row3, row4, row5, row6, row7, row8, row9)
     val data = Array(10) { r -> DoubleArray(cNat.num) { c -> rows[r][c] } }

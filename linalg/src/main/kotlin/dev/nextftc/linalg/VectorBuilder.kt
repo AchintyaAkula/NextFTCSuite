@@ -33,14 +33,8 @@ fun vectorOf(x1: Double, x2: Double, x3: Double, x4: Double, x5: Double): Vector
     Vector(SimpleMatrix(5, 1, false, doubleArrayOf(x1, x2, x3, x4, x5)), N5)
 
 /** Creates a 6-dimensional vector. */
-fun vectorOf(
-    x1: Double,
-    x2: Double,
-    x3: Double,
-    x4: Double,
-    x5: Double,
-    x6: Double,
-): Vector<N6> = Vector(SimpleMatrix(6, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6)), N6)
+fun vectorOf(x1: Double, x2: Double, x3: Double, x4: Double, x5: Double, x6: Double): Vector<N6> =
+    Vector(SimpleMatrix(6, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6)), N6)
 
 /** Creates a 7-dimensional vector. */
 fun vectorOf(
