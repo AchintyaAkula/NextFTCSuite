@@ -14,26 +14,26 @@ package dev.nextftc.linalg
 import org.ejml.simple.SimpleMatrix
 
 /** Creates a 1-dimensional vector. */
-fun makeVector(x: Double): Vector<N1> = Vector(SimpleMatrix(1, 1, false, doubleArrayOf(x)), N1)
+fun vectorOf(x: Double): Vector<N1> = Vector(SimpleMatrix(1, 1, false, doubleArrayOf(x)), N1)
 
 /** Creates a 2-dimensional vector. */
-fun makeVector(x: Double, y: Double): Vector<N2> =
+fun vectorOf(x: Double, y: Double): Vector<N2> =
     Vector(SimpleMatrix(2, 1, false, doubleArrayOf(x, y)), N2)
 
 /** Creates a 3-dimensional vector. */
-fun makeVector(x: Double, y: Double, z: Double): Vector<N3> =
+fun vectorOf(x: Double, y: Double, z: Double): Vector<N3> =
     Vector(SimpleMatrix(3, 1, false, doubleArrayOf(x, y, z)), N3)
 
 /** Creates a 4-dimensional vector. */
-fun makeVector(x1: Double, x2: Double, x3: Double, x4: Double): Vector<N4> =
+fun vectorOf(x1: Double, x2: Double, x3: Double, x4: Double): Vector<N4> =
     Vector(SimpleMatrix(4, 1, false, doubleArrayOf(x1, x2, x3, x4)), N4)
 
 /** Creates a 5-dimensional vector. */
-fun makeVector(x1: Double, x2: Double, x3: Double, x4: Double, x5: Double): Vector<N5> =
+fun vectorOf(x1: Double, x2: Double, x3: Double, x4: Double, x5: Double): Vector<N5> =
     Vector(SimpleMatrix(5, 1, false, doubleArrayOf(x1, x2, x3, x4, x5)), N5)
 
 /** Creates a 6-dimensional vector. */
-fun makeVector(
+fun vectorOf(
     x1: Double,
     x2: Double,
     x3: Double,
@@ -43,7 +43,7 @@ fun makeVector(
 ): Vector<N6> = Vector(SimpleMatrix(6, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6)), N6)
 
 /** Creates a 7-dimensional vector. */
-fun makeVector(
+fun vectorOf(
     x1: Double,
     x2: Double,
     x3: Double,
@@ -54,7 +54,7 @@ fun makeVector(
 ): Vector<N7> = Vector(SimpleMatrix(7, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6, x7)), N7)
 
 /** Creates an 8-dimensional vector. */
-fun makeVector(
+fun vectorOf(
     x1: Double,
     x2: Double,
     x3: Double,
@@ -66,7 +66,7 @@ fun makeVector(
 ): Vector<N8> = Vector(SimpleMatrix(8, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6, x7, x8)), N8)
 
 /** Creates a 9-dimensional vector. */
-fun makeVector(
+fun vectorOf(
     x1: Double,
     x2: Double,
     x3: Double,
@@ -80,7 +80,7 @@ fun makeVector(
     Vector(SimpleMatrix(9, 1, false, doubleArrayOf(x1, x2, x3, x4, x5, x6, x7, x8, x9)), N9)
 
 /** Creates a 10-dimensional vector. */
-fun makeVector(
+fun vectorOf(
     x1: Double,
     x2: Double,
     x3: Double,

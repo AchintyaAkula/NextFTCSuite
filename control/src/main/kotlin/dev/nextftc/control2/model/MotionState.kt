@@ -9,7 +9,7 @@
 package dev.nextftc.control2.model
 
 import dev.nextftc.linalg.Vector
-import dev.nextftc.linalg.makeVector
+import dev.nextftc.linalg.vectorOf
 import dev.nextftc.units.Measure
 import dev.nextftc.units.Unit
 import dev.nextftc.units.measuretypes.Per
@@ -92,7 +92,7 @@ data class MotionState<U : Unit<U>> @JvmOverloads constructor(
      *
      * @return A [Vector] containing the position, velocity, and acceleration magnitudes
      */
-    fun toVector() = makeVector(position.magnitude, velocity.magnitude, acceleration.magnitude)
+    fun toVector() = vectorOf(position.magnitude, velocity.magnitude, acceleration.magnitude)
 
     /**
      * Returns the negation of this motion state.

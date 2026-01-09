@@ -22,9 +22,9 @@ import org.ejml.simple.SimpleMatrix
  *
  * Example:
  * ```kotlin
- * val a: SizedMatrix<N2, N3> = SizedMatrix.zero(N2, N3)  // 2x3 matrix
- * val b: SizedMatrix<N3, N4> = SizedMatrix.zero(N3, N4)  // 3x4 matrix
- * val c: SizedMatrix<N2, N4> = a * b                      // 2x4 matrix - compiles!
+ * val a: Matrix<N2, N3> = Matrix.zero(N2, N3)  // 2x3 matrix
+ * val b: Matrix<N3, N4> = Matrix.zero(N3, N4)  // 3x4 matrix
+ * val c: Matrix<N2, N4> = a * b                      // 2x4 matrix - compiles!
  * // val d = a * a  // Would not compile - N3 != N2
  * ```
  *

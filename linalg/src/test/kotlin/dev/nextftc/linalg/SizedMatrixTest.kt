@@ -367,7 +367,7 @@ class SizedMatrixTest :
                         doubleArrayOf(4.0, 5.0, 6.0),
                     ),
                 )
-                val v3 = makeVector(7.0, 8.0, 9.0)
+                val v3 = vectorOf(7.0, 8.0, 9.0)
                 val r = a * v3
 
                 r.numRows shouldBe 2
@@ -414,7 +414,7 @@ class SizedMatrixTest :
 
             test("matrix vector multiplication produces correct result type") {
                 val m2x3 = Matrix.zero(N2, N3)
-                val v3 = makeVector(0.0, 0.0, 0.0)
+                val v3 = vectorOf(0.0, 0.0, 0.0)
                 val v2 = m2x3 * v3
 
                 v2.numRows shouldBe 2
