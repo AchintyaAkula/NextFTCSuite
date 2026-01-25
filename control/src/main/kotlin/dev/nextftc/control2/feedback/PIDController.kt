@@ -74,7 +74,7 @@ class PIDController @JvmOverloads constructor(
     fun calculate(
         timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         error: Double,
-        errorDerivative: Double?,
+        errorDerivative: Double? = null,
     ): Double {
         if (lastTimestamp == null) {
             lastError = error
@@ -118,7 +118,7 @@ class PIDController @JvmOverloads constructor(
         timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         reference: Double,
         measured: Double,
-        measuredDerivative: Double?,
+        measuredDerivative: Double? = null,
     ): Double = calculate(
         timestamp,
         reference - measured,
