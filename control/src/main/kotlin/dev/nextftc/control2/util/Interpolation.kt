@@ -15,7 +15,6 @@ import dev.nextftc.linalg.Nat
 import dev.nextftc.units.Measure
 import dev.nextftc.units.Unit
 import java.util.NavigableMap
-import java.util.TreeMap
 
 /**
  * @usesMathJax
@@ -108,48 +107,58 @@ fun <R : Nat, C : Nat> lerpMatrix(t: Double, low: Matrix<R, C>, high: Matrix<R, 
 fun <U : Unit<U>> lerpMeasure(t: Double, low: Measure<U>, high: Measure<U>) = low + (high - low) * t
 
 /**
- * A navigable map that supports interpolation between values.
+ * @usesMathJax
  *
- * `InterpolatingMap` is a wrapper around a `TreeMap<Double, T>` that, when queried with a key,
- * returns the exact value if the key exists, or interpolates between the two nearest values otherwise.
- * The interpolation logic is provided by the user via the `interpolate` function.
+ * Performs Catmull-Rom spline interpolation between two points.
  *
- * @param T The type of values stored in the map.
- * @property tree The underlying `TreeMap` storing the data.
- * @property interpolate A function that takes two values and an interpolation factor in [0.0, 1.0], and returns an interpolated value.
+ * This function implements cubic spline interpolation using the Catmull-Rom formulation,
+ * which provides smooth curves through control points with continuous first derivatives.
  *
- * @constructor Creates an empty `InterpolatingMap` with the given interpolation function.
- * @constructor Creates an `InterpolatingMap` with the given keys and values, using the provided interpolation function.
- *
- * @throws IllegalArgumentException if the number of keys and values do not match.
+ * @param t interpolation factor, in the range \([0, 1]\) where:
+ *   - \(t = 0\) returns \(p_1\)
+ *   - \(t = 1\) returns \(p_2\)
+ * @param p0 the first control point (used for computing tangent at p1)
+ * @param p1 the start point of the interpolation segment
+ * @param p2 the end point of the interpolation segment
+ * @param p3 the fourth control point (used for computing tangent at p2)
+ * @return the interpolated value at parameter \(t\)
  */
-class InterpolatingMap<T> private constructor(val tree: TreeMap<Double, T>, val interpolate: (T, T, Double) -> T) :
-    NavigableMap<Double, T> by tree {
-    constructor(interpolator: (T, T, Double) -> T) : this(TreeMap(), interpolator)
+fun splerp(t: Double, p0: Double, p1: Double, p2: Double, p3: Double) =
+    (2 * p1 - 2 * p2 + t * (3 * p2 - 3 * p1 + 1)) * t * t + (p3 - p2 - p0 + p1) * t + p0
 
-    constructor(interpolator: (T, T, Double) -> T, keys: List<Double>, values: List<T>) :
-        this(TreeMap(), interpolator) {
-        require(keys.size == values.size) { "Keys and values must be the same size" }
-        for (i in keys.indices) {
-            tree[keys[i]] = values[i]
-        }
+/**
+ * @usesMathJax
+ *
+ * Performs Catmull-Rom spline interpolation at a given key in a navigable map.
+ *
+ * Uses the two closest entries below and above the key as the main interpolation points,
+ * and their neighbors to compute proper tangents for smooth interpolation. Falls back to
+ * linear interpolation if neighbors are not available.
+ *
+ * @param map the navigable map containing control points
+ * @param key the key to interpolate at
+ * @return the spline-interpolated value
+ * @throws NoSuchElementException if the map is empty or key is out of bounds
+ */
+internal fun splerp(map: NavigableMap<Double, Double>, key: Double): Double {
+    require(map.isNotEmpty()) { "Map cannot be empty" }
+
+    val low = map.floorEntry(key) ?: throw NoSuchElementException("No entry <= $key")
+    val high = map.ceilingEntry(key) ?: throw NoSuchElementException("No entry >= $key")
+
+    // If exact match, return the value
+    if (low.key == high.key) {
+        return high.value
     }
 
-    /**
-     * Gets the value associated with the given key.
-     * If the key does not exist,
-     * the value is interpolated between the two nearest values.
-     */
-    override fun get(key: Double): T {
-        val low = floorEntry(key)
-        val high = ceilingEntry(key)
+    // Normalize t to [0, 1]
+    val t = lerp(key, inputMin = low.key, inputMax = high.key, outputMin = 0.0, outputMax = 1.0)
 
-        if (low.key == high.key) {
-            return tree[key]!!
-        }
+    // Get the previous and next neighbors for tangent computation
+    val p0 = map.lowerEntry(low.key)?.value ?: low.value
+    val p1 = low.value
+    val p2 = high.value
+    val p3 = map.higherEntry(high.key)?.value ?: high.value
 
-        val t = lerp(key, inputMin = low.key, inputMax = high.key, outputMin = 0.0, outputMax = 1.0)
-
-        return interpolate(low.value, high.value, t)
-    }
+    return splerp(t, p0, p1, p2, p3)
 }
