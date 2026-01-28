@@ -25,6 +25,12 @@ subprojects {
             developer("Rowan McAlpin", "rowan@nextftc.dev", url = "https://rowanmcalpin.com")
         }
     }
+
+    dokka {
+        pluginsConfiguration.html {
+            footerMessage.set("Copyright © 2026 NextFTC - Licensed under the BSD-3-Clause license.")
+        }
+    }
 }
 
 dependencies {
