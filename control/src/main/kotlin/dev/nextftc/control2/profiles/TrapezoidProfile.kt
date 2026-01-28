@@ -23,6 +23,7 @@ import kotlin.math.sqrt
 import kotlin.time.ComparableTimeMark
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
+import kotlin.time.TimeSource
 
 /**
  * Constraints for a trapezoidal motion profile.
@@ -95,7 +96,12 @@ class TrapezoidProfile<U : Unit<U>>(private val constraints: TrapezoidProfileCon
      *
      * @return The state of the profile at the given timestamp.
      */
-    fun calculate(timestamp: ComparableTimeMark, current: MotionState<U>, goal: MotionState<U>): MotionState<U> {
+    @JvmOverloads
+    fun calculate(
+        timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
+        current: MotionState<U>,
+        goal: MotionState<U>,
+    ): MotionState<U> {
         if (startTimestamp == null) {
             startTimestamp = timestamp
         }
