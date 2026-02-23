@@ -75,7 +75,7 @@ class PIDControllerTest :
                 val timeSource = TestTimeSource()
                 val controller = PIDController(2.0, 0.0, 0.0)
 
-                val output = controller.calculate(timeSource.markNow(), 5.0, 0.0)
+                val output = controller.calculate(timeSource.markNow(), error = 5.0, errorDerivative = 0.0)
                 output shouldBe (2.0 * 5.0 plusOrMinus 0.001)
             }
 
@@ -83,7 +83,7 @@ class PIDControllerTest :
                 val timeSource = TestTimeSource()
                 val controller = PIDController(2.0, 0.0, 0.0)
 
-                val output = controller.calculate(timeSource.markNow(), -5.0, 0.0)
+                val output = controller.calculate(timeSource.markNow(), error = -5.0, errorDerivative = 0.0)
                 output shouldBe (-10.0 plusOrMinus 0.001)
             }
         }
@@ -93,7 +93,7 @@ class PIDControllerTest :
                 val timeSource = TestTimeSource()
                 val controller = PIDController(0.0, 0.0, 3.0)
 
-                val output = controller.calculate(timeSource.markNow(), 0.0, 2.0)
+                val output = controller.calculate(timeSource.markNow(), error = 0.0, errorDerivative = 2.0)
                 output shouldBe (6.0 plusOrMinus 0.001)
             }
 
@@ -101,7 +101,7 @@ class PIDControllerTest :
                 val timeSource = TestTimeSource()
                 val controller = PIDController(0.0, 0.0, 5.0)
 
-                val output = controller.calculate(timeSource.markNow(), 0.0, -3.0)
+                val output = controller.calculate(timeSource.markNow(), error = 0.0, errorDerivative = -3.0)
                 output shouldBe (-15.0 plusOrMinus 0.001)
             }
         }
@@ -112,7 +112,7 @@ class PIDControllerTest :
                 val controller = PIDController(2.0, 0.0, 3.0)
 
                 // P: 2 * 5 = 10, D: 3 * 2 = 6, Total: 16
-                val output = controller.calculate(timeSource.markNow(), 5.0, 2.0)
+                val output = controller.calculate(timeSource.markNow(), error = 5.0, errorDerivative = 2.0)
                 output shouldBe (16.0 plusOrMinus 0.001)
             }
         }
@@ -123,14 +123,14 @@ class PIDControllerTest :
                 val controller = PIDController(1.0, 1.0, 1.0)
 
                 // Make a calculation to set internal state
-                controller.calculate(timeSource.markNow(), 5.0, 1.0)
+                controller.calculate(timeSource.markNow(), error = 5.0, errorDerivative = 1.0)
                 timeSource += 10.milliseconds
 
                 // Reset
                 controller.reset()
 
                 // After reset, should behave like a fresh controller
-                val output = controller.calculate(timeSource.markNow(), 5.0, 1.0)
+                val output = controller.calculate(timeSource.markNow(), error = 5.0, errorDerivative = 1.0)
                 // First call after reset: P = 5, I = 0 (no time passed since reset), D = 1
                 output shouldBe (6.0 plusOrMinus 0.001)
             }
@@ -143,7 +143,12 @@ class PIDControllerTest :
 
                 // reference - measured = 10 - 3 = 7, P = 2 * 7 = 14
                 // Pass 0.0 for measuredDerivative since we're only testing P term
-                val output = controller.calculate(timeSource.markNow(), 10.0, 3.0, 0.0)
+                val output = controller.calculate(
+                    timeSource.markNow(),
+                    reference = 10.0,
+                    measured = 3.0,
+                    measuredDerivative = 0.0,
+                )
                 output shouldBe (14.0 plusOrMinus 0.001)
             }
 
@@ -153,7 +158,13 @@ class PIDControllerTest :
 
                 // errorDerivative = refDeriv - measDeriv = 5 - 2 = 3
                 // D = 3 * 3 = 9
-                val output = controller.calculate(timeSource.markNow(), 0.0, 0.0, 5.0, 2.0)
+                val output = controller.calculate(
+                    timeSource.markNow(),
+                    reference = 0.0,
+                    measured = 0.0,
+                    referenceDerivative = 5.0,
+                    measuredDerivative = 2.0,
+                )
                 output shouldBe (9.0 plusOrMinus 0.001)
             }
         }

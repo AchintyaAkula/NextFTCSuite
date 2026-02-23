@@ -8,6 +8,8 @@
 
 package dev.nextftc.control2.feedback
 
+import dev.nextftc.control2.model.MotionState
+import dev.nextftc.units.Unit
 import kotlin.math.sign
 import kotlin.time.ComparableTimeMark
 import kotlin.time.DurationUnit
@@ -101,6 +103,25 @@ class PIDController @JvmOverloads constructor(
     }
 
     /**
+     * Calculates the PID output from an error [MotionState].
+     *
+     * This overload extracts the error and error derivative from the motion state's position
+     * and velocity components. The position magnitude is used as the error, and the velocity
+     * magnitude is used as the error derivative.
+     *
+     * @param timestamp the current time (default: TimeSource.Monotonic.markNow())
+     * @param error the error motion state containing position (error) and velocity (error derivative)
+     *
+     * @return the PID output
+     */
+    @JvmOverloads
+    fun calculate(timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(), error: MotionState<*>) = calculate(
+        timestamp,
+        error.position.magnitude,
+        error.velocity.magnitude,
+    )
+
+    /**
      * Calculates the PID output from a reference (setpoint) and measured value.
      *
      * This overload assumes the reference derivative is zero (i.e., the setpoint is constant).
@@ -114,6 +135,7 @@ class PIDController @JvmOverloads constructor(
      * @return the PID output
      */
     @JvmOverloads
+    @JvmName("calculateFromReference")
     fun calculate(
         timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         reference: Double,
@@ -138,6 +160,7 @@ class PIDController @JvmOverloads constructor(
      * @return the PID output
      */
     @JvmOverloads
+    @JvmName("calculateFromReference")
     fun calculate(
         timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
         reference: Double,
@@ -146,8 +169,32 @@ class PIDController @JvmOverloads constructor(
         measuredDerivative: Double,
     ): Double = calculate(
         timestamp,
+        error = reference - measured,
+        errorDerivative = referenceDerivative - measuredDerivative,
+    )
+
+    /**
+     * Calculates the PID output from reference and measured [MotionState]s.
+     *
+     * This overload computes the error motion state by subtracting the measured state from the
+     * reference state. The position difference becomes the error, and the velocity difference
+     * becomes the error derivative.
+     *
+     * @param timestamp the current time (default: TimeSource.Monotonic.markNow())
+     * @param reference the desired/target motion state (setpoint)
+     * @param measured the current measured motion state
+     * @param U the unit type for the motion states (must be the same for both)
+     *
+     * @return the PID output
+     */
+    @JvmOverloads
+    fun <U : Unit<U>> calculate(
+        timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
+        reference: MotionState<U>,
+        measured: MotionState<U>,
+    ) = calculate(
+        timestamp,
         reference - measured,
-        referenceDerivative - measuredDerivative,
     )
 
     /**
