@@ -8,13 +8,17 @@
 
 package dev.nextftc.control2.filters
 
+
 /**
+ * @usesMathJax
+ *
  * Exponential Moving Average (EMA) filter.
  *
- * Applies the recurrence: `y[n] = alpha * x[n] + (1 - alpha) * y[n-1]`.
- * The first output uses `0.0` as the previous value unless [previous] is preset.
+ * Applies the recurrence: \(y_{n} = \alpha \cdot x_n + (1 - \alpha) \cdot y_n\)
  *
- * @param alpha smoothing factor in [0.0, 1.0]; higher values weight newer samples more.
+ * The first output uses \(y_{-1} = 0\) unless [previous] is preset.
+ *
+ * @param alpha smoothing factor \(\alpha \in [0.0, 1.0]\); higher values weight newer samples more.
  */
 class EMAFilter(val alpha: Double) {
     /**

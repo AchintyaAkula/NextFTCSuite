@@ -31,7 +31,7 @@ class LinearModel<State : Nat, Input : Nat, Output : Nat> @JvmOverloads construc
     private val Bd: Matrix<State, Input>
 
     init {
-        val (Ad, Bd) = discretizeAB(A, B, 0.05)
+        val (Ad, Bd) = discretizeAB(A, B, dt)
         this.Ad = Ad
         this.Bd = Bd
     }

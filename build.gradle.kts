@@ -31,10 +31,15 @@ subprojects {
             footerMessage.set("Copyright © 2026 NextFTC - Licensed under the BSD-3-Clause license.")
         }
     }
+
+    dependencies {
+        dokkaPlugin("org.jetbrains.dokka:mathjax-plugin")
+    }
 }
 
 dependencies {
     dokka(project(":units"))
     dokka(project(":linalg"))
     dokka(project(":control"))
+    dokkaPlugin("org.jetbrains.dokka:mathjax-plugin")
 }
