@@ -8,6 +8,7 @@
 
 package dev.nextftc.control2.feedforward
 
+import dev.nextftc.control2.feedforward.ElevatorFeedforward
 import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.Unit
 import dev.nextftc.units.unittypes.AngleUnit
@@ -47,6 +48,23 @@ data class GravityFeedforwardParameters @JvmOverloads constructor(
  */
 class ElevatorFeedforward(val coefficients: GravityFeedforwardParameters) {
     /**
+     * Secondary constructor for initializing the [ElevatorFeedforward] with individual feedforward parameters.
+     *
+     * @param kG gravity feedforward gain, used to compensate for constant gravitational forces
+     * @param kS static friction feedforward gain, used to overcome static friction (multiplied by the sign of velocity)
+     * @param kV velocity feedforward gain, multiplied by the desired velocity
+     * @param kA acceleration feedforward gain, multiplied by the desired acceleration
+     */
+    constructor(
+        kG: Double,
+        kS: Double = 0.0,
+        kV: Double = 0.0,
+        kA: Double = 0.0,
+    ) : this(
+        GravityFeedforwardParameters(kG, kS, kV, kA)
+    )
+
+    /**
      * Calculates the feedforward output for the given velocity and acceleration.
      *
      * @param velocity the target velocity
@@ -80,6 +98,26 @@ class ElevatorFeedforward(val coefficients: GravityFeedforwardParameters) {
  * @param coefficients the [GravityFeedforwardParameters] containing the feedforward gains
  */
 class ArmFeedforward(val coefficients: GravityFeedforwardParameters) {
+    /**
+     * Secondary constructor for initializing the feedforward gains using individual parameters.
+     *
+     * This constructor creates an instance of [GravityFeedforwardParameters] internally
+     * using the provided gain values for gravity, static friction, velocity, and acceleration.
+     *
+     * @param kG gravity gain, used to compensate for the constant force due to gravity
+     * @param kS static gain, used to overcome static friction (multiplied by the sign of velocity)
+     * @param kV velocity gain, multiplied by the target velocity
+     * @param kA acceleration gain, multiplied by the target acceleration
+     */
+    constructor(
+        kG: Double,
+        kS: Double = 0.0,
+        kV: Double = 0.0,
+        kA: Double = 0.0,
+    ) : this(
+        GravityFeedforwardParameters(kG, kS, kV, kA)
+    )
+
     /**
      * Calculates the feedforward output for the given position, velocity, and acceleration.
      *

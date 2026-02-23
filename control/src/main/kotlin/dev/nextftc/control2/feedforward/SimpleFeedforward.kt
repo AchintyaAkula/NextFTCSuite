@@ -54,6 +54,22 @@ data class SimpleFFCoefficients @JvmOverloads constructor(
  * @param coefficients The [SimpleFFCoefficients] containing kS, kV, and kA gains.
  */
 class SimpleFeedforward(val coefficients: SimpleFFCoefficients) {
+    /**
+     * Constructs a SimpleFeedforward instance using individual feedforward coefficients.
+     *
+     * @param kS The static friction gain, applied to overcome static friction and initiate movement.
+     *           Corresponds to the `kS` parameter in `SimpleFFCoefficients`.
+     * @param kV The velocity gain, applied to oppose back-EMF and viscous friction.
+     *           Corresponds to the `kV` parameter in `SimpleFFCoefficients`.
+     * @param kA The acceleration gain, applied to overcome inertia and provide additional output
+     *           for changes in velocity. Defaults to 0.0 for systems without acceleration compensation.
+     *           Corresponds to the `kA` parameter in `SimpleFFCoefficients`.
+     */
+    constructor(
+        kS: Double,
+        kV: Double,
+        kA: Double = 0.0,
+    ) : this(SimpleFFCoefficients(kS, kV, kA))
 
     /**
      * Calculates the feedforward output for a desired velocity and acceleration.
