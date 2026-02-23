@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     version = property("version") as String
-    group = "dev.nextftc.control2"
+    group = "dev.nextftc"
 }
 
 subprojects {
@@ -40,6 +40,6 @@ subprojects {
 dependencies {
     dokka(project(":units"))
     dokka(project(":linalg"))
-    dokka(project(":control"))
+    dokka(project(":control2"))
     dokkaPlugin("org.jetbrains.dokka:mathjax-plugin")
 }
