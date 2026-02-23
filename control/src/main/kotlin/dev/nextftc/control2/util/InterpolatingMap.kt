@@ -14,54 +14,52 @@ import java.util.TreeMap
 /**
  * A navigable map that supports flexible interpolation between values.
  *
- * `InterpolatingMap` is a wrapper around a `TreeMap<Double, T>` that, when queried with a key,
- * returns the exact value if the key exists, or uses a custom interpolation strategy otherwise.
+ * `InterpolatingMap` is a wrapper around a `TreeMap<Double, T>` that queries a custom interpolation
+ * strategy to approximate values between stored keys. Exact matches return stored values; intermediate
+ * keys are interpolated using the configured strategy.
  *
- * This class supports two interpolation approaches:
- * - **Local interpolation**: Using an `interpolate` function that takes two adjacent values and a
- *   parameter `t` in [0.0, 1.0]. Suitable for linear, polynomial, or other local interpolation methods.
- * - **Global interpolation**: Using a custom `getter` function that has access to the entire
- *   `NavigableMap`, allowing for spline interpolation or other methods that need multiple control points.
+ * ## Interpolation Strategies
  *
- * Example usage with linear interpolation (local):
+ * Two interpolation paradigms are supported:
+ *
+ * **Local Interpolation**: Uses an `(T, T, Double) -> T` function operating on two adjacent control
+ * points and a blend parameter \(t \in [0.0, 1.0]\). Efficient and suitable for linear, polynomial,
+ * and other pointwise methods.
+ *
+ * **Global Interpolation**: Uses a `(NavigableMap<Double, T>).(Double) -> T` lambda with access to
+ * all control points. Enables spline interpolation and methods requiring multi-point context.
+ *
+ * ## Usage Examples
+ *
+ * **Linear interpolation** (local):
  * ```kotlin
- * val linearMap = InterpolatingMap<Double>(::lerp)
- * linearMap[0.0] = 0.0
- * linearMap[1.0] = 1.0
- * linearMap[2.0] = 4.0
- * val midpoint = linearMap[0.5]  // 0.5 (linear interpolation)
+ * val map = InterpolatingMap.linear()
+ * map[0.0] = 0.0
+ * map[1.0] = 1.0
+ * map[2.0] = 4.0
+ * println(map[0.5])  // 0.5 (linearly interpolated)
  * ```
  *
- * Example usage with cubic spline interpolation (global):
+ * **Catmull-Rom spline interpolation** (local):
  * ```kotlin
- * val splineMap = InterpolatingMap<Double>({ key ->
- *     val keys = this.keys.toList()
- *     val values = this.values.toList()
- *     if (keys.size < 2) return@InterpolatingMap values.firstOrNull() ?: 0.0
- *     val spline = CubicSpline(keys, values)
- *     spline[key]
- * })
- * splineMap[0.0] = 0.0
- * splineMap[1.0] = 1.0
- * splineMap[2.0] = 0.5
- * val smooth = splineMap[1.5]  // Cubic spline interpolation
+ * val map = InterpolatingMap.spline()
+ * map[0.0] = 0.0
+ * map[1.0] = 1.0
+ * map[2.0] = 0.5
+ * println(map[1.5])  // Smooth spline-interpolated value
  * ```
  *
- * Note: For dedicated spline interpolation with better performance (caching), consider using
- * [CubicSpline] directly.
+ * @param T the value type stored in the map
+ * @property tree the underlying sorted `TreeMap<Double, T>` backing this map
+ * @property getter a function accepting a key and returning an interpolated or exact value,
+ *   with receiver access to the full `NavigableMap` for global context
  *
- * @param T The type of values stored in the map.
- * @property tree The underlying `TreeMap` storing the data.
- * @property getter A function that takes a key and returns the interpolated value, with access to
- *   the entire `NavigableMap` for global interpolation strategies.
+ * @constructor Creates an empty map with a custom getter function (global interpolation)
+ * @constructor Creates an empty map with a local interpolation function
+ * @constructor Creates a map initialized with keys and values, using a custom getter
+ * @constructor Creates a map initialized with keys and values, using a local interpolator
  *
- * @constructor Creates an empty `InterpolatingMap` with a custom getter function.
- * @constructor Creates an `InterpolatingMap` with a local interpolation function that takes two
- *   adjacent values and a parameter `t`.
- * @constructor Creates an `InterpolatingMap` with initial keys and values, using a custom getter.
- * @constructor Creates an `InterpolatingMap` with initial keys and values, using a local interpolator.
- *
- * @throws IllegalArgumentException if the number of keys and values do not match (constructor variants).
+ * @throws IllegalArgumentException if keys and values lists have differing lengths
  */
 class InterpolatingMap<T> private constructor(
     private val tree: TreeMap<Double, T>,
@@ -103,25 +101,33 @@ class InterpolatingMap<T> private constructor(
     }
 
     /**
-     * Gets the value associated with the given key.
-     * If the key does not exist,
-     * the value is interpolated between the two nearest values.
+     * Gets the value associated with the given key, using interpolation if necessary.
+     *
+     * If the key exists in the map, the stored value is returned. Otherwise, the value is
+     * interpolated between the two nearest keys using the configured interpolation strategy.
+     *
+     * @param key the lookup key
+     * @return the exact value if the key exists, or an interpolated value otherwise
      */
     override fun get(key: Double): T = this.getter(key)
 
     companion object {
         /**
-         * Creates an empty linear interpolating map.
+         * @usesMathJax
          *
-         * Uses linear interpolation ([lerp]) to interpolate between two adjacent values.
-         * Linear interpolation is simple and efficient, suitable for most general-purpose use cases.
+         * Creates an empty map with linear interpolation.
+         *
+         * Uses linear interpolation to approximate values between control points:
+         * \(y = y_1 + (y_2 - y_1) \cdot t\) where \(t \in [0.0, 1.0]\).
+         *
+         * Linear interpolation is straightforward, efficient, and suitable for most general-purpose use cases.
          *
          * Example:
          * ```kotlin
-         * val linearMap = InterpolatingMap.linear()
-         * linearMap[0.0] = 0.0
-         * linearMap[1.0] = 1.0
-         * val value = linearMap[0.5]  // 0.5
+         * val map = InterpolatingMap.linear()
+         * map[0.0] = 0.0
+         * map[1.0] = 1.0
+         * val value = map[0.5]  // 0.5
          * ```
          *
          * @return an empty InterpolatingMap with linear interpolation
@@ -129,9 +135,9 @@ class InterpolatingMap<T> private constructor(
         @JvmStatic fun linear() = InterpolatingMap(::lerp)
 
         /**
-         * Creates a linear interpolating map initialized with the given keys and values.
+         * Creates a map with linear interpolation initialized with given control points.
          *
-         * Uses linear interpolation ([lerp]) to interpolate between two adjacent values.
+         * Uses linear interpolation to approximate values between control points.
          *
          * @param keys the x-coordinates of the control points (will be sorted)
          * @param values the y-coordinates of the control points
@@ -141,9 +147,9 @@ class InterpolatingMap<T> private constructor(
         @JvmStatic fun linear(keys: List<Double>, values: List<Double>) = InterpolatingMap(::lerp, keys, values)
 
         /**
-         * Creates an empty Catmull-Rom spline interpolating map.
+         * Creates an empty map with Catmull-Rom spline interpolation.
          *
-         * Uses Catmull-Rom spline interpolation ([splerp]) to provide smooth, continuous curves
+         * Uses Catmull-Rom spline interpolation to provide smooth, continuous curves
          * that pass through all control points. This method uses neighboring points to compute
          * smooth tangents, resulting in visually pleasing interpolation.
          *
@@ -152,11 +158,11 @@ class InterpolatingMap<T> private constructor(
          *
          * Example:
          * ```kotlin
-         * val splineMap = InterpolatingMap.spline()
-         * splineMap[0.0] = 0.0
-         * splineMap[1.0] = 1.0
-         * splineMap[2.0] = 0.5
-         * val value = splineMap[1.5]  // Smooth spline interpolation
+         * val map = InterpolatingMap.spline()
+         * map[0.0] = 0.0
+         * map[1.0] = 1.0
+         * map[2.0] = 0.5
+         * val value = map[1.5]  // Smooth spline interpolation
          * ```
          *
          * @return an empty InterpolatingMap with Catmull-Rom spline interpolation
@@ -164,9 +170,9 @@ class InterpolatingMap<T> private constructor(
         @JvmStatic fun spline() = InterpolatingMap(::splerp)
 
         /**
-         * Creates a Catmull-Rom spline interpolating map initialized with the given keys and values.
+         * Creates a map with Catmull-Rom spline interpolation initialized with given control points.
          *
-         * Uses Catmull-Rom spline interpolation ([splerp]) to provide smooth, continuous curves
+         * Uses Catmull-Rom spline interpolation to provide smooth, continuous curves
          * that pass through all control points.
          *
          * @param keys the x-coordinates of the control points (will be sorted)
