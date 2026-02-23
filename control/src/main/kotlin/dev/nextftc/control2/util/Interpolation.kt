@@ -162,3 +162,24 @@ internal fun splerp(map: NavigableMap<Double, Double>, key: Double): Double {
 
     return splerp(t, p0, p1, p2, p3)
 }
+
+fun bilerp(
+    x: Double,
+    y: Double,
+    x0: Double,
+    y0: Double,
+    x1: Double,
+    y1: Double,
+    q00: Double,
+    q10: Double,
+    q01: Double,
+    q11: Double,
+): Double {
+    val tx = (x - x0) / (x1 - x0)
+    val ty = (y - y0) / (y1 - y0)
+
+    val bottom = q00 * (1 - tx) + q10 * tx
+    val top = q01 * (1 - tx) + q11 * tx
+
+    return bottom * (1 - ty) + top * ty
+}
