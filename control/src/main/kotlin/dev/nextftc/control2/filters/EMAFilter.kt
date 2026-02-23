@@ -8,7 +8,6 @@
 
 package dev.nextftc.control2.filters
 
-
 /**
  * @usesMathJax
  *
