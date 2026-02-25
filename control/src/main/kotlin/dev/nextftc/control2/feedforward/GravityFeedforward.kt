@@ -61,7 +61,7 @@ class ElevatorFeedforward(val coefficients: GravityFeedforwardParameters) {
         kV: Double = 0.0,
         kA: Double = 0.0,
     ) : this(
-        GravityFeedforwardParameters(kG, kS, kV, kA)
+        GravityFeedforwardParameters(kG, kS, kV, kA),
     )
 
     /**
@@ -115,7 +115,7 @@ class ArmFeedforward(val coefficients: GravityFeedforwardParameters) {
         kV: Double = 0.0,
         kA: Double = 0.0,
     ) : this(
-        GravityFeedforwardParameters(kG, kS, kV, kA)
+        GravityFeedforwardParameters(kG, kS, kV, kA),
     )
 
     /**
