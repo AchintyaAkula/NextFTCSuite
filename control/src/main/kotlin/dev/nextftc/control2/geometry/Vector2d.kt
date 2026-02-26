@@ -6,6 +6,8 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
+@file:JvmName("Vectors")
+
 package dev.nextftc.control2.geometry
 
 import dev.nextftc.units.Inches
@@ -16,6 +18,10 @@ import dev.nextftc.units.Unit
 import dev.nextftc.units.inches
 import dev.nextftc.units.inchesPerSecond
 import dev.nextftc.units.inchesPerSecondSquared
+import dev.nextftc.units.measuretypes.Time
+import dev.nextftc.units.unittypes.DistanceUnit
+import dev.nextftc.units.unittypes.PerUnit
+import dev.nextftc.units.unittypes.TimeUnit
 import kotlin.math.sqrt
 
 /**
@@ -198,3 +204,49 @@ data class Vector2d<U : Unit<U>>(@JvmField val x: Measure<U>, @JvmField val y: M
         fun acceleration(ax: Double, ay: Double) = Vector2d(ax.inchesPerSecondSquared, ay.inchesPerSecondSquared)
     }
 }
+
+/**
+ * @usesMathJax
+ *
+ * Multiplies a velocity vector by a time duration to compute displacement.
+ *
+ * This operator allows you to integrate velocity over time to get a displacement vector:
+ * \(\mathbf{d} = \mathbf{v} \cdot \Delta t\)
+ *
+ * ## Unit Conversion
+ *
+ * Input: `Vector2d<PerUnit<DistanceUnit, TimeUnit>>` (velocity, e.g., inches/second)
+ * Output: `Vector2d<DistanceUnit>` (displacement, e.g., inches)
+ *
+ * @param other the time duration to multiply by
+ * @return the displacement vector (velocity × time)
+ * @see Vector2d for vector operations
+ */
+@JvmName("velTimesTime")
+operator fun Vector2d<PerUnit<DistanceUnit, TimeUnit>>.times(other: Time) = Vector2d(
+    x.unit.numerator.of(x.into(x.unit) * other.into(other.unit)),
+    x.unit.numerator.of(y.into(x.unit) * other.into(other.unit)),
+)
+
+/**
+ * @usesMathJax
+ *
+ * Multiplies an acceleration vector by a time duration to compute velocity change.
+ *
+ * This operator allows you to integrate acceleration over time to get a velocity vector:
+ * \(\mathbf{v} = \mathbf{a} \cdot \Delta t\)
+ *
+ * ## Unit Conversion
+ *
+ * Input: `Vector2d<PerUnit<PerUnit<DistanceUnit, TimeUnit>, TimeUnit>>` (acceleration, e.g., inches/second²)
+ * Output: `Vector2d<PerUnit<DistanceUnit, TimeUnit>>` (velocity, e.g., inches/second)
+ *
+ * @param other the time duration to multiply by
+ * @return the velocity change vector (acceleration × time)
+ * @see Vector2d for vector operations
+ */
+@JvmName("accelTimesTime")
+operator fun Vector2d<PerUnit<PerUnit<DistanceUnit, TimeUnit>, TimeUnit>>.times(other: Time) = Vector2d(
+    x.unit.numerator.of(x.into(x.unit) * other.into(other.unit)),
+    x.unit.numerator.of(y.into(x.unit) * other.into(other.unit)),
+)
