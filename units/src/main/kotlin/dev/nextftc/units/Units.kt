@@ -166,7 +166,7 @@ val Amperes = CurrentUnit(null, { it }, { it }, "ampere", "A")
 val Milliamperes = CurrentUnit(Amperes, MILLIAMPERES_PER_AMPERE, "milliampere", "mA")
 
 @JvmField
-val Microamperes = CurrentUnit(Amperes, MICROAMPERES_PER_AMPERE, "microampere", "ÂµA")
+val Microamperes = CurrentUnit(Amperes, MICROAMPERES_PER_AMPERE, "microampere", "µA")
 
 @JvmField
 val Kiloamperes = CurrentUnit(Amperes, KILOAMPERES_PER_AMPERE, "kiloampere", "kA")
@@ -179,7 +179,7 @@ val Volts = VoltageUnit(null, { it }, { it }, "volt", "V")
 val Millivolts = VoltageUnit(Volts, MILLIVOLTS_PER_VOLT, "millivolt", "mV")
 
 @JvmField
-val Microvolts = VoltageUnit(Volts, MICROVOLTS_PER_VOLT, "microvolt", "ÂµV")
+val Microvolts = VoltageUnit(Volts, MICROVOLTS_PER_VOLT, "microvolt", "µV")
 
 @JvmField
 val Kilovolts = VoltageUnit(Volts, KILOVOLTS_PER_VOLT, "kilovolt", "kV")
@@ -199,18 +199,18 @@ val KilogramsForce = ForceUnit(Newtons, KILOGRAMS_FORCE_PER_NEWTON, "kilogram-fo
 
 // Torque units
 @JvmField
-val NewtonMeters = TorqueUnit(null, { it }, { it }, "newton-meter", "NÂ·m")
+val NewtonMeters = TorqueUnit(null, { it }, { it }, "newton-meter", "N·m")
 
 @JvmField
-val PoundFeet = TorqueUnit(NewtonMeters, POUND_FEET_PER_NEWTON_METER, "pound-foot", "lbÂ·ft")
+val PoundFeet = TorqueUnit(NewtonMeters, POUND_FEET_PER_NEWTON_METER, "pound-foot", "lb·ft")
 
 @JvmField
 val NewtonCentimeters =
-    TorqueUnit(NewtonMeters, NEWTON_CENTIMETERS_PER_NEWTON_METER, "newton-centimeter", "NÂ·cm")
+    TorqueUnit(NewtonMeters, NEWTON_CENTIMETERS_PER_NEWTON_METER, "newton-centimeter", "N·cm")
 
 @JvmField
 val NewtonMillimeters =
-    TorqueUnit(NewtonMeters, NEWTON_MILLIMETERS_PER_NEWTON_METER, "newton-millimeter", "NÂ·mm")
+    TorqueUnit(NewtonMeters, NEWTON_MILLIMETERS_PER_NEWTON_METER, "newton-millimeter", "N·mm")
 
 // Energy units
 @JvmField
@@ -243,7 +243,7 @@ val Horsepower = PowerUnit(Watts, HORSEPOWER_PER_WATT, "horsepower", "hp")
 
 // Temperature units
 @JvmField
-val Celsius = TemperatureUnit(null, { it }, { it }, "celsius", "Â°C")
+val Celsius = TemperatureUnit(null, { it }, { it }, "celsius", "°C")
 
 @JvmField
 val Fahrenheit =
@@ -252,7 +252,7 @@ val Fahrenheit =
         { fahrenheit -> (fahrenheit - 32.0) * 5.0 / 9.0 },
         { celsius -> celsius * 9.0 / 5.0 + 32.0 },
         "fahrenheit",
-        "Â°F",
+        "°F",
     )
 
 @JvmField
