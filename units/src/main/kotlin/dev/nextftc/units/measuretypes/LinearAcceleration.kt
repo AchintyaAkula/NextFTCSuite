@@ -9,6 +9,7 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.Newtons
 import dev.nextftc.units.unittypes.DistanceUnit
 import dev.nextftc.units.unittypes.LinearAccelerationUnit
 import dev.nextftc.units.unittypes.LinearVelocityUnit
@@ -70,7 +71,7 @@ class LinearAcceleration(magnitude: Double, unit: LinearAccelerationUnit) :
     operator fun times(mass: Mass): Force {
         val accelerationInMps2 = this.baseUnitMagnitude
         val massInKg = mass.baseUnitMagnitude
-        return Force(accelerationInMps2 * massInKg, dev.nextftc.units.unittypes.Newtons)
+        return Force(accelerationInMps2 * massInKg, Newtons)
     }
 
     override fun toString() = toShortString()

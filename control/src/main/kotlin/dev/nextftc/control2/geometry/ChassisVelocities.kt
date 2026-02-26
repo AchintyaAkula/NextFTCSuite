@@ -8,11 +8,11 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.InchesPerSecond
+import dev.nextftc.units.RadiansPerSecond
 import dev.nextftc.units.measuretypes.AngularVelocity
 import dev.nextftc.units.unittypes.DistanceUnit
-import dev.nextftc.units.unittypes.InchesPerSecond
 import dev.nextftc.units.unittypes.PerUnit
-import dev.nextftc.units.unittypes.RadiansPerSecond
 import dev.nextftc.units.unittypes.TimeUnit
 
 /**
@@ -120,7 +120,7 @@ data class ChassisVelocities(
      */
     fun toPose(heading: Rotation2d): PoseVelocity2d = PoseVelocity2d(
         linearVel = heading * linearVel,
-        angVel = angVel
+        angVel = angVel,
     )
 
     /**

@@ -8,7 +8,18 @@
 
 package dev.nextftc.units.unittypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.Centimeters
+import dev.nextftc.units.Degrees
+import dev.nextftc.units.Feet
+import dev.nextftc.units.Hours
+import dev.nextftc.units.Kilometers
+import dev.nextftc.units.Meters
+import dev.nextftc.units.Miles
+import dev.nextftc.units.Millimeters
+import dev.nextftc.units.Milliseconds
+import dev.nextftc.units.Minutes
+import dev.nextftc.units.Radians
+import dev.nextftc.units.Seconds
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

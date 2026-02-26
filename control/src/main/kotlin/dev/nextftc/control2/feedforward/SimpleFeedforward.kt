@@ -9,10 +9,10 @@
 package dev.nextftc.control2.feedforward
 
 import dev.nextftc.control2.model.MotionState
+import dev.nextftc.units.InchesPerSecond
+import dev.nextftc.units.InchesPerSecondSquared
+import dev.nextftc.units.Seconds
 import dev.nextftc.units.Unit
-import dev.nextftc.units.unittypes.InchesPerSecond
-import dev.nextftc.units.unittypes.InchesPerSecondSquared
-import dev.nextftc.units.unittypes.Seconds
 import kotlin.math.sign
 
 /**

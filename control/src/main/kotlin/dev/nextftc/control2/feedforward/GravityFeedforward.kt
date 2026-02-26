@@ -10,15 +10,15 @@ package dev.nextftc.control2.feedforward
 
 import dev.nextftc.control2.feedforward.ElevatorFeedforward
 import dev.nextftc.control2.model.MotionState
+import dev.nextftc.units.Inches
+import dev.nextftc.units.InchesPerSecond
+import dev.nextftc.units.InchesPerSecondSquared
+import dev.nextftc.units.Radians
+import dev.nextftc.units.RadiansPerSecond
+import dev.nextftc.units.RadiansPerSecondSquared
+import dev.nextftc.units.Seconds
 import dev.nextftc.units.Unit
 import dev.nextftc.units.unittypes.AngleUnit
-import dev.nextftc.units.unittypes.Inches
-import dev.nextftc.units.unittypes.InchesPerSecond
-import dev.nextftc.units.unittypes.InchesPerSecondSquared
-import dev.nextftc.units.unittypes.Radians
-import dev.nextftc.units.unittypes.RadiansPerSecond
-import dev.nextftc.units.unittypes.RadiansPerSecondSquared
-import dev.nextftc.units.unittypes.Seconds
 import kotlin.math.cos
 import kotlin.math.sign
 

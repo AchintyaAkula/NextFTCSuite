@@ -8,6 +8,7 @@
 
 package dev.nextftc.units.measuretypes
 
+import dev.nextftc.units.Joules
 import dev.nextftc.units.Measure
 import dev.nextftc.units.unittypes.DistanceUnit
 
@@ -95,7 +96,7 @@ internal constructor(
     operator fun times(force: Force): Energy {
         val distanceInMeters = this.baseUnitMagnitude
         val forceInNewtons = force.baseUnitMagnitude
-        return Energy(distanceInMeters * forceInNewtons, dev.nextftc.units.unittypes.Joules)
+        return Energy(distanceInMeters * forceInNewtons, Joules)
     }
 
     override fun toString() = toShortString()

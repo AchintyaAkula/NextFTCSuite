@@ -8,12 +8,12 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.InchesPerSecondSquared
+import dev.nextftc.units.RadiansPerSecondSquared
 import dev.nextftc.units.measuretypes.AngularAcceleration
 import dev.nextftc.units.measuretypes.Time
 import dev.nextftc.units.unittypes.DistanceUnit
-import dev.nextftc.units.unittypes.InchesPerSecondSquared
 import dev.nextftc.units.unittypes.PerUnit
-import dev.nextftc.units.unittypes.RadiansPerSecondSquared
 import dev.nextftc.units.unittypes.TimeUnit
 
 /**
@@ -140,7 +140,7 @@ data class ChassisAccelerations(
      */
     fun toPose(heading: Rotation2d): PoseAcceleration2d = PoseAcceleration2d(
         linearAcc = heading * linearAcc,
-        angAcc = angAcc
+        angAcc = angAcc,
     )
 
     /**

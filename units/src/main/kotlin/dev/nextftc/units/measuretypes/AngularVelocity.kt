@@ -9,6 +9,7 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.Watts
 import dev.nextftc.units.unittypes.AngleUnit
 import dev.nextftc.units.unittypes.AngularVelocityUnit
 import dev.nextftc.units.unittypes.PerUnit
@@ -77,7 +78,7 @@ class AngularVelocity(magnitude: Double, unit: AngularVelocityUnit) :
     operator fun times(torque: Torque): Power {
         val angularVelocityInRadPerSec = this.baseUnitMagnitude
         val torqueInNm = torque.baseUnitMagnitude
-        return Power(angularVelocityInRadPerSec * torqueInNm, dev.nextftc.units.unittypes.Watts)
+        return Power(angularVelocityInRadPerSec * torqueInNm, Watts)
     }
 
     override fun toString() = toShortString()

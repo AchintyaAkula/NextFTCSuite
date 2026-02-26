@@ -63,23 +63,3 @@ class PowerUnit(
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<PowerUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
-
-// Conversion constants
-private const val MILLIWATTS_PER_WATT = 1e-3
-private const val KILOWATTS_PER_WATT = 1e3
-private const val MEGAWATTS_PER_WATT = 1e6
-private const val HORSEPOWER_PER_WATT = 745.699872 // Mechanical horsepower
-
-// Power units
-val Watts = PowerUnit(null, { it }, { it }, "watt", "W")
-val Milliwatts = PowerUnit(Watts, MILLIWATTS_PER_WATT, "milliwatt", "mW")
-val Kilowatts = PowerUnit(Watts, KILOWATTS_PER_WATT, "kilowatt", "kW")
-val Megawatts = PowerUnit(Watts, MEGAWATTS_PER_WATT, "megawatt", "MW")
-val Horsepower = PowerUnit(Watts, HORSEPOWER_PER_WATT, "horsepower", "hp")
-
-// Extension properties for Double
-inline val Double.watts get() = Watts.of(this)
-inline val Double.milliwatts get() = Milliwatts.of(this)
-inline val Double.kilowatts get() = Kilowatts.of(this)
-inline val Double.megawatts get() = Megawatts.of(this)
-inline val Double.horsepower get() = Horsepower.of(this)

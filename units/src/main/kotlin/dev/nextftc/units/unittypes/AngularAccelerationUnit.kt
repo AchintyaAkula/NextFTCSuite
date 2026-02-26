@@ -30,13 +30,3 @@ class AngularAccelerationUnit(angularVelocity: AngularVelocityUnit, time: TimeUn
     override fun ofBaseUnits(baseUnitMagnitude: Double): AngularAcceleration =
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
-
-// Common angular acceleration units
-val RadiansPerSecondSquared = AngularAccelerationUnit(RadiansPerSecond, Seconds)
-val DegreesPerSecondSquared = AngularAccelerationUnit(DegreesPerSecond, Seconds)
-val RotationsPerSecondSquared = AngularAccelerationUnit(RotationsPerSecond, Seconds)
-
-// Extension properties for Double
-inline val Double.radiansPerSecondSquared get() = RadiansPerSecondSquared.of(this)
-inline val Double.degreesPerSecondSquared get() = DegreesPerSecondSquared.of(this)
-inline val Double.rotationsPerSecondSquared get() = RotationsPerSecondSquared.of(this)

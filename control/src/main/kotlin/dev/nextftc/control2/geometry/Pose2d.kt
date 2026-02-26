@@ -8,11 +8,15 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.Inches
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.unittypes.DistanceUnit
-import dev.nextftc.units.unittypes.Inches
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
 
 /**
  * @usesMathJax
@@ -139,7 +143,7 @@ data class Pose2d(
      */
     operator fun plus(transform: Transform2d): Pose2d = Pose2d(
         position = heading * transform.translation + position,
-        heading = heading * transform.rotation
+        heading = heading * transform.rotation,
     )
 
     /**
@@ -229,8 +233,10 @@ data class Pose2d(
      */
     fun distanceTo(other: Pose2d): Double {
         val delta = other.position - position
-        return sqrt(delta.x.into(delta.x.unit) * delta.x.into(delta.x.unit) +
-                    delta.y.into(delta.y.unit) * delta.y.into(delta.y.unit))
+        return sqrt(
+            delta.x.into(delta.x.unit) * delta.x.into(delta.x.unit) +
+                delta.y.into(delta.y.unit) * delta.y.into(delta.y.unit),
+        )
     }
 
     /**
@@ -249,9 +255,9 @@ data class Pose2d(
         val toPoint = this.position - start.position
 
         val dotProduct = toPoint.x.into(toPoint.x.unit) * delta.x.into(delta.x.unit) +
-                         toPoint.y.into(toPoint.y.unit) * delta.y.into(delta.y.unit)
+            toPoint.y.into(toPoint.y.unit) * delta.y.into(delta.y.unit)
         val lengthSquared = delta.x.into(delta.x.unit) * delta.x.into(delta.x.unit) +
-                            delta.y.into(delta.y.unit) * delta.y.into(delta.y.unit)
+            delta.y.into(delta.y.unit) * delta.y.into(delta.y.unit)
 
         if (lengthSquared == 0.0) return 0.0
 

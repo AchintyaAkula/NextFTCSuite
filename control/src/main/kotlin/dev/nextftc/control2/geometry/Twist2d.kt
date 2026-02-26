@@ -8,10 +8,10 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.Inches
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.unittypes.DistanceUnit
-import dev.nextftc.units.unittypes.Inches
 
 /**
  * @usesMathJax
@@ -111,7 +111,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
      */
     operator fun plus(other: Twist2d): Twist2d = Twist2d(
         line + other.line,
-        Rotation2d.exp(angle.log() + other.angle.log())
+        Rotation2d.exp(angle.log() + other.angle.log()),
     )
 
     /**
@@ -122,7 +122,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
      */
     operator fun minus(other: Twist2d): Twist2d = Twist2d(
         line - other.line,
-        Rotation2d.exp(angle.log() - other.angle.log())
+        Rotation2d.exp(angle.log() - other.angle.log()),
     )
 
     /**
@@ -140,7 +140,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
      */
     operator fun times(scalar: Double): Twist2d = Twist2d(
         line * scalar,
-        Rotation2d.exp(angle.log() * scalar)
+        Rotation2d.exp(angle.log() * scalar),
     )
 
     /**
@@ -151,7 +151,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
      */
     operator fun div(scalar: Double): Twist2d = Twist2d(
         line / scalar,
-        Rotation2d.exp(angle.log() / scalar)
+        Rotation2d.exp(angle.log() / scalar),
     )
 
     /**

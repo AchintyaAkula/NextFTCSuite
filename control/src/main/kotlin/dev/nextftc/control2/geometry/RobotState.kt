@@ -77,5 +77,5 @@ package dev.nextftc.control2.geometry
 data class RobotState(
     @JvmField val pose: Pose2d,
     @JvmField val velocity: ChassisVelocities,
-    @JvmField val acceleration: ChassisAccelerations
+    @JvmField val acceleration: ChassisAccelerations,
 )

@@ -8,7 +8,16 @@
 
 package dev.nextftc.units.measuretypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.Centimeters
+import dev.nextftc.units.Degrees
+import dev.nextftc.units.Hours
+import dev.nextftc.units.Kilometers
+import dev.nextftc.units.Kilovolts
+import dev.nextftc.units.Meters
+import dev.nextftc.units.Radians
+import dev.nextftc.units.Seconds
+import dev.nextftc.units.Volts
+import dev.nextftc.units.unittypes.MulUnit
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

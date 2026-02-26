@@ -8,7 +8,35 @@
 
 package dev.nextftc.units.measuretypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.Amperes
+import dev.nextftc.units.Centimeters
+import dev.nextftc.units.Feet
+import dev.nextftc.units.Horsepower
+import dev.nextftc.units.Hours
+import dev.nextftc.units.Inches
+import dev.nextftc.units.Joules
+import dev.nextftc.units.Kilograms
+import dev.nextftc.units.Kilojoules
+import dev.nextftc.units.Kilonewtons
+import dev.nextftc.units.Kilovolts
+import dev.nextftc.units.Kilowatts
+import dev.nextftc.units.Meters
+import dev.nextftc.units.Milliamperes
+import dev.nextftc.units.Millivolts
+import dev.nextftc.units.Minutes
+import dev.nextftc.units.NewtonMeters
+import dev.nextftc.units.Newtons
+import dev.nextftc.units.PoundFeet
+import dev.nextftc.units.Pounds
+import dev.nextftc.units.PoundsForce
+import dev.nextftc.units.Radians
+import dev.nextftc.units.Seconds
+import dev.nextftc.units.Volts
+import dev.nextftc.units.WattHours
+import dev.nextftc.units.Watts
+import dev.nextftc.units.unittypes.AngularVelocityUnit
+import dev.nextftc.units.unittypes.LinearAccelerationUnit
+import dev.nextftc.units.unittypes.LinearVelocityUnit
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

@@ -12,9 +12,7 @@ import dev.nextftc.units.Measure
 import dev.nextftc.units.unittypes.DistanceUnit
 import dev.nextftc.units.unittypes.LinearVelocityUnit
 import dev.nextftc.units.unittypes.PerUnit
-import dev.nextftc.units.unittypes.Seconds
 import dev.nextftc.units.unittypes.TimeUnit
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Immutable measurement of linear velocity (distance per time).

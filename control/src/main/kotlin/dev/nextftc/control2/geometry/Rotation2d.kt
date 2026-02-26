@@ -8,10 +8,11 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.Inches
+import dev.nextftc.units.Radians
 import dev.nextftc.units.Unit
+import dev.nextftc.units.inches
 import dev.nextftc.units.measuretypes.Angle
-import dev.nextftc.units.unittypes.Radians
-import dev.nextftc.units.unittypes.inches
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin

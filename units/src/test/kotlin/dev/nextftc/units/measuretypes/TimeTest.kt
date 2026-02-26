@@ -8,7 +8,13 @@
 
 package dev.nextftc.units.measuretypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.Days
+import dev.nextftc.units.Hours
+import dev.nextftc.units.Microseconds
+import dev.nextftc.units.Milliseconds
+import dev.nextftc.units.Minutes
+import dev.nextftc.units.Nanoseconds
+import dev.nextftc.units.Seconds
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan

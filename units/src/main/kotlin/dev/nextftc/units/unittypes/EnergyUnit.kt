@@ -66,20 +66,3 @@ class EnergyUnit(
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<EnergyUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
-
-// Conversion constants
-private const val KILOJOULES_PER_JOULE = 1e3
-private const val WATT_HOURS_PER_JOULE = 3600.0 // 1 Wh = 3600 J
-private const val KILOWATT_HOURS_PER_JOULE = 3_600_000.0 // 1 kWh = 3,600,000 J
-
-// Energy units
-val Joules = EnergyUnit(null, { it }, { it }, "joule", "J")
-val Kilojoules = EnergyUnit(Joules, KILOJOULES_PER_JOULE, "kilojoule", "kJ")
-val WattHours = EnergyUnit(Joules, WATT_HOURS_PER_JOULE, "watt-hour", "Wh")
-val KilowattHours = EnergyUnit(Joules, KILOWATT_HOURS_PER_JOULE, "kilowatt-hour", "kWh")
-
-// Extension properties for Double
-inline val Double.joules get() = Joules.of(this)
-inline val Double.kilojoules get() = Kilojoules.of(this)
-inline val Double.wattHours get() = WattHours.of(this)
-inline val Double.kilowattHours get() = KilowattHours.of(this)

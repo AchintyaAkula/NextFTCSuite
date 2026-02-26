@@ -8,10 +8,10 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.Inches
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.unittypes.DistanceUnit
-import dev.nextftc.units.unittypes.Inches
 
 /**
  * @usesMathJax
@@ -89,10 +89,7 @@ import dev.nextftc.units.unittypes.Inches
  * @see Pose2d for absolute poses
  * @see Twist2d for infinitesimal displacements
  */
-data class Transform2d(
-    @JvmField val translation: Vector2d<DistanceUnit>,
-    @JvmField val rotation: Rotation2d
-) {
+data class Transform2d(@JvmField val translation: Vector2d<DistanceUnit>, @JvmField val rotation: Rotation2d) {
     /**
      * Constructs a Transform2d from a translation vector and rotation angle.
      *
@@ -151,7 +148,7 @@ data class Transform2d(
      */
     constructor(initial: Pose2d, final: Pose2d) : this(
         translation = initial.heading.inverse() * (final.position - initial.position),
-        rotation = initial.heading.inverse() * final.heading
+        rotation = initial.heading.inverse() * final.heading,
     )
 
     /**
@@ -164,7 +161,7 @@ data class Transform2d(
      */
     operator fun plus(other: Transform2d): Transform2d = Transform2d(
         translation = translation + (rotation * other.translation),
-        rotation = rotation * other.rotation
+        rotation = rotation * other.rotation,
     )
 
     /**
@@ -195,7 +192,7 @@ data class Transform2d(
      */
     operator fun times(scalar: Double): Transform2d = Transform2d(
         translation = translation * scalar,
-        rotation = Rotation2d.exp(rotation.log() * scalar)
+        rotation = Rotation2d.exp(rotation.log() * scalar),
     )
 
     /**
@@ -206,7 +203,7 @@ data class Transform2d(
      */
     operator fun div(scalar: Double): Transform2d = Transform2d(
         translation = translation / scalar,
-        rotation = Rotation2d.exp(rotation.log() / scalar)
+        rotation = Rotation2d.exp(rotation.log() / scalar),
     )
 
     /**
@@ -217,8 +214,7 @@ data class Transform2d(
      * @param vec the vector to transform
      * @return the transformed vector
      */
-    operator fun times(vec: Vector2d<DistanceUnit>): Vector2d<DistanceUnit> =
-        rotation * vec + translation
+    operator fun times(vec: Vector2d<DistanceUnit>): Vector2d<DistanceUnit> = rotation * vec + translation
 
     /**
      * Computes the inverse transformation.
@@ -229,7 +225,7 @@ data class Transform2d(
      */
     fun inverse(): Transform2d = Transform2d(
         translation = rotation.inverse() * -translation,
-        rotation = rotation.inverse()
+        rotation = rotation.inverse(),
     )
 
     /**
@@ -260,4 +256,3 @@ data class Transform2d(
         val identity = Transform2d(Vector2d.zero(Inches), Rotation2d.zero)
     }
 }
-

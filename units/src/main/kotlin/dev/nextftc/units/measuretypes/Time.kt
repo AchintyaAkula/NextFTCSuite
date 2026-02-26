@@ -9,8 +9,8 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.durationUnit
 import dev.nextftc.units.unittypes.TimeUnit
-import dev.nextftc.units.unittypes.durationUnit
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration

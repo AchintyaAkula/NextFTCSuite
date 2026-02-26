@@ -8,7 +8,11 @@
 
 package dev.nextftc.units.measuretypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.Horsepower
+import dev.nextftc.units.Kilowatts
+import dev.nextftc.units.Megawatts
+import dev.nextftc.units.Milliwatts
+import dev.nextftc.units.Watts
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

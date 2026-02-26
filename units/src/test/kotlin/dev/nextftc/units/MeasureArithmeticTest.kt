@@ -8,8 +8,19 @@
 
 package dev.nextftc.units
 
-import dev.nextftc.units.measuretypes.*
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.measuretypes.Angle
+import dev.nextftc.units.measuretypes.AngularVelocity
+import dev.nextftc.units.measuretypes.Distance
+import dev.nextftc.units.measuretypes.LinearAcceleration
+import dev.nextftc.units.measuretypes.LinearVelocity
+import dev.nextftc.units.measuretypes.Mul
+import dev.nextftc.units.measuretypes.Per
+import dev.nextftc.units.unittypes.AngleUnit
+import dev.nextftc.units.unittypes.DistanceUnit
+import dev.nextftc.units.unittypes.MulUnit
+import dev.nextftc.units.unittypes.PerUnit
+import dev.nextftc.units.unittypes.TimeUnit
+import dev.nextftc.units.unittypes.VoltageUnit
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

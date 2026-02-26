@@ -8,11 +8,14 @@
 
 package dev.nextftc.control2.geometry
 
+import dev.nextftc.units.Inches
+import dev.nextftc.units.InchesPerSecond
+import dev.nextftc.units.InchesPerSecondSquared
 import dev.nextftc.units.Measure
 import dev.nextftc.units.Unit
-import dev.nextftc.units.unittypes.inches
-import dev.nextftc.units.unittypes.inchesPerSecond
-import dev.nextftc.units.unittypes.inchesPerSecondSquared
+import dev.nextftc.units.inches
+import dev.nextftc.units.inchesPerSecond
+import dev.nextftc.units.inchesPerSecondSquared
 import kotlin.math.sqrt
 
 /**

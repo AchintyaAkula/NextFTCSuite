@@ -10,7 +10,7 @@ package dev.nextftc.control2.profiles
 
 import dev.nextftc.control2.model.MotionState
 import dev.nextftc.units.Measure
-import dev.nextftc.units.unittypes.Meters
+import dev.nextftc.units.Meters
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.ToleranceMatcher

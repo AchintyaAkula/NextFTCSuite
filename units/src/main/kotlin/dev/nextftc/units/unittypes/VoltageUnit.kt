@@ -68,22 +68,3 @@ class VoltageUnit(
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<VoltageUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
-
-// Conversion constants
-private const val MILLIVOLTS_PER_VOLT = 1e-3
-private const val MICROVOLTS_PER_VOLT = 1e-6
-private const val KILOVOLTS_PER_VOLT = 1e3
-
-// Base unit: volts
-val Volts = VoltageUnit(null, { it }, { it }, "volt", "V")
-
-// Derived units
-val Millivolts = VoltageUnit(Volts, MILLIVOLTS_PER_VOLT, "millivolt", "mV")
-val Microvolts = VoltageUnit(Volts, MICROVOLTS_PER_VOLT, "microvolt", "µV")
-val Kilovolts = VoltageUnit(Volts, KILOVOLTS_PER_VOLT, "kilovolt", "kV")
-
-// Extension properties for Double
-inline val Double.volts get() = Volts.of(this)
-inline val Double.millivolts get() = Millivolts.of(this)
-inline val Double.microvolts get() = Microvolts.of(this)
-inline val Double.kilovolts get() = Kilovolts.of(this)

@@ -9,8 +9,8 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.Watts
 import dev.nextftc.units.unittypes.CurrentUnit
-import dev.nextftc.units.unittypes.Watts
 
 /**
  * Immutable measurement of electrical current.

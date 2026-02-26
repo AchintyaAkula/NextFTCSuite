@@ -8,8 +8,8 @@
 
 package dev.nextftc.units.measuretypes
 
+import dev.nextftc.units.Joules
 import dev.nextftc.units.Measure
-import dev.nextftc.units.unittypes.Joules
 import dev.nextftc.units.unittypes.PowerUnit
 
 /**

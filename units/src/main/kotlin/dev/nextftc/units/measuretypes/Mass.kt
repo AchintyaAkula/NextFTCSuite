@@ -9,8 +9,8 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.Newtons
 import dev.nextftc.units.unittypes.MassUnit
-import dev.nextftc.units.unittypes.Newtons
 
 /**
  * Immutable measurement of mass.

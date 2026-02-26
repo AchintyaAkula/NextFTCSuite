@@ -78,34 +78,3 @@ class DistanceUnit(
     override fun per(time: TimeUnit): LinearVelocityUnit =
         PerUnit.of(this, time) as LinearVelocityUnit
 }
-
-// Conversion constants
-private const val MILLIMETERS_PER_METER = 1e-3
-private const val CENTIMETERS_PER_METER = 1e-2
-private const val KILOMETERS_PER_METER = 1e3
-private const val INCHES_PER_CM = 2.54
-private const val FEET_PER_INCH = 12.0
-private const val YARDS_PER_FOOT = 3.0
-private const val MILES_PER_FOOT = 5280.0
-
-// Metric units
-val Meters = DistanceUnit(null, { it }, { it }, "meter", "m")
-val Millimeters = DistanceUnit(Meters, MILLIMETERS_PER_METER, "millimeter", "mm")
-val Centimeters = DistanceUnit(Meters, CENTIMETERS_PER_METER, "centimeter", "cm")
-val Kilometers = DistanceUnit(Meters, KILOMETERS_PER_METER, "kilometer", "km")
-
-// Imperial units
-val Inches = DistanceUnit(Centimeters, INCHES_PER_CM, "inch", "in")
-val Feet = DistanceUnit(Inches, FEET_PER_INCH, "foot", "ft")
-val Yards = DistanceUnit(Feet, YARDS_PER_FOOT, "yard", "yd")
-val Miles = DistanceUnit(Feet, MILES_PER_FOOT, "mile", "mi")
-
-// Extension properties for Double
-inline val Double.meters get() = Meters.of(this)
-inline val Double.millimeters get() = Millimeters.of(this)
-inline val Double.centimeters get() = Centimeters.of(this)
-inline val Double.kilometers get() = Kilometers.of(this)
-inline val Double.inches get() = Inches.of(this)
-inline val Double.feet get() = Feet.of(this)
-inline val Double.yards get() = Yards.of(this)
-inline val Double.miles get() = Miles.of(this)

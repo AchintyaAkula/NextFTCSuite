@@ -8,6 +8,10 @@
 
 package dev.nextftc.units.unittypes
 
+import dev.nextftc.units.KilogramsForce
+import dev.nextftc.units.Kilonewtons
+import dev.nextftc.units.Newtons
+import dev.nextftc.units.PoundsForce
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

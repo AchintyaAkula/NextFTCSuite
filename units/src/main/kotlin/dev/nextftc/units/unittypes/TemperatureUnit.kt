@@ -64,31 +64,3 @@ class TemperatureUnit(
     override fun ofBaseUnits(baseUnitMagnitude: Double): Measure<TemperatureUnit> =
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
-
-// Temperature units with conversion formulas
-val Celsius = TemperatureUnit(null, { it }, { it }, "celsius", "°C")
-
-// Fahrenheit: °C = (°F - 32) × 5/9
-val Fahrenheit =
-    TemperatureUnit(
-        Celsius,
-        { fahrenheit -> (fahrenheit - 32.0) * 5.0 / 9.0 },
-        { celsius -> celsius * 9.0 / 5.0 + 32.0 },
-        "fahrenheit",
-        "°F",
-    )
-
-// Kelvin: °C = K - 273.15
-val Kelvin =
-    TemperatureUnit(
-        Celsius,
-        { kelvin -> kelvin - 273.15 },
-        { celsius -> celsius + 273.15 },
-        "kelvin",
-        "K",
-    )
-
-// Extension properties for Double
-inline val Double.celsius get() = Celsius.of(this)
-inline val Double.fahrenheit get() = Fahrenheit.of(this)
-inline val Double.kelvin get() = Kelvin.of(this)

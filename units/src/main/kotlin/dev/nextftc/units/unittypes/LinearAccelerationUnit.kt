@@ -31,15 +31,5 @@ class LinearAccelerationUnit(velocity: LinearVelocityUnit, time: TimeUnit) :
         of(this.fromBaseUnits(baseUnitMagnitude))
 }
 
-// Common linear acceleration units
-val MetersPerSecondSquared = LinearAccelerationUnit(MetersPerSecond, Seconds)
-val FeetPerSecondSquared = LinearAccelerationUnit(FeetPerSecond, Seconds)
-val InchesPerSecondSquared = LinearAccelerationUnit(InchesPerSecond, Seconds)
-
 // Standard gravity constant (approximately 9.80665 m/s²)
 const val STANDARD_GRAVITY_MPS2 = 9.80665
-
-// Extension properties for Double
-inline val Double.metersPerSecondSquared get() = MetersPerSecondSquared.of(this)
-inline val Double.feetPerSecondSquared get() = FeetPerSecondSquared.of(this)
-inline val Double.inchesPerSecondSquared get() = InchesPerSecondSquared.of(this)

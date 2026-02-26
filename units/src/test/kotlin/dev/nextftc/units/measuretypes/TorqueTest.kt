@@ -8,7 +8,10 @@
 
 package dev.nextftc.units.measuretypes
 
-import dev.nextftc.units.unittypes.*
+import dev.nextftc.units.NewtonCentimeters
+import dev.nextftc.units.NewtonMeters
+import dev.nextftc.units.NewtonMillimeters
+import dev.nextftc.units.PoundFeet
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
