@@ -5,12 +5,13 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/control" />
+            <option value="$PROJECT_DIR$/hardware" />
             <option value="$PROJECT_DIR$/linalg" />
+            <option value="$PROJECT_DIR$/robot" />
             <option value="$PROJECT_DIR$/units" />
           </set>
         </option>

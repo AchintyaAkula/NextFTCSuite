@@ -1,12 +1,13 @@
 [versions]
+android = "8.7.3"
+dokka = "2.1.0"
+ftc = "11.1.0"
 kotlin = "2.2.21"
 kotest = "5.9.1"
-ojalgo = "56.1.1"
 spotless = "8.1.0"
 ejml = "0.41"
 
 [libraries]
-ojalgo = { module = "org.ojalgo:ojalgo", version.ref = "ojalgo" }
 kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertations = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
@@ -14,12 +15,18 @@ kotest-data-driven = { module = "io.kotest:kotest-framework-datatest", version.r
 mockk = { module = "io.mockk:mockk", version = "1.14.2" }
 functional-interfaces = { module = "dev.nextftc:functional-interfaces", version = "1.0.1" }
 ejml = { module = "org.ejml:ejml-simple", version.ref = "ejml" }
+ftc-robot-core = { group = "org.firstinspires.ftc", name = "RobotCore", version.ref = "ftc" }
+ftc-hardware = { group = "org.firstinspires.ftc", name = "Hardware", version.ref = "ftc" }
+ftc-common = { group = "org.firstinspires.ftc", name = "FtcCommon", version.ref = "ftc" }
 
 [bundles]
 kotest = ["kotest-runner", "kotest-assertations", "kotest-property", "kotest-data-driven"]
+ftc = ["ftc-robot-core", "ftc-hardware", "ftc-common"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version = "2.1.0" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "android" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nextftc-publishing = { id = "dev.nextftc.publishing.multi-module", version = "1.0.1" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
