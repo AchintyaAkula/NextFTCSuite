@@ -228,8 +228,7 @@ data class Transform2d(
    * @param vec the vector to transform
    * @return the transformed vector
    */
-  operator fun times(vec: Vector2d<DistanceUnit>): Vector2d<DistanceUnit> =
-    rotation * vec + translation
+  operator fun times(vec: Vector2d<DistanceUnit>): Vector2d<DistanceUnit> = rotation * vec + translation
 
   /**
    * Computes the inverse transformation.

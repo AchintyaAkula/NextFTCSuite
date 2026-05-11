@@ -98,8 +98,7 @@ fun lerpLookup(source: List<Double>, target: List<Double>, query: Double): Doubl
  * @param t interpolation factor, typically in the range \([0, 1]\)
  * @return interpolated matrix
  */
-fun <R : Nat, C : Nat> lerpMatrix(t: Double, low: Matrix<R, C>, high: Matrix<R, C>) =
-  low + (high - low) * t
+fun <R : Nat, C : Nat> lerpMatrix(t: Double, low: Matrix<R, C>, high: Matrix<R, C>) = low + (high - low) * t
 
 /**
  * Linearly interpolates between two measures at value [t].

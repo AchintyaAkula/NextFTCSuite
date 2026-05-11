@@ -24,7 +24,7 @@ allprojects {
           "indent_size" to "2",
           "continuation_indent_size" to "2",
           "ktlint_standard_no-wildcard-imports" to "disabled",
-          "max_line_length" to "100",
+          "max_line_length" to "108",
         ),
       )
     }
@@ -68,7 +68,7 @@ subprojects {
           "indent_size" to "2",
           "continuation_indent_size" to "2",
           "ktlint_standard_no-wildcard-imports" to "disabled",
-          "max_line_length" to "100",
+          "max_line_length" to "108",
         ),
       )
     }

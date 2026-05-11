@@ -24,11 +24,8 @@ import kotlin.math.PI
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class AnalogFeedback(private val voltageSupplier: Supplier<Double>) :
-    ReadOnlyProperty<Any?, Double> {
+class AnalogFeedback(private val voltageSupplier: Supplier<Double>) : ReadOnlyProperty<Any?, Double> {
 
-    override fun getValue(
-        thisRef: Any?,
-        property: KProperty<*>
-    ): Double = voltageSupplier.get() / 3.3 * 2 * PI
+  override fun getValue(thisRef: Any?, property: KProperty<*>): Double =
+    voltageSupplier.get() / 3.3 * 2 * PI
 }

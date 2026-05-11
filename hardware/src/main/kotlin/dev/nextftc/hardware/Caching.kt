@@ -12,28 +12,19 @@ import kotlin.math.abs
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class Caching(
-    private val cacheTolerance: Double,
-    private val whenSet: (Double?) -> Unit
-) : ReadWriteProperty<Any?, Double> {
+class Caching(private val cacheTolerance: Double, private val whenSet: (Double?) -> Unit) :
+  ReadWriteProperty<Any?, Double> {
 
-    private var cachedValue = 0.0
+  private var cachedValue = 0.0
 
-    override fun getValue(
-        thisRef: Any?,
-        property: KProperty<*>
-    ): Double = cachedValue
+  override fun getValue(thisRef: Any?, property: KProperty<*>): Double = cachedValue
 
-    override fun setValue(
-        thisRef: Any?,
-        property: KProperty<*>,
-        value: Double
-    ) {
-        if (abs(cachedValue - value) > cacheTolerance) {
-            cachedValue = value
-            whenSet(value)
-        } else {
-            whenSet(null)
-        }
+  override fun setValue(thisRef: Any?, property: KProperty<*>, value: Double) {
+    if (abs(cachedValue - value) > cacheTolerance) {
+      cachedValue = value
+      whenSet(value)
+    } else {
+      whenSet(null)
     }
+  }
 }

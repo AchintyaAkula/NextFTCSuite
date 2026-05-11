@@ -1,32 +1,32 @@
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.spotless)
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.spotless)
 }
 
 description = "A custom linear algebra library for NextControl."
 
 dependencies {
-    implementation(libs.ejml)
+  implementation(libs.ejml)
 
-    testImplementation(libs.bundles.kotest)
+  testImplementation(libs.bundles.kotest)
 }
 
 nextFTCPublishing {
-    displayName = "NextControl Linear Algebra"
-    logoPath = "../assets/logo-icon.svg"
+  displayName = "NextControl Linear Algebra"
+  logoPath = "../assets/logo-icon.svg"
 }
 
 kotlin {
-    jvmToolchain(8)
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
-    }
+  jvmToolchain(8)
+  compilerOptions {
+    freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
+  }
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
 }
 
 tasks.withType<Test>().configureEach { useJUnitPlatform() }

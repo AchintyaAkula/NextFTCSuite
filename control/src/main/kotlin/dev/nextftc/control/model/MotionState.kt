@@ -103,8 +103,7 @@ data class MotionState<U : Unit<U>> @JvmOverloads constructor(
    *
    * @return A new [MotionState] with all components negated
    */
-  operator fun unaryMinus() =
-    copy(position = -position, velocity = -velocity, acceleration = -acceleration)
+  operator fun unaryMinus() = copy(position = -position, velocity = -velocity, acceleration = -acceleration)
 
   /**
    * Adds another motion state to this one, component-wise.

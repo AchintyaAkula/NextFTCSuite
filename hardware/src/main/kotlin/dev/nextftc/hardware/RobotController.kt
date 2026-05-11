@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 
 object RobotController {
-    @JvmStatic
-    val hardwareMap get() = OpModeManagerImpl.getOpModeManagerOfActivity(AppUtil.getInstance().activity).hardwareMap;
+  @JvmStatic
+  val hardwareMap get() = OpModeManagerImpl.getOpModeManagerOfActivity(
+    AppUtil.getInstance().activity,
+  ).hardwareMap
 }

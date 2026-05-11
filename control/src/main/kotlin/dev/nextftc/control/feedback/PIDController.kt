@@ -115,14 +115,12 @@ class PIDController @JvmOverloads constructor(
    * @return the PID output
    */
   @JvmOverloads
-  fun calculate(
-    timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(),
-    error: MotionState<*>,
-  ) = calculate(
-    timestamp,
-    error.position.magnitude,
-    error.velocity.magnitude,
-  )
+  fun calculate(timestamp: ComparableTimeMark = TimeSource.Monotonic.markNow(), error: MotionState<*>) =
+    calculate(
+      timestamp,
+      error.position.magnitude,
+      error.velocity.magnitude,
+    )
 
   /**
    * Calculates the PID output from a reference (setpoint) and measured value.

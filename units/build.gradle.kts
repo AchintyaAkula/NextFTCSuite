@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.spotless)
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.spotless)
 }
 
 description = "A custom units library for NextControl."
@@ -8,22 +8,21 @@ description = "A custom units library for NextControl."
 dependencies { testImplementation(libs.bundles.kotest) }
 
 nextFTCPublishing {
-    displayName = "NextControl Units"
-    logoPath = "../assets/logo-icon.svg"
+  displayName = "NextControl Units"
+  logoPath = "../assets/logo-icon.svg"
 }
 
 kotlin {
-    jvmToolchain(8)
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
-    }
+  jvmToolchain(8)
+  compilerOptions {
+    freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
+  }
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
 }
 
 tasks.withType<Test>().configureEach { useJUnitPlatform() }
-

@@ -111,8 +111,7 @@ data class Vector2d<U : Unit<U>>(@JvmField val x: Measure<U>, @JvmField val y: M
    * @param v the other vector
    * @return the dot product \(\mathbf{v}_1 \cdot \mathbf{v}_2 = x_1 x_2 + y_1 y_2\)
    */
-  infix fun dot(v: Vector2d<U>) =
-    x.into(x.unit) * v.x.into(x.unit) + y.into(x.unit) * v.y.into(x.unit)
+  infix fun dot(v: Vector2d<U>) = x.into(x.unit) * v.x.into(x.unit) + y.into(x.unit) * v.y.into(x.unit)
 
   /**
    * Computes the squared norm (magnitude squared) of the vector.
@@ -245,8 +244,7 @@ operator fun Vector2d<PerUnit<DistanceUnit, TimeUnit>>.times(other: Time) = Vect
  * @see Vector2d for vector operations
  */
 @JvmName("accelTimesTime")
-operator fun Vector2d<PerUnit<PerUnit<DistanceUnit, TimeUnit>, TimeUnit>>.times(other: Time) =
-  Vector2d(
-    x.unit.numerator.of(x.into(x.unit) * other.into(other.unit)),
-    x.unit.numerator.of(y.into(x.unit) * other.into(other.unit)),
-  )
+operator fun Vector2d<PerUnit<PerUnit<DistanceUnit, TimeUnit>, TimeUnit>>.times(other: Time) = Vector2d(
+  x.unit.numerator.of(x.into(x.unit) * other.into(other.unit)),
+  x.unit.numerator.of(y.into(x.unit) * other.into(other.unit)),
+)

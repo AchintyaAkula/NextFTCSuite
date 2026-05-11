@@ -122,18 +122,17 @@ data class ChassisAccelerations(
    * @return the integrated velocity after time dt
    */
   @JvmOverloads
-  fun integrateToVel(dt: Time, initial: ChassisVelocities = ChassisVelocities.zero) =
-    ChassisVelocities(
-      initial.linearVel + Vector2d(
-        linearAcc.x.unit.numerator.numerator.per(
-          dt.unit,
-        ).of(linearAcc.x.into(linearAcc.x.unit) * dt.into(dt.unit)),
-        linearAcc.x.unit.numerator.numerator.per(
-          dt.unit,
-        ).of(linearAcc.y.into(linearAcc.x.unit) * dt.into(dt.unit)),
-      ),
-      initial.angVel + angAcc * dt,
-    )
+  fun integrateToVel(dt: Time, initial: ChassisVelocities = ChassisVelocities.zero) = ChassisVelocities(
+    initial.linearVel + Vector2d(
+      linearAcc.x.unit.numerator.numerator.per(
+        dt.unit,
+      ).of(linearAcc.x.into(linearAcc.x.unit) * dt.into(dt.unit)),
+      linearAcc.x.unit.numerator.numerator.per(
+        dt.unit,
+      ).of(linearAcc.y.into(linearAcc.x.unit) * dt.into(dt.unit)),
+    ),
+    initial.angVel + angAcc * dt,
+  )
 
   /**
    * Converts this chassis acceleration (local frame) to a pose acceleration (global frame).
