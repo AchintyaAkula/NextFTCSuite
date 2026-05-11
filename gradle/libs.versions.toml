@@ -4,6 +4,7 @@ dokka = "2.1.0"
 ftc = "11.1.0"
 kotlin = "2.2.21"
 kotest = "5.9.1"
+sloth = "0.2.4"
 spotless = "8.1.0"
 ejml = "0.41"
 
@@ -18,6 +19,7 @@ ejml = { module = "org.ejml:ejml-simple", version.ref = "ejml" }
 ftc-robot-core = { group = "org.firstinspires.ftc", name = "RobotCore", version.ref = "ftc" }
 ftc-hardware = { group = "org.firstinspires.ftc", name = "Hardware", version.ref = "ftc" }
 ftc-common = { group = "org.firstinspires.ftc", name = "FtcCommon", version.ref = "ftc" }
+sloth = { module = "dev.frozenmilk.sinister:Sloth", version.ref = "sloth" }
 
 [bundles]
 kotest = ["kotest-runner", "kotest-assertations", "kotest-property", "kotest-data-driven"]

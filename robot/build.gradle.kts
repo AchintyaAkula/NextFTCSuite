@@ -41,6 +41,7 @@ dependencies {
   api(project(":hardware"))
   implementation(libs.functional.interfaces)
   compileOnly(libs.bundles.ftc)
+  implementation(libs.sloth)
 
   testImplementation(libs.bundles.kotest)
   testImplementation(kotlin("test"))

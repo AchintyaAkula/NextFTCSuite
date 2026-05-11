@@ -9,6 +9,7 @@
 package dev.nextftc.units.measuretypes
 
 import dev.nextftc.units.Measure
+import dev.nextftc.units.Nanoseconds
 import dev.nextftc.units.durationUnit
 import dev.nextftc.units.unittypes.TimeUnit
 import kotlin.time.Duration
@@ -109,3 +110,7 @@ internal constructor(private val duration: Duration, override val unit: TimeUnit
 
     override fun toString() = toShortString()
 }
+
+fun Duration.toTime(): Time = Time(this, Nanoseconds)
+
+fun Time.toDuration(): Duration = magnitude.toDuration(unit.durationUnit ?: DurationUnit.MILLISECONDS)
