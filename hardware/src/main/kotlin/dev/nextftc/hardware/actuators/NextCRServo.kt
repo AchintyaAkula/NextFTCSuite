@@ -42,7 +42,7 @@ open class NextCRServo(initializer: () -> CRServoImplEx, val cacheTolerance: Dou
     /**
      * Power applied to the servo, in the range [-1.0, 1.0].
      */
-    val power: Double by Caching(cacheTolerance) {
+    var power: Double by Caching(cacheTolerance) {
         if (it != null) {
             servo.power = it
         }

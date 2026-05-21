@@ -11,14 +11,17 @@ import com.qualcomm.robotcore.hardware.AnalogInput
 import dev.nextftc.hardware.AnalogFeedback
 import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.actuators.NextServo
+import dev.nextftc.units.measuretypes.Angle
+import dev.nextftc.units.radians
 
 /**
  * A [NextServo] paired with an analog feedback input for reading the servo's
  * actual angle. Useful for servos with a feedback wire (e.g. Axon).
  *
  * Inherits everything from [NextServo] — `position`, `pwmRange`, `enable()`,
- * `disable()` — and adds [angleInRadians] or [angleInDegrees] for reading the physical angle in
- * radians or degrees respectively from the feedback input.
+ * `disable()` — and adds [angle] for reading the physical angle in
+ * radians from the feedback input.
  *
  * Example:
  *
@@ -42,10 +45,9 @@ class NextFeedbackServo(
         RobotController.hardwareMap[feedbackName] as AnalogInput
     }
 
-    /** Actual angle of the servo, in RADIANS. */
-    val angleInRadians: Double by AnalogFeedback { analogInput.voltage }
+    private val rawAngleRadians: Double by AnalogFeedback { analogInput.voltage }
 
-    /** Actual angle of the servo, in DEGREES. */
-    val angleInDegrees: Double get() = Math.toDegrees(angleInRadians)
+    /** Actual angle of the servo, in RADIANS. */
+    val angle: Angle get() = rawAngleRadians.radians
 
 }

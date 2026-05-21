@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput
 import dev.nextftc.hardware.AnalogFeedback
 import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.units.measuretypes.Angle
+import dev.nextftc.units.radians
 
 /**
  * A [NextCRServo] paired with an analog feedback input for reading the servo's
@@ -19,8 +21,8 @@ import dev.nextftc.hardware.RobotController
  * (e.g. Axon CR) where you want to know how far the servo has rotated.
  *
  * Inherits everything from [NextCRServo] — `power`, `direction`, `reverse()`,
- * `enable()`, `disable()` — and adds [angleInRadians] or [angleInDegrees] for reading the physical angle in
- * radians or degrees respectively from the feedback input.
+ * `enable()`, `disable()` — and adds [angle] for reading the physical angle in
+ *  * radians from the feedback input.
  *
  * @param servoName Hardware map name of the servo.
  * @param feedbackName Hardware map name of the analog input.
@@ -35,10 +37,8 @@ class NextFeedbackCRServo(
     private val analogInput by LazyHardware {
         RobotController.hardwareMap[feedbackName] as AnalogInput
     }
+    private val rawAngleRadians: Double by AnalogFeedback { analogInput.voltage }
 
     /** Actual angle of the servo, in RADIANS. */
-    val angleInRadians: Double by AnalogFeedback { analogInput.voltage }
-
-    /** Actual angle of the servo, in DEGREES. */
-    val angleInDegrees: Double get() = Math.toDegrees(angleInRadians)
+    val angle: Angle get() = rawAngleRadians.radians
 }
