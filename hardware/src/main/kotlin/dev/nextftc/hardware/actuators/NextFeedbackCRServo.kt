@@ -28,17 +28,14 @@ import dev.nextftc.units.radians
  * @param feedbackName Hardware map name of the analog input.
  * @param cacheTolerance Tolerance for the [NextCRServo] power caching delegate.
  */
-class NextFeedbackCRServo(
-    servoName: String,
-    feedbackName: String,
-    cacheTolerance: Double = 0.01,
-    ) : NextCRServo(servoName, cacheTolerance) {
+class NextFeedbackCRServo(servoName: String, feedbackName: String, cacheTolerance: Double = 0.01) :
+  NextCRServo(servoName, cacheTolerance) {
 
-    private val analogInput by LazyHardware {
-        RobotController.hardwareMap[feedbackName] as AnalogInput
-    }
-    private val rawAngleRadians: Double by AnalogFeedback { analogInput.voltage }
+  private val analogInput by LazyHardware {
+    RobotController.hardwareMap[feedbackName] as AnalogInput
+  }
+  private val rawAngleRadians: Double by AnalogFeedback { analogInput.voltage }
 
-    /** Actual angle of the servo, in RADIANS. */
-    val angle: Angle get() = rawAngleRadians.radians
+  /** Actual angle of the servo, in RADIANS. */
+  val angle: Angle get() = rawAngleRadians.radians
 }

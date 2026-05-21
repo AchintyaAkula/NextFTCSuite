@@ -32,52 +32,52 @@ import dev.nextftc.hardware.RobotController
  * power updates; defaults to 0.01.
  */
 open class NextCRServo(initializer: () -> CRServoImplEx, val cacheTolerance: Double = 0.01) {
-    @JvmOverloads constructor(name: String, cacheTolerance: Double = 0.01) : this(
-        { RobotController.hardwareMap[name] as CRServoImplEx },
-        cacheTolerance,
-    )
+  @JvmOverloads constructor(name: String, cacheTolerance: Double = 0.01) : this(
+    { RobotController.hardwareMap[name] as CRServoImplEx },
+    cacheTolerance,
+  )
 
-    private val servo by LazyHardware(initializer)
+  private val servo by LazyHardware(initializer)
 
-    /**
-     * Power applied to the servo, in the range [-1.0, 1.0].
-     */
-    var power: Double by Caching(cacheTolerance) {
-        if (it != null) {
-            servo.power = it
-        }
+  /**
+   * Power applied to the servo, in the range [-1.0, 1.0].
+   */
+  var power: Double by Caching(cacheTolerance) {
+    if (it != null) {
+      servo.power = it
+    }
+  }
+
+  /**
+   * Direction of the servo. Setting this to [DcMotorSimple.Direction.REVERSE]
+   * causes positive [power] values to spin the servo the opposite way,
+   * and vice versa.
+   */
+  var direction: DcMotorSimple.Direction
+    get() = servo.direction
+    set(value) {
+      servo.direction = value
     }
 
-    /**
-     * Direction of the servo. Setting this to [DcMotorSimple.Direction.REVERSE]
-     * causes positive [power] values to spin the servo the opposite way,
-     * and vice versa.
-     */
-    var direction: DcMotorSimple.Direction
-        get() = servo.direction
-        set(value) {
-            servo.direction = value
-        }
+  /**
+   * Sets the servo's direction to [DcMotorSimple.Direction.REVERSE], causing
+   * positive power values to spin the servo the opposite way.
+   */
+  fun reverse() = apply {
+    direction = DcMotorSimple.Direction.REVERSE
+  }
 
-    /**
-     * Sets the servo's direction to [DcMotorSimple.Direction.REVERSE], causing
-     * positive power values to spin the servo the opposite way.
-     */
-    fun reverse() = apply {
-        direction = DcMotorSimple.Direction.REVERSE
-    }
+  /**
+   * Enables the PWM output of the associated servo.
+   */
+  fun enable() {
+    servo.setPwmEnable()
+  }
 
-    /**
-     * Enables the PWM output of the associated servo.
-     */
-    fun enable() {
-        servo.setPwmEnable()
-    }
-
-    /**
-     * Disables the PWM output of the associated servo.
-     */
-    fun disable() {
-        servo.setPwmDisable()
-    }
+  /**
+   * Disables the PWM output of the associated servo.
+   */
+  fun disable() {
+    servo.setPwmDisable()
+  }
 }
