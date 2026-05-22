@@ -59,7 +59,7 @@ class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double = 0.0
 
   private val servo by LazyHardware(initializer)
 
-  val position: Double by Caching(cacheTolerance) {
+  var position: Double by Caching(cacheTolerance) {
     if (it != null) {
       servo.position = it
     }
