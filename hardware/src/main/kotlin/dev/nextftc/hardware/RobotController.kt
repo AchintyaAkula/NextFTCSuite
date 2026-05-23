@@ -19,12 +19,12 @@ import com.qualcomm.hardware.lynx.LynxServoController
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
+import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
 import dev.nextftc.units.celsius
 import dev.nextftc.units.measuretypes.Temperature
 import dev.nextftc.units.measuretypes.Voltage
 import dev.nextftc.units.unittypes.LinearVelocityUnit
 import dev.nextftc.units.volts
-import org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop
 import org.firstinspires.ftc.robotcore.external.navigation.TempUnit
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
