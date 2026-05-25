@@ -33,7 +33,7 @@ import dev.nextftc.hardware.servoController
  * @param cacheTolerance Tolerance used by the [Caching] delegate for
  * position updates; defaults to 0.01.
  */
-class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double = 0.01) {
+open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double = 0.01) {
   /**
    * Constructor to create a NextServo using a LynxModule and port number.
    *
