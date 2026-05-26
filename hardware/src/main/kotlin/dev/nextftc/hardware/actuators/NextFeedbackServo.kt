@@ -6,12 +6,16 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.hardware.servos
+package dev.nextftc.hardware.actuators
+
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.AnalogInput
+import com.qualcomm.robotcore.hardware.ServoImplEx
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.AnalogFeedback
 import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
-import dev.nextftc.hardware.actuators.NextServo
+import dev.nextftc.hardware.servoController
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.radians
 
@@ -28,15 +32,56 @@ import dev.nextftc.units.radians
  *  ```
  * val arm = NextFeedbackServo("armServo", "armEncoder")
  * arm.position = 0.5
- * val angle = arm.angleInRadians  // where it actually is, in RADIANS
+ * val angle = arm.angle
  * ```
  *
- * @param servoName Hardware map name of the servo.
+ * @param initializer A function returning the backing [ServoImplEx]. It will be
+ * invoked lazily the first time the servo is accessed.
  * @param feedbackName Hardware map name of the analog input.
  * @param cacheTolerance Tolerance for the [NextServo] position caching delegate.
  */
-class NextFeedbackServo(servoName: String, feedbackName: String, cacheTolerance: Double = 0.01) :
-  NextServo(servoName, cacheTolerance) {
+class NextFeedbackServo(
+  initializer: () -> ServoImplEx,
+  feedbackName: String,
+  cacheTolerance: Double = 0.01,
+) : NextServo(initializer, cacheTolerance) {
+
+  /**
+   * Constructor to create a NextFeedbackServo using a servo name.
+   *
+   * @param servoName Hardware map name of the servo.
+   * @param feedbackName Hardware map name of the analog input.
+   * @param cacheTolerance Tolerance for the [NextServo] position caching delegate.
+   */
+  @JvmOverloads constructor(
+    servoName: String,
+    feedbackName: String,
+    cacheTolerance: Double = 0.01,
+  ) : this(
+    { RobotController.hardwareMap[servoName] as ServoImplEx },
+    feedbackName,
+    cacheTolerance,
+  )
+
+  /**
+   * Constructor to create a NextFeedbackServo using a LynxModule and port number.
+   *
+   * @param module The Lynx module, see [RobotController.controlHub], [RobotController.expansionHub],
+   * and [RobotController.servoHubs].
+   * @param port The servo port (in the range [0, 5]).
+   * @param feedbackName Hardware map name of the analog input.
+   * @param cacheTolerance Tolerance for the [NextServo] position caching delegate.
+   */
+  @JvmOverloads constructor(
+    module: LynxModule,
+    port: Int,
+    feedbackName: String,
+    cacheTolerance: Double = 0.01,
+  ) : this(
+    { ServoImplEx(module.servoController, port, ServoConfigurationType.getStandardServoType()) },
+    feedbackName,
+    cacheTolerance,
+  )
 
   private val analogInput by LazyHardware {
     RobotController.hardwareMap[feedbackName] as AnalogInput
@@ -44,6 +89,10 @@ class NextFeedbackServo(servoName: String, feedbackName: String, cacheTolerance:
 
   private val rawAngleRadians: Double by AnalogFeedback { analogInput.voltage }
 
-  /** Actual angle of the servo, in RADIANS. */
+  /**
+   * Actual angle of the servo, reported from the analog feedback input.
+   *
+   * The value is returned as a typed [Angle].
+   */
   val angle: Angle get() = rawAngleRadians.radians
 }

@@ -59,6 +59,12 @@ open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double 
 
   private val servo by LazyHardware(initializer)
 
+  /**
+   * The commanded servo position in the range `[0.0, 1.0]`.
+   *
+   * Assigning a value writes through to the backing [ServoImplEx], while reads
+   * are handled by the [Caching] delegate.
+   */
   var position: Double by Caching(cacheTolerance) {
     if (it != null) {
       servo.position = it
@@ -93,10 +99,16 @@ open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double 
     pwmRange = PwmControl.PwmRange(lower, upper)
   }
 
+  /**
+   * Enables PWM output for the underlying servo.
+   */
   fun enable() {
     servo.setPwmEnable()
   }
 
+  /**
+   * Disables PWM output for the underlying servo.
+   */
   fun disable() {
     servo.setPwmDisable()
   }
