@@ -211,7 +211,9 @@ class NextMotor(
         reference = setpoint.magnitude,
         measured = encoderPosition.into(setpoint.unit),
       ) +
-      positionConstants.kS * (setpoint.magnitude - encoderPosition.magnitude).sign
+      positionConstants.kS * (setpoint.magnitude - encoderPosition.into(setpoint.unit)).sign +
+      positionConstants.kG +
+      positionConstants.kCos * kotlin.math.cos(encoderPosition.magnitude * positionConstants.kCosRatio)
   }
 
   /**
@@ -290,9 +292,9 @@ class NextMotor(
 data class MotorPositionConstants(
   internal val pidConstants: PIDCoefficients = PIDCoefficients(0.0),
   internal val ffCoefficients: SimpleFFCoefficients = SimpleFFCoefficients(0.0, 0.0, 0.0),
-  @JvmField var kG: Double = 0.0,
-  @JvmField var kCos: Double = 0.0,
-  @JvmField var kCosRatio: Double = 0.0,
+  var kG: Double = 0.0,
+  var kCos: Double = 0.0,
+  var kCosRatio: Double = 0.0,
 ) {
   /** Proportional gain for position PID. */
   var kP by pidConstants::kP
@@ -311,6 +313,16 @@ data class MotorPositionConstants(
 
   /** Acceleration feedforward gain for position control. */
   var kA by ffCoefficients::kA
+
+  fun withP(kP: Double) = apply { this.kP = kP }
+  fun withI(kI: Double) = apply { this.kI = kI }
+  fun withD(kD: Double) = apply { this.kD = kD }
+  fun withS(kS: Double) = apply { this.kS = kS }
+  fun withV(kV: Double) = apply { this.kV = kV }
+  fun withA(kA: Double) = apply { this.kA = kA }
+  fun withG(kG: Double) = apply { this.kG = kG }
+  fun withCos(kCos: Double) = apply { this.kCos = kCos }
+  fun withCosRatio(kCosRatio: Double) = apply { this.kCosRatio = kCosRatio }
 }
 
 /**
@@ -342,4 +354,11 @@ data class MotorVelocityConstants(
 
   /** Acceleration feedforward gain for velocity control. */
   var kA by ffCoefficients::kA
+
+  fun withP(kP: Double) = apply { this.kP = kP }
+  fun withI(kI: Double) = apply { this.kI = kI }
+  fun withD(kD: Double) = apply { this.kD = kD }
+  fun withS(kS: Double) = apply { this.kS = kS }
+  fun withV(kV: Double) = apply { this.kV = kV }
+  fun withA(kA: Double) = apply { this.kA = kA }
 }
