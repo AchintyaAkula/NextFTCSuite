@@ -90,10 +90,10 @@ class PIDController @JvmOverloads constructor(
       errorSum = 0.0
     }
 
-    val deltaT = (timestamp - lastTimestamp!!).toDouble(DurationUnit.NANOSECONDS)
+    val deltaT = (timestamp - lastTimestamp!!).toDouble(DurationUnit.SECONDS)
     errorSum += error * deltaT
 
-    val derivative = errorDerivative ?: ((error - lastError) / deltaT)
+    val derivative = errorDerivative ?: if (deltaT > 1e-6) ((error - lastError) / deltaT) else 0.0
 
     lastError = error
     lastTimestamp = timestamp
