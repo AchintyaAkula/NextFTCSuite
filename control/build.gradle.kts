@@ -17,6 +17,12 @@ nextFTCPublishing {
   logoPath = "../assets/logo-icon.svg"
 }
 
+dokka {
+  dokkaSourceSets.configureEach {
+    includes.from("Module.md")
+  }
+}
+
 kotlin {
   jvmToolchain(8)
   compilerOptions {

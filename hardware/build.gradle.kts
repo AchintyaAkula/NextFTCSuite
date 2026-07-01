@@ -53,4 +53,18 @@ nextFTCPublishing {
   logoPath = "../assets/logo-icon.svg"
 }
 
+dokka {
+  dokkaSourceSets.configureEach {
+    includes.from("Module.md")
+    externalDocumentationLinks.create("FTC RobotCore") {
+      url("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/11.1.0/")
+      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/11.1.0/package-list")
+    }
+    externalDocumentationLinks.create("FTC Hardware") {
+      url("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/11.1.0/")
+      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/11.1.0/package-list")
+    }
+  }
+}
+
 tasks.withType<Test>().configureEach { useJUnitPlatform() }
