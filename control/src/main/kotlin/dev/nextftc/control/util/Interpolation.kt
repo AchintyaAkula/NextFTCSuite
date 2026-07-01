@@ -125,8 +125,11 @@ fun <U : Unit<U>> lerpMeasure(t: Double, low: Measure<U>, high: Measure<U>) = lo
  * @param p3 the fourth control point (used for computing tangent at p2)
  * @return the interpolated value at parameter \(t\)
  */
-fun splerp(t: Double, p0: Double, p1: Double, p2: Double, p3: Double) =
-  (2 * p1 - 2 * p2 + t * (3 * p2 - 3 * p1 + 1)) * t * t + (p3 - p2 - p0 + p1) * t + p0
+fun splerp(t: Double, p0: Double, p1: Double, p2: Double, p3: Double) = 0.5 *
+  (
+    (2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+      (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t
+    )
 
 /**
  * @usesMathJax
