@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigu
 import dev.nextftc.hardware.AnalogFeedback
 import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.servoController
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.radians
 
@@ -73,7 +74,7 @@ class NextFeedbackCRServo(
   ) : this(
     {
       CRServoImplEx(
-        LynxServoController(RobotController.appContext, module),
+        module.servoController,
         port,
         ServoConfigurationType.getStandardServoType(),
       )
