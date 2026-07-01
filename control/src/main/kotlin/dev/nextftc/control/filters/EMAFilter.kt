@@ -1,9 +1,13 @@
 /*
- * Copyright (c) 2026 NextFTC Team
+ * Copyright (c) FIRST and other WPILib contributors.
+ * Open Source Software; you can modify and/or share it under the terms of
+ * the WPILib BSD license file in the root directory of this project.
  *
- *  Use of this source code is governed by an BSD-3-clause
- *  license that can be found in the LICENSE.md file at the root of this repository or at
- *  https://opensource.org/license/bsd-3-clause.
+ * Copyright (c) 2026 NextFTC Team
+ * Portions of this file are original code or adaptations by the NextFTC Team.
+ * Use of this source code is governed by an BSD-3-clause
+ * license that can be found in the LICENSE.md file at the root of this repository or at
+ * https://opensource.org/license/bsd-3-clause.
  */
 
 package dev.nextftc.control.filters
