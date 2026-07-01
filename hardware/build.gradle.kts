@@ -7,14 +7,14 @@
  */
 
 plugins {
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.spotless)
 }
 
 android {
   namespace = "dev.nextftc.v2.hardware"
-  compileSdk = 35
+  compileSdk = 30
 
   defaultConfig {
     minSdk = 24
@@ -27,6 +27,11 @@ android {
 
   publishing {
     singleVariant("release")
+  }
+
+  testOptions {
+    targetSdk = 28
+    unitTests.isReturnDefaultValues = true
   }
 }
 
@@ -42,6 +47,9 @@ dependencies {
   api(libs.functional.interfaces)
   compileOnly(libs.bundles.ftc)
   implementation(libs.sloth)
+
+  testImplementation(libs.bundles.kotest)
+  testImplementation(libs.mockk)
 }
 
 description =
@@ -67,4 +75,7 @@ dokka {
   }
 }
 
-tasks.withType<Test>().configureEach { useJUnitPlatform() }
+tasks.withType<Test>().configureEach {
+  javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(11)) })
+  useJUnitPlatform()
+}

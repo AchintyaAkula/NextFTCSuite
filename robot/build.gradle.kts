@@ -28,6 +28,10 @@ android {
   publishing {
     singleVariant("release")
   }
+
+  testOptions {
+    targetSdk = 28
+  }
 }
 
 kotlin {
@@ -47,12 +51,10 @@ dependencies {
   testImplementation(kotlin("test"))
 }
 
-description =
-  "The hardware library for NextFTC, a user-friendly library for FTC. " +
-  "Includes hardware interfaces, wrapper implementations, and hardware commands."
+description = "The robot library for NextFTC, a user-friendly library for FTC."
 
 nextFTCPublishing {
-  displayName = "NextFTC Hardware"
+  displayName = "NextFTC Robot"
   logoPath = "../assets/logo-icon.svg"
 }
 
