@@ -79,5 +79,6 @@ dependencies {
   dokka(project(":units"))
   dokka(project(":linalg"))
   dokka(project(":control"))
-  dokkaPlugin("org.jetbrains.dokka:mathjax-plugin")
+  dokka(project(":hardware"))
+  dokkaPlugin(libs.dokka.mathjax.plugin)
 }

@@ -1,6 +1,6 @@
 [versions]
 android = "8.7.3"
-dokka = "2.1.0"
+dokka = "2.2.0"
 ftc = "11.1.0"
 kotlin = "2.4.0"
 kotest = "5.9.1"
@@ -9,6 +9,7 @@ spotless = "8.1.0"
 ejml = "0.41"
 
 [libraries]
+dokka-mathjax-plugin = { module = "org.jetbrains.dokka:mathjax-plugin" }
 kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertations = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
