@@ -15,12 +15,13 @@ import kotlin.reflect.KProperty
 class Caching(private val cacheTolerance: Double, private val whenSet: (Double?) -> Unit) :
   ReadWriteProperty<Any?, Double> {
 
-  private var cachedValue = 0.0
+  private var cachedValue = Double.NaN
 
-  override fun getValue(thisRef: Any?, property: KProperty<*>): Double = cachedValue
+  override fun getValue(thisRef: Any?, property: KProperty<*>): Double =
+    if (cachedValue.isNaN()) 0.0 else cachedValue
 
   override fun setValue(thisRef: Any?, property: KProperty<*>, value: Double) {
-    if (abs(cachedValue - value) > cacheTolerance) {
+    if (cachedValue.isNaN() || abs(cachedValue - value) > cacheTolerance) {
       cachedValue = value
       whenSet(value)
     } else {
