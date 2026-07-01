@@ -114,7 +114,7 @@ class NextLimelight(initializer: () -> Limelight3A) {
   fun getPedroPose(): Pose2d? {
     val ftc = getPose() ?: return null
 
-    val pedroField = Pose2d(72.0, 72.0, Rotation2d.exp(Math.toRadians(-90.0)))
+    val pedroField = Pose2d(72.0, 72.0, Rotation2d.exp(Math.toRadians(90.0)))
     return pedroField * ftc
   }
 
