@@ -304,7 +304,7 @@ data class Pose2d(
         position.x.unit.of(xVal),
         position.x.unit.of(yVal),
       ),
-      heading,
+      theta,
     )
   }
 
@@ -317,9 +317,9 @@ data class Pose2d(
      */
     @JvmStatic
     fun exp(t: Twist2d): Pose2d {
-      val heading = t.angle
+      val heading = Rotation2d.exp(t.angle)
 
-      val theta = t.angle.log()
+      val theta = t.angle
       val u = theta + snz(theta)
       val c = 1 - cos(u)
       val s = sin(u)

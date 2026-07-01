@@ -54,15 +54,7 @@ import dev.nextftc.units.unittypes.DistanceUnit
  * @property line linear displacement vector
  * @property angle angular displacement as a rotation
  */
-data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val angle: Rotation2d) {
-  /**
-   * Constructs a Twist2d from a linear displacement vector and an angle in radians.
-   *
-   * @param line linear displacement vector
-   * @param angle angular displacement in radians
-   */
-  constructor(line: Vector2d<DistanceUnit>, angle: Double) : this(line, Rotation2d.exp(angle))
-
+data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val angle: Double) {
   /**
    * Constructs a Twist2d from x and y distance measurements and a rotation.
    *
@@ -70,7 +62,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    * @param y the y-component of linear displacement
    * @param angle the angular displacement as a rotation
    */
-  constructor(x: Distance, y: Distance, angle: Rotation2d) : this(Vector2d(x, y), angle)
+  constructor(x: Distance, y: Distance, angle: Rotation2d) : this(Vector2d(x, y), angle.log())
 
   /**
    * Constructs a Twist2d from x and y distance measurements and an angle measurement.
@@ -83,7 +75,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
     x: Distance,
     y: Distance,
     angle: Angle,
-  ) : this(Vector2d(x, y), Rotation2d.fromAngle(angle))
+  ) : this(Vector2d(x, y), angle.into(dev.nextftc.units.Radians))
 
   /**
    * Constructs a Twist2d from x and y coordinates (in inches) and a rotation.
@@ -94,7 +86,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    * @param y the y-component of displacement in inches
    * @param angle the angular displacement as a rotation
    */
-  constructor(x: Double, y: Double, angle: Rotation2d) : this(Vector2d.displacement(x, y), angle)
+  constructor(x: Double, y: Double, angle: Rotation2d) : this(Vector2d.displacement(x, y), angle.log())
 
   /**
    * Constructs a Twist2d from x and y coordinates (in inches) and an angle (in radians).
@@ -105,7 +97,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    * @param y the y-component of displacement in inches
    * @param angle the angular displacement in radians
    */
-  constructor(x: Double, y: Double, angle: Double) : this(x, y, Rotation2d.exp(angle))
+  constructor(x: Double, y: Double, angle: Double) : this(Vector2d.displacement(x, y), angle)
 
   /**
    * Adds two twists component-wise (Lie algebra addition).
@@ -115,7 +107,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    */
   operator fun plus(other: Twist2d): Twist2d = Twist2d(
     line + other.line,
-    Rotation2d.exp(angle.log() + other.angle.log()),
+    angle + other.angle,
   )
 
   /**
@@ -126,7 +118,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    */
   operator fun minus(other: Twist2d): Twist2d = Twist2d(
     line - other.line,
-    Rotation2d.exp(angle.log() - other.angle.log()),
+    angle - other.angle,
   )
 
   /**
@@ -134,7 +126,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    *
    * @return the negated twist
    */
-  operator fun unaryMinus(): Twist2d = Twist2d(-line, angle.inverse())
+  operator fun unaryMinus(): Twist2d = Twist2d(-line, -angle)
 
   /**
    * Multiplies the twist by a scalar (useful for scaling displacements).
@@ -144,7 +136,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    */
   operator fun times(scalar: Double): Twist2d = Twist2d(
     line * scalar,
-    Rotation2d.exp(angle.log() * scalar),
+    angle * scalar,
   )
 
   /**
@@ -155,7 +147,7 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
    */
   operator fun div(scalar: Double): Twist2d = Twist2d(
     line / scalar,
-    Rotation2d.exp(angle.log() / scalar),
+    angle / scalar,
   )
 
   /**
@@ -171,13 +163,13 @@ data class Twist2d(@JvmField val line: Vector2d<DistanceUnit>, @JvmField val ang
     require(t in 0.0..1.0) { "Interpolation parameter t must be in range [0, 1], got $t" }
 
     val interpolatedLine = line.lerp(other.line, t)
-    val interpolatedAngle = angle.lerp(other.angle, t)
+    val interpolatedAngle = angle + (other.angle - angle) * t
 
     return Twist2d(interpolatedLine, interpolatedAngle)
   }
 
   companion object {
     @JvmField
-    val zero = Twist2d(Vector2d.zero(Inches), Rotation2d.zero)
+    val zero = Twist2d(Vector2d.zero(Inches), 0.0)
   }
 }
