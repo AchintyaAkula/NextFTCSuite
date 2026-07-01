@@ -25,9 +25,11 @@ import dev.nextftc.units.unittypes.TimeUnit
  * and acceleration as velocity per time.
  *
  * This class is generic over the position unit type, allowing it to be used
- * for both linear motion (with [DistanceUnit]) and angular motion (with [AngleUnit]).
+ * for both linear motion (with [dev.nextftc.units.unittypes.DistanceUnit]) and angular motion
+ * (with [dev.nextftc.units.unittypes.AngleUnit]).
  *
- * @param U The position unit type (e.g., [DistanceUnit] for linear motion, [AngleUnit] for angular motion)
+ * @param U The position unit type (e.g., [dev.nextftc.units.unittypes.DistanceUnit] for linear
+ * motion, [dev.nextftc.units.unittypes.AngleUnit] for angular motion)
  */
 data class MotionState<U : Unit<U>> @JvmOverloads constructor(
   val position: Measure<U>,

@@ -187,7 +187,8 @@ class InterpolatingMap2D(
      *
      * @param xKeys the x-coordinates of the grid points (will be sorted)
      * @param yKeys the y-coordinates of the grid points (will be sorted)
-     * @param values a 2D list where values at index y_index, x_index corresponds to point (xKeys[x_index], yKeys[y_index])
+     * @param values a 2D list where `values[yIndex][xIndex]` corresponds to point
+     * `(xKeys[xIndex], yKeys[yIndex])`
      * @return an InterpolatingMap2D with the given data and bilinear interpolation
      * @throws IllegalArgumentException if dimensions don't match
      */

@@ -97,8 +97,9 @@ class NextMotor(
   /**
    * Position control constants (PID and feedforward gains).
    *
-   * Modify [kP], [kI], [kD], [kS], [kV], [kA] properties and gravity/cos terms
-   * to tune position setpoint tracking.
+   * Modify [MotorPositionConstants.kP], [MotorPositionConstants.kI], [MotorPositionConstants.kD],
+   * [MotorPositionConstants.kS], [MotorPositionConstants.kV], [MotorPositionConstants.kA]
+   * properties and gravity/cos terms to tune position setpoint tracking.
    */
   val positionConstants: MotorPositionConstants = MotorPositionConstants()
 
@@ -110,8 +111,9 @@ class NextMotor(
   /**
    * Velocity control constants (PID and feedforward gains).
    *
-   * Modify [kP], [kI], [kD], [kS], [kV], [kA] properties to tune
-   * velocity setpoint tracking.
+   * Modify [MotorVelocityConstants.kP], [MotorVelocityConstants.kI], [MotorVelocityConstants.kD],
+   * [MotorVelocityConstants.kS], [MotorVelocityConstants.kV], [MotorVelocityConstants.kA]
+   * properties to tune velocity setpoint tracking.
    */
   val velocityConstants: MotorVelocityConstants = MotorVelocityConstants()
 
@@ -200,7 +202,7 @@ class NextMotor(
    * Set position control mode and position setpoint.
    *
    * Uses [positionPID] to calculate closed-loop power and adds a static
-   * friction term ([positionConstants.kS]) scaled by the sign of error.
+   * friction term ([MotorPositionConstants.kS]) scaled by the sign of error.
    *
    * @param setpoint Target encoder position.
    */
