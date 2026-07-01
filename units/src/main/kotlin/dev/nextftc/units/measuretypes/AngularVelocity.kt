@@ -46,7 +46,7 @@ class AngularVelocity(magnitude: Double, unit: AngularVelocityUnit) :
    */
   operator fun times(time: Time): Angle {
     val angleUnit = (unit as AngularVelocityUnit).numerator
-    val timeInCorrectUnit = time.into((unit as AngularVelocityUnit).denominator)
+    val timeInCorrectUnit = time.into(unit.denominator)
     return Angle(magnitude * timeInCorrectUnit, angleUnit)
   }
 

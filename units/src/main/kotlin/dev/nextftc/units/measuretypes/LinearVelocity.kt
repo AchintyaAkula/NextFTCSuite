@@ -45,7 +45,7 @@ class LinearVelocity(magnitude: Double, unit: LinearVelocityUnit) :
    */
   operator fun times(time: Time): Distance {
     val distanceUnit = (unit as LinearVelocityUnit).numerator
-    val timeInCorrectUnit = time.into((unit as LinearVelocityUnit).denominator)
+    val timeInCorrectUnit = time.into(unit.denominator)
     return Distance(magnitude * timeInCorrectUnit, distanceUnit)
   }
 
