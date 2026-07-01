@@ -56,14 +56,14 @@ class RGBHeadlight(name: String, cacheTolerance: Double = 0.01) : NextServo(name
    * Sets the headlight color/pattern.
    */
   fun setColor(color: Color) {
-    position = round(color.position * 100) / 100.0
+    position = color.position
   }
 
   /**
    * Sets the headlight color/pattern using a raw PWM position.
    */
   fun setColor(pwm: Double) {
-    position = round(pwm * 100) / 100.0
+    position = pwm
   }
 
   /**
