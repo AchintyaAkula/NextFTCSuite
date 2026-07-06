@@ -65,12 +65,12 @@ dokka {
   dokkaSourceSets.configureEach {
     includes.from("Module.md")
     externalDocumentationLinks.create("FTC RobotCore") {
-      url("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/11.1.0/")
-      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/11.1.0/package-list")
+      url("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/${libs.versions.ftc.get()}/")
+      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/${libs.versions.ftc.get()}/package-list")
     }
     externalDocumentationLinks.create("FTC Hardware") {
-      url("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/11.1.0/")
-      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/11.1.0/package-list")
+      url("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/${libs.versions.ftc.get()}/")
+      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/${libs.versions.ftc.get()}/package-list")
     }
   }
 }

@@ -2,11 +2,12 @@
 android = "8.7.3"
 dokka = "2.2.0"
 ftc = "11.1.0"
-kotlin = "2.4.0"
+kotlin = "2.3.0"
 kotest = "5.9.1"
 sloth = "0.2.4"
 spotless = "8.1.0"
 ejml = "0.41"
+ivy = "1.0.0"
 
 [libraries]
 dokka-mathjax-plugin = { module = "org.jetbrains.dokka:mathjax-plugin" }
@@ -21,6 +22,7 @@ ftc-robot-core = { group = "org.firstinspires.ftc", name = "RobotCore", version.
 ftc-hardware = { group = "org.firstinspires.ftc", name = "Hardware", version.ref = "ftc" }
 ftc-common = { group = "org.firstinspires.ftc", name = "FtcCommon", version.ref = "ftc" }
 sloth = { module = "dev.frozenmilk.sinister:Sloth", version.ref = "sloth" }
+ivy = { module = "com.pedropathing.ivy:core", version.ref = "ivy" }
 
 [bundles]
 kotest = ["kotest-runner", "kotest-assertations", "kotest-property", "kotest-data-driven"]

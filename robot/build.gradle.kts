@@ -43,6 +43,7 @@ kotlin {
 
 dependencies {
   api(project(":hardware"))
+  compileOnly(libs.ivy)
   implementation(libs.functional.interfaces)
   compileOnly(libs.bundles.ftc)
   implementation(libs.sloth)
@@ -56,6 +57,12 @@ description = "The robot library for NextFTC, a user-friendly library for FTC."
 nextFTCPublishing {
   displayName = "NextFTC Robot"
   logoPath = "../assets/logo-icon.svg"
+}
+
+dokka {
+  dokkaSourceSets.configureEach {
+    includes.from("Module.md")
+  }
 }
 
 tasks.withType<Test>().configureEach {

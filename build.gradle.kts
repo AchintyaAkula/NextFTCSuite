@@ -80,5 +80,6 @@ dependencies {
   dokka(project(":linalg"))
   dokka(project(":control"))
   dokka(project(":hardware"))
+  dokka(project(":robot"))
   dokkaPlugin(libs.dokka.mathjax.plugin)
 }

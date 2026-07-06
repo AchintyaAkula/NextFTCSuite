@@ -25,7 +25,7 @@ dokka {
 kotlin {
   jvmToolchain(8)
   compilerOptions {
-    freeCompilerArgs.addAll("-Xjvm-default=all", "-Xconsistent-data-class-copy-visibility")
+    freeCompilerArgs.addAll("-jvm-default=no-compatibility", "-Xconsistent-data-class-copy-visibility")
   }
 }
 
