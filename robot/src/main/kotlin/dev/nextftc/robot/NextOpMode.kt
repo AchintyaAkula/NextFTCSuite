@@ -18,7 +18,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
  *
  * @param hooks Internal hooks used to manage robot mechanisms and the scheduler loop.
  */
-abstract class NextOpMode internal constructor(private val hooks: MutableList<OpModeHook>) : LinearOpMode() {
+abstract class NextOpMode internal constructor(private val hooks: MutableList<OpModeHook>) :
+  LinearOpMode() {
   /**
    * Secondary constructor invoked by the [RobotOpModeScanner] during automatic registration.
    *

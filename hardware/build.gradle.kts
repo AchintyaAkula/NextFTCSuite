@@ -66,11 +66,15 @@ dokka {
     includes.from("Module.md")
     externalDocumentationLinks.create("FTC RobotCore") {
       url("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/${libs.versions.ftc.get()}/")
-      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/${libs.versions.ftc.get()}/package-list")
+      packageListUrl(
+        "https://javadoc.io/doc/org.firstinspires.ftc/RobotCore/${libs.versions.ftc.get()}/package-list",
+      )
     }
     externalDocumentationLinks.create("FTC Hardware") {
       url("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/${libs.versions.ftc.get()}/")
-      packageListUrl("https://javadoc.io/doc/org.firstinspires.ftc/Hardware/${libs.versions.ftc.get()}/package-list")
+      packageListUrl(
+        "https://javadoc.io/doc/org.firstinspires.ftc/Hardware/${libs.versions.ftc.get()}/package-list",
+      )
     }
   }
 }
