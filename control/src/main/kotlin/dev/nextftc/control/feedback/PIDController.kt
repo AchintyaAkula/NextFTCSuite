@@ -43,6 +43,15 @@ class PIDController @JvmOverloads constructor(
   private var lastTimestamp: ComparableTimeMark? = null
 
   /**
+   * Returns true if continuous input is enabled.
+   */
+  var isContinuousInputEnabled: Boolean = false
+    private set
+
+  private var minimumInput: Double = 0.0
+  private var maximumInput: Double = 0.0
+
+  /**
    * Creates a PIDController with the given coefficients.
    *
    * @param kP proportional gain, multiplied by the error
@@ -58,6 +67,47 @@ class PIDController @JvmOverloads constructor(
     PIDCoefficients(kP, kI, kD),
     resetIntegralOnZeroCrossover,
   )
+
+  /**
+   * Enables continuous input.
+   *
+   * Rather then using the max and min input range as constraints, it considers
+   * them to be the same point and automatically calculates the shortest route
+   * to the setpoint.
+   *
+   * @param minimumInput The minimum value expected from the input.
+   * @param maximumInput The maximum value expected from the input.
+   */
+  fun enableContinuousInput(minimumInput: Double, maximumInput: Double) {
+    this.isContinuousInputEnabled = true
+    this.minimumInput = minimumInput
+    this.maximumInput = maximumInput
+  }
+
+  /**
+   * Disables continuous input.
+   */
+  fun disableContinuousInput() {
+    this.isContinuousInputEnabled = false
+  }
+
+  private fun inputModulus(input: Double, minimumInput: Double, maximumInput: Double): Double {
+    val modulus = maximumInput - minimumInput
+    var result = input
+    val numMax = ((result - minimumInput) / modulus).toInt()
+    result -= numMax * modulus
+    val numMin = ((result - maximumInput) / modulus).toInt()
+    result -= numMin * modulus
+    return result
+  }
+
+  private fun getContinuousError(error: Double): Double {
+    if (isContinuousInputEnabled) {
+      val errorBound = (maximumInput - minimumInput) / 2.0
+      return inputModulus(error, -errorBound, errorBound)
+    }
+    return error
+  }
 
   /**
    * Calculates the PID output
@@ -78,27 +128,29 @@ class PIDController @JvmOverloads constructor(
     error: Double,
     errorDerivative: Double? = null,
   ): Double {
+    val wrappedError = getContinuousError(error)
+
     if (lastTimestamp == null) {
-      lastError = error
+      lastError = wrappedError
       lastTimestamp = timestamp
       // On first call with no derivative provided, ignore D term
       val derivative = errorDerivative ?: 0.0
-      return coefficients.kP * error + coefficients.kD * derivative
+      return coefficients.kP * wrappedError + coefficients.kD * derivative
     }
 
-    if (resetIntegralOnZeroCrossover && lastError.sign != error.sign) {
+    if (resetIntegralOnZeroCrossover && lastError.sign != wrappedError.sign) {
       errorSum = 0.0
     }
 
     val deltaT = (timestamp - lastTimestamp!!).toDouble(DurationUnit.SECONDS)
-    errorSum += error * deltaT
+    errorSum += wrappedError * deltaT
 
-    val derivative = errorDerivative ?: if (deltaT > 1e-6) ((error - lastError) / deltaT) else 0.0
+    val derivative = errorDerivative ?: if (deltaT > 1e-6) ((wrappedError - lastError) / deltaT) else 0.0
 
-    lastError = error
+    lastError = wrappedError
     lastTimestamp = timestamp
 
-    return coefficients.kP * error + coefficients.kI * errorSum + coefficients.kD *
+    return coefficients.kP * wrappedError + coefficients.kI * errorSum + coefficients.kD *
       derivative
   }
 

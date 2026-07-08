@@ -192,4 +192,72 @@ class PIDControllerTest :
         output shouldBe (9.0 plusOrMinus 0.001)
       }
     }
+
+    context("PIDController continuous input") {
+      test("enableContinuousInput sets properties") {
+        val controller = PIDController(1.0)
+        controller.isContinuousInputEnabled shouldBe false
+
+        controller.enableContinuousInput(-180.0, 180.0)
+        controller.isContinuousInputEnabled shouldBe true
+      }
+
+      test("disableContinuousInput clears property") {
+        val controller = PIDController(1.0)
+        controller.enableContinuousInput(-180.0, 180.0)
+        controller.disableContinuousInput()
+        controller.isContinuousInputEnabled shouldBe false
+      }
+
+      test("wraps positive error that crosses maximum bound") {
+        val timeSource = TestTimeSource()
+        val controller = PIDController(1.0, 0.0, 0.0)
+        controller.enableContinuousInput(-180.0, 180.0)
+
+        // reference = 170, measured = -170
+        // normal error = 340, wrapped error = -20
+        // output = 1.0 * -20 = -20
+        val output = controller.calculate(
+          timeSource.markNow(),
+          reference = 170.0,
+          measured = -170.0,
+          measuredDerivative = 0.0,
+        )
+        output shouldBe (-20.0 plusOrMinus 0.001)
+      }
+
+      test("wraps negative error that crosses minimum bound") {
+        val timeSource = TestTimeSource()
+        val controller = PIDController(1.0, 0.0, 0.0)
+        controller.enableContinuousInput(-180.0, 180.0)
+
+        // reference = -170, measured = 170
+        // normal error = -340, wrapped error = 20
+        // output = 1.0 * 20 = 20
+        val output = controller.calculate(
+          timeSource.markNow(),
+          reference = -170.0,
+          measured = 170.0,
+          measuredDerivative = 0.0,
+        )
+        output shouldBe (20.0 plusOrMinus 0.001)
+      }
+
+      test("does not wrap error within bounds") {
+        val timeSource = TestTimeSource()
+        val controller = PIDController(1.0, 0.0, 0.0)
+        controller.enableContinuousInput(-180.0, 180.0)
+
+        // reference = 50, measured = -50
+        // normal error = 100, which is within [-180, 180]
+        // output = 1.0 * 100 = 100
+        val output = controller.calculate(
+          timeSource.markNow(),
+          reference = 50.0,
+          measured = -50.0,
+          measuredDerivative = 0.0,
+        )
+        output shouldBe (100.0 plusOrMinus 0.001)
+      }
+    }
   })
