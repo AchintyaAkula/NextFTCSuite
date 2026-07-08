@@ -9,6 +9,8 @@
 package dev.nextftc.robot
 
 import com.pedropathing.ivy.Scheduler
+import com.qualcomm.hardware.lynx.LynxModule
+import dev.nextftc.hardware.RobotController
 import dev.nextftc.robot.RobotScanner.robot
 import dev.nextftc.robot.triggers.Trigger
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -36,6 +38,27 @@ interface OpModeHook {
 
   /** Called immediately after the OpMode finishes execution. */
   fun afterEnd() {}
+}
+
+/**
+ * (Optional) Hook responsible for bulk-reading the hubs
+ */
+class BulkReadHook() : OpModeHook {
+  private val lynxHubs: List<LynxModule> by lazy { 
+    RobotController.hardwareMap.getAll(LynxModule::class.java)
+  }
+  
+  override fun beforeStart() {
+    lynxHubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
+  }
+  
+  override fun afterStart() = clearBulkReadCache()
+  
+  override fun afterPeriodic() = clearBulkReadCache()
+
+  private fun clearBulkReadCache() {
+    lynxHubs.forEach { it.clearBulkCache() }
+  }
 }
 
 /**
