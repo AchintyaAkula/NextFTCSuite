@@ -17,12 +17,13 @@ import dev.nextftc.control.feedforward.SimpleFFCoefficients
 import dev.nextftc.control.feedforward.SimpleFeedforward
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.motorController
+import dev.nextftc.hardware.util.AnalogFeedback
 import dev.nextftc.hardware.util.Caching
 import dev.nextftc.hardware.util.EventLoop
 import dev.nextftc.hardware.util.LazyHardware
-import dev.nextftc.units.radians
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.measuretypes.AngularVelocity
+import dev.nextftc.units.radians
 import dev.nextftc.units.seconds
 import kotlin.math.sign
 import dev.nextftc.units.measuretypes.Voltage as VoltageMeasure
@@ -170,6 +171,23 @@ class NextMotor(
     get() = (anglePerCount * motor.currentPosition) as Angle
 
   /**
+   * Optional external absolute encoder via analog feedback.
+   *
+   * If provided, [absoluteEncoderPosition] will return this encoder's reading.
+   * If null, [absoluteEncoderPosition] will fall back to the built-in [encoderPosition].
+   */
+  var absoluteEncoder: AnalogFeedback? = null
+
+  /**
+   * Current absolute encoder position.
+   *
+   * Reads from [absoluteEncoder] if one is configured; otherwise falls back
+   * to the built-in relative [encoderPosition].
+   */
+  val absoluteEncoderPosition: Angle
+    get() = absoluteEncoder?.getValue(this, ::absoluteEncoder)?.radians ?: encoderPosition
+
+  /**
    * Current encoder velocity in physical angle per time units.
    *
    * Computed from the raw motor velocity scaled by [anglePerCount]
@@ -193,15 +211,33 @@ class NextMotor(
         power = (mode.voltage / RobotController.inputVoltage).magnitude
       }
       is ControlType.Position -> {
+        positionPID.disableContinuousInput()
         val setpoint = mode.setpoint
         power =
           positionPID.calculate(
             reference = setpoint.magnitude,
             measured = encoderPosition.into(setpoint.unit),
           ) +
-          positionConstants.kS * (setpoint.magnitude - encoderPosition.into(setpoint.unit)).sign +
+          positionConstants.kS * positionPID.error.sign +
           positionConstants.kG +
           positionConstants.kCos * kotlin.math.cos(encoderPosition.magnitude * positionConstants.kCosRatio)
+      }
+      is ControlType.AbsolutePosition -> {
+        val setpoint = mode.setpoint
+        positionPID.enableContinuousInput(
+          minimumInput = setpoint.unit.fromBaseUnits(-Math.PI),
+          maximumInput = setpoint.unit.fromBaseUnits(Math.PI),
+        )
+        val measuredPos = absoluteEncoderPosition.into(setpoint.unit)
+        power =
+          positionPID.calculate(
+            reference = setpoint.magnitude,
+            measured = measuredPos,
+          ) +
+          positionConstants.kS * positionPID.error.sign +
+          positionConstants.kG +
+          positionConstants.kCos *
+          kotlin.math.cos(absoluteEncoderPosition.magnitude * positionConstants.kCosRatio)
       }
       is ControlType.Velocity -> {
         val setpoint = mode.setpoint
@@ -250,11 +286,25 @@ class NextMotor(
    *
    * Uses [positionPID] to calculate closed-loop power and adds a static
    * friction term ([MotorPositionConstants.kS]) scaled by the sign of error.
+   * This mode targets a relative setpoint that tracks total rotations.
    *
    * @param setpoint Target encoder position.
    */
   fun setPositionSetpoint(setpoint: Angle) {
     controlType = ControlType.Position(setpoint)
+  }
+
+  /**
+   * Set absolute position control mode and position setpoint.
+   *
+   * Similar to standard position control, but wraps the setpoint and measured position
+   * to a continuous range (typically [-180, 180] degrees) to find the shortest path
+   * to the target angle, ignoring the number of full rotations the motor has made.
+   *
+   * @param setpoint Target absolute angle within one rotation.
+   */
+  fun setAbsolutePositionSetpoint(setpoint: Angle) {
+    controlType = ControlType.AbsolutePosition(setpoint)
   }
 
   /**
@@ -296,7 +346,7 @@ class NextMotor(
      */
     data class Throttle(val throttle: Double) : ControlType() {
       init {
-        require(throttle in -1.0 .. 1.0)
+        require(throttle in -1.0..1.0)
       }
     }
 
@@ -309,6 +359,12 @@ class NextMotor(
      * Closed-loop position tracking using PID and feedforward.
      */
     data class Position(val setpoint: Angle) : ControlType()
+
+    /**
+     * Continuous closed-loop absolute position tracking using PID and feedforward.
+     * Takes the shortest path to the angle regardless of current rotations.
+     */
+    data class AbsolutePosition(val setpoint: Angle) : ControlType()
 
     /**
      * Closed-loop velocity tracking using PID and feedforward.

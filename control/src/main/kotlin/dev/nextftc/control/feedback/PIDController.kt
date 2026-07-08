@@ -38,7 +38,9 @@ class PIDController @JvmOverloads constructor(
   val coefficients: PIDCoefficients,
   val resetIntegralOnZeroCrossover: Boolean = true,
 ) {
-  private var lastError: Double = 0.0
+  var lastError: Double = 0.0
+    private set
+  val error: Double get() = lastError
   private var errorSum = 0.0
   private var lastTimestamp: ComparableTimeMark? = null
 
