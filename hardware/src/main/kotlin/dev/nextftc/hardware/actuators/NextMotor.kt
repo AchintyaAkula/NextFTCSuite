@@ -15,10 +15,10 @@ import dev.nextftc.control.feedback.PIDCoefficients
 import dev.nextftc.control.feedback.PIDController
 import dev.nextftc.control.feedforward.SimpleFFCoefficients
 import dev.nextftc.control.feedforward.SimpleFeedforward
-import dev.nextftc.hardware.Caching
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.motorController
+import dev.nextftc.hardware.util.Caching
+import dev.nextftc.hardware.util.LazyHardware
 import dev.nextftc.units.inches
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.measuretypes.LinearVelocity

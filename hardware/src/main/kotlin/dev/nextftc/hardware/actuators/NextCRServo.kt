@@ -12,10 +12,10 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
-import dev.nextftc.hardware.Caching
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.servoController
+import dev.nextftc.hardware.util.Caching
+import dev.nextftc.hardware.util.LazyHardware
 
 /**
  * Lightweight wrapper around a [CRServoImplEx] that provides a more user-friendly

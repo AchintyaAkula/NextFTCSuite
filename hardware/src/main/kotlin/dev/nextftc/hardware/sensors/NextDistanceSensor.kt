@@ -9,8 +9,8 @@
 package dev.nextftc.hardware.sensors
 
 import com.qualcomm.robotcore.hardware.DistanceSensor
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.util.LazyHardware
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 /**
  * Lightweight wrapper for a distance sensor that caches the last reading.

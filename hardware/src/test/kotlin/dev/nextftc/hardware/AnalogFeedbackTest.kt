@@ -8,6 +8,7 @@
 
 package dev.nextftc.hardware
 
+import dev.nextftc.hardware.util.AnalogFeedback
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe

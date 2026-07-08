@@ -9,8 +9,8 @@
 package dev.nextftc.hardware.webcams
 
 import com.qualcomm.hardware.dfrobot.HuskyLens
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.util.LazyHardware
 
 /**
  * A NextFTC wrapper around the [HuskyLens] vision sensor that resolves the device

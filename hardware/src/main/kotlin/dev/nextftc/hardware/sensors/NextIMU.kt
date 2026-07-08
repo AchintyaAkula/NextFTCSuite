@@ -10,8 +10,8 @@ package dev.nextftc.hardware.sensors
 
 import com.qualcomm.robotcore.hardware.IMU
 import dev.nextftc.control.geometry.Rotation2d
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.util.LazyHardware
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles

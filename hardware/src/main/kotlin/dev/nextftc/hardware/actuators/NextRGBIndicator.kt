@@ -8,7 +8,7 @@
 
 package dev.nextftc.hardware.actuators
 
-import dev.nextftc.hardware.Caching
+import dev.nextftc.hardware.util.Caching
 
 /**
  * Wrapper for the goBILDA PWM RGB Indicator Light.

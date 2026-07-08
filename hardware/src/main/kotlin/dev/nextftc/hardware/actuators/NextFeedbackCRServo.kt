@@ -9,14 +9,13 @@
 package dev.nextftc.hardware.actuators
 
 import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.hardware.lynx.LynxServoController
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
-import dev.nextftc.hardware.AnalogFeedback
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.servoController
+import dev.nextftc.hardware.util.AnalogFeedback
+import dev.nextftc.hardware.util.LazyHardware
 import dev.nextftc.units.measuretypes.Angle
 import dev.nextftc.units.radians
 

@@ -13,8 +13,8 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import dev.nextftc.control.geometry.Pose2d
 import dev.nextftc.control.geometry.Rotation2d
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.util.LazyHardware
 import dev.nextftc.units.Inches
 import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.meters

@@ -11,10 +11,10 @@ package dev.nextftc.hardware.sensors
 import android.graphics.Color
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.sensors.colors.ColorProfile
 import dev.nextftc.hardware.sensors.colors.NextColor
+import dev.nextftc.hardware.util.LazyHardware
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 /**

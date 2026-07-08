@@ -9,8 +9,8 @@
 package dev.nextftc.hardware.sensors
 
 import com.qualcomm.robotcore.hardware.DigitalChannel
-import dev.nextftc.hardware.LazyHardware
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.util.LazyHardware
 
 /**
  * Lightweight wrapper around a [DigitalChannel] for reading digital sensors
