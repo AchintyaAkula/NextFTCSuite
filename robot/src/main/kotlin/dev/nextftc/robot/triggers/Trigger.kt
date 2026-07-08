@@ -16,6 +16,7 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
 import dev.nextftc.control.filters.Debouncer
 import dev.nextftc.control.filters.EdgeCounterFilter
+import dev.nextftc.hardware.util.EventLoop
 
 /**
  * This class provides an easy way to link commands to conditions.

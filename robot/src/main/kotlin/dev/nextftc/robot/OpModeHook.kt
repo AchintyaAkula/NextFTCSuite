@@ -11,7 +11,6 @@ package dev.nextftc.robot
 import com.pedropathing.ivy.Scheduler
 import com.qualcomm.hardware.lynx.LynxModule
 import dev.nextftc.hardware.RobotController
-import dev.nextftc.robot.RobotScanner.robot
 import dev.nextftc.robot.triggers.Trigger
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
@@ -41,27 +40,6 @@ interface OpModeHook {
 }
 
 /**
- * (Optional) Hook responsible for bulk-reading the hubs
- */
-class BulkReadHook() : OpModeHook {
-  private val lynxHubs: List<LynxModule> by lazy { 
-    RobotController.hardwareMap.getAll(LynxModule::class.java)
-  }
-  
-  override fun beforeStart() {
-    lynxHubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
-  }
-  
-  override fun afterStart() = clearBulkReadCache()
-  
-  override fun afterPeriodic() = clearBulkReadCache()
-
-  private fun clearBulkReadCache() {
-    lynxHubs.forEach { it.clearBulkCache() }
-  }
-}
-
-/**
  * Internal hook responsible for ticking the robot and its mechanisms.
  */
 internal class RobotHook(val robot: NextRobot) : OpModeHook {
@@ -87,5 +65,26 @@ internal object SchedulerHook : OpModeHook {
 class TelemetryHook(val telemetry: Telemetry) : OpModeHook {
   override fun afterPeriodic() {
     telemetry.update()
+  }
+}
+
+/**
+ * (Optional) Hook responsible for bulk-reading the hubs
+ */
+object BulkReadHook : OpModeHook {
+  private val lynxHubs: List<LynxModule> by lazy {
+    RobotController.hardwareMap.getAll(LynxModule::class.java)
+  }
+
+  override fun beforeStart() {
+    lynxHubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
+  }
+
+  override fun afterStart() = clearBulkReadCache()
+
+  override fun afterPeriodic() = clearBulkReadCache()
+
+  private fun clearBulkReadCache() {
+    lynxHubs.forEach { it.clearBulkCache() }
   }
 }
