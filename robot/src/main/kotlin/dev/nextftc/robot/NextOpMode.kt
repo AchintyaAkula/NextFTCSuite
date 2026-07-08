@@ -29,6 +29,7 @@ abstract class NextOpMode internal constructor(private val hooks: MutableList<Op
   constructor(robot: NextRobot, vararg hooks: OpModeHook) : this(hooks.toMutableList()) {
     this.hooks += RobotHook(robot)
     this.hooks += SchedulerHook
+    this.hooks += MotorHook
     this.hooks += TelemetryHook(telemetry)
   }
 

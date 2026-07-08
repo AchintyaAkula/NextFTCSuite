@@ -11,6 +11,7 @@ package dev.nextftc.robot
 import com.pedropathing.ivy.Scheduler
 import com.qualcomm.hardware.lynx.LynxModule
 import dev.nextftc.hardware.RobotController
+import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.robot.triggers.Trigger
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
@@ -65,6 +66,15 @@ internal object SchedulerHook : OpModeHook {
 class TelemetryHook(val telemetry: Telemetry) : OpModeHook {
   override fun afterPeriodic() {
     telemetry.update()
+  }
+}
+
+/**
+ * Internal hook responsible for ticking the motor event loop.
+ */
+internal object MotorHook : OpModeHook {
+  override fun afterPeriodic() {
+    NextMotor.motorEventLoop.poll()
   }
 }
 

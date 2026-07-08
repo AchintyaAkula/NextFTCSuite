@@ -18,13 +18,14 @@ import dev.nextftc.control.feedforward.SimpleFeedforward
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.motorController
 import dev.nextftc.hardware.util.Caching
+import dev.nextftc.hardware.util.EventLoop
 import dev.nextftc.hardware.util.LazyHardware
-import dev.nextftc.units.inches
-import dev.nextftc.units.measuretypes.Distance
-import dev.nextftc.units.measuretypes.LinearVelocity
-import dev.nextftc.units.measuretypes.Voltage
+import dev.nextftc.units.radians
+import dev.nextftc.units.measuretypes.Angle
+import dev.nextftc.units.measuretypes.AngularVelocity
 import dev.nextftc.units.seconds
 import kotlin.math.sign
+import dev.nextftc.units.measuretypes.Voltage as VoltageMeasure
 
 /**
  * Comprehensive wrapper around a [DcMotorImplEx] supporting multiple control modes.
@@ -38,22 +39,22 @@ import kotlin.math.sign
  * The motor wraps a [DcMotorImplEx] obtained lazily through an initializer, supporting
  * construction from a Lynx module/port, hardware map name, or a raw initializer function.
  *
- * Encoder readings are automatically converted to [Distance] and [LinearVelocity] using
- * the configured [distancePerCount] conversion factor.
+ * Encoder readings are automatically converted to [Angle] and [AngularVelocity] using
+ * the configured [anglePerCount] conversion factor.
  *
  * Example:
  * ```
- * val motor = NextMotor("driveMotor", distancePerCount = 0.05.inches)
- * motor.setVelocitySetpoint(12.0.inchesPerSecond)
+ * val motor = NextMotor("driveMotor", anglePerCount = 0.05.radians)
+ * motor.setVelocitySetpoint(12.0.radiansPerSecond)
  * ```
  *
  * @param initializer A function that returns the backing [DcMotorImplEx]. Invoked lazily.
- * @param distancePerCount Conversion factor from encoder counts to distance. Defaults to 1.0 inch.
+ * @param anglePerCount Conversion factor from encoder counts to angle. Defaults to 1.0 radian.
  * @param cacheTolerance Power caching tolerance to reduce redundant hardware writes. Defaults to 0.01.
  */
 class NextMotor(
   initializer: () -> DcMotorImplEx,
-  var distancePerCount: Distance = 1.0.inches,
+  var anglePerCount: Angle = 1.0.radians,
   cacheTolerance: Double = 0.01,
 ) {
   /**
@@ -63,17 +64,17 @@ class NextMotor(
    *
    * @param module The Lynx module housing this motor port.
    * @param port The motor port on the module (0-based).
-   * @param distancePerCount Encoder count to distance conversion factor.
+   * @param anglePerCount Encoder count to angle conversion factor.
    * @param cacheTolerance Power caching tolerance.
    */
   @JvmOverloads constructor(
     module: LynxModule,
     port: Int,
-    distancePerCount: Distance = 1.0.inches,
+    anglePerCount: Angle = 1.0.radians,
     cacheTolerance: Double = 0.01,
   ) : this(
     { DcMotorImplEx(module.motorController, port) },
-    distancePerCount,
+    anglePerCount,
     cacheTolerance,
   )
 
@@ -83,14 +84,18 @@ class NextMotor(
    * Looks up the motor in [RobotController.hardwareMap].
    *
    * @param name Hardware map device name.
-   * @param distancePerCount Encoder count to distance conversion factor.
+   * @param anglePerCount Encoder count to angle conversion factor.
    * @param cacheTolerance Power caching tolerance.
    */
   @JvmOverloads constructor(
     name: String,
-    distancePerCount: Distance = 1.0.inches,
+    anglePerCount: Angle = 1.0.radians,
     cacheTolerance: Double = 0.01,
-  ) : this({ RobotController.hardwareMap[name] as DcMotorImplEx }, distancePerCount, cacheTolerance)
+  ) : this({ RobotController.hardwareMap[name] as DcMotorImplEx }, anglePerCount, cacheTolerance)
+
+  init {
+    motorEventLoop.bind(this::update)
+  }
 
   private val motor by LazyHardware(initializer)
 
@@ -130,7 +135,7 @@ class NextMotor(
   /**
    * Current active control mode (THROTTLE, VOLTAGE, POSITION, or VELOCITY).
    */
-  var controlType: ControlType = ControlType.THROTTLE
+  var controlType: ControlType = ControlType.Throttle(0.0)
     private set
 
   /**
@@ -150,28 +155,72 @@ class NextMotor(
    *
    * When set, automatically updates the underlying motor's direction.
    */
-  var direction = NextMotor.Direction.FORWARD
+  var direction = Direction.FORWARD
     set(value) {
       field = value
       motor.direction = value.sdkDirection
     }
 
   /**
-   * Current encoder position in physical distance units.
+   * Current encoder position in physical angle units.
    *
-   * Computed from the raw encoder count scaled by [distancePerCount].
+   * Computed from the raw encoder count scaled by [anglePerCount].
    */
-  val encoderPosition: Distance
-    get() = (distancePerCount * motor.currentPosition) as Distance
+  val encoderPosition: Angle
+    get() = (anglePerCount * motor.currentPosition) as Angle
 
   /**
-   * Current encoder velocity in physical distance per time units.
+   * Current encoder velocity in physical angle per time units.
    *
-   * Computed from the raw motor velocity scaled by [distancePerCount]
+   * Computed from the raw motor velocity scaled by [anglePerCount]
    * and divided by 1 second to convert to the expected time unit.
    */
-  val encoderVelocity: LinearVelocity
-    get() = distancePerCount * motor.velocity / 1.0.seconds
+  val encoderVelocity: AngularVelocity
+    get() = anglePerCount * motor.velocity / 1.0.seconds
+
+  /**
+   * Updates the motor power based on the current active control mode.
+   *
+   * This method should be called periodically (e.g., in an EventLoop)
+   * to recalculate closed-loop controllers.
+   */
+  fun update() {
+    when (val mode = controlType) {
+      is ControlType.Throttle -> {
+        power = mode.throttle
+      }
+      is ControlType.Voltage -> {
+        power = (mode.voltage / RobotController.inputVoltage).magnitude
+      }
+      is ControlType.Position -> {
+        val setpoint = mode.setpoint
+        power =
+          positionPID.calculate(
+            reference = setpoint.magnitude,
+            measured = encoderPosition.into(setpoint.unit),
+          ) +
+          positionConstants.kS * (setpoint.magnitude - encoderPosition.into(setpoint.unit)).sign +
+          positionConstants.kG +
+          positionConstants.kCos * kotlin.math.cos(encoderPosition.magnitude * positionConstants.kCosRatio)
+      }
+      is ControlType.Velocity -> {
+        val setpoint = mode.setpoint
+        power =
+          velocityPID.calculate(
+            reference = setpoint.magnitude,
+            measured = encoderVelocity.into(setpoint.unit),
+          ) +
+          velocityFF.calculate(setpoint.magnitude)
+      }
+      is ControlType.Follow -> {
+        power = if (mode.direction == Direction.FORWARD) {
+          mode.motor.power
+        } else {
+          -mode.motor.power
+        }
+      }
+    }
+  }
 
   /**
    * Set throttle control mode and power.
@@ -181,8 +230,7 @@ class NextMotor(
    * @param throttle Power in the range [-1.0, 1.0]. Positive is forward.
    */
   fun setThrottle(throttle: Double) {
-    controlType = ControlType.THROTTLE
-    power = throttle
+    controlType = ControlType.Throttle(throttle)
   }
 
   /**
@@ -193,9 +241,8 @@ class NextMotor(
    *
    * @param voltage Target voltage setpoint.
    */
-  fun setVoltage(voltage: Voltage) {
-    controlType = ControlType.VOLTAGE
-    power = (voltage / RobotController.inputVoltage).magnitude
+  fun setVoltage(voltage: VoltageMeasure) {
+    controlType = ControlType.Voltage(voltage)
   }
 
   /**
@@ -206,16 +253,8 @@ class NextMotor(
    *
    * @param setpoint Target encoder position.
    */
-  fun setPositionSetpoint(setpoint: Distance) {
-    controlType = ControlType.POSITION
-    power =
-      positionPID.calculate(
-        reference = setpoint.magnitude,
-        measured = encoderPosition.into(setpoint.unit),
-      ) +
-      positionConstants.kS * (setpoint.magnitude - encoderPosition.into(setpoint.unit)).sign +
-      positionConstants.kG +
-      positionConstants.kCos * kotlin.math.cos(encoderPosition.magnitude * positionConstants.kCosRatio)
+  fun setPositionSetpoint(setpoint: Angle) {
+    controlType = ControlType.Position(setpoint)
   }
 
   /**
@@ -226,14 +265,23 @@ class NextMotor(
    *
    * @param setpoint Target velocity.
    */
-  fun setVelocitySetpoint(setpoint: LinearVelocity) {
-    controlType = ControlType.VELOCITY
-    power =
-      velocityPID.calculate(
-        reference = setpoint.magnitude,
-        measured = encoderVelocity.into(setpoint.unit),
-      ) +
-      velocityFF.calculate(setpoint.magnitude)
+  fun setVelocitySetpoint(setpoint: AngularVelocity) {
+    controlType = ControlType.Velocity(setpoint)
+  }
+
+  /**
+   * Configures this motor to follow another motor's behavior and align its rotation direction.
+   *
+   * The following motor uses the provided [NextMotor] instance and the specified [Direction]
+   * to align its movements with the target motor.
+   *
+   * @param motor The motor to follow. This motor will mimic the behavior and control mode
+   *              of the provided motor.
+   * @param direction The rotation direction to use when following the target motor. Defaults
+   *                  to [Direction.FORWARD].
+   */
+  @JvmOverloads fun follow(motor: NextMotor, direction: Direction = Direction.FORWARD) {
+    controlType = ControlType.Follow(motor, direction)
   }
 
   /**
@@ -241,26 +289,36 @@ class NextMotor(
    *
    * Determines how the motor interprets and uses the power value.
    */
-  enum class ControlType {
+  sealed class ControlType {
+
     /**
      * Direct power/duty cycle control. Power is applied as-is.
      */
-    THROTTLE,
+    data class Throttle(val throttle: Double) : ControlType() {
+      init {
+        require(throttle in -1.0 .. 1.0)
+      }
+    }
 
     /**
      * Voltage-based control. Power is adjusted to account for rail voltage.
      */
-    VOLTAGE,
+    data class Voltage(val voltage: VoltageMeasure) : ControlType()
 
     /**
      * Closed-loop position tracking using PID and feedforward.
      */
-    POSITION,
+    data class Position(val setpoint: Angle) : ControlType()
 
     /**
      * Closed-loop velocity tracking using PID and feedforward.
      */
-    VELOCITY,
+    data class Velocity(val setpoint: AngularVelocity) : ControlType()
+
+    /**
+     * Follows another motor's behavior.
+     */
+    data class Follow(val motor: NextMotor, val direction: Direction) : ControlType()
   }
 
   /**
@@ -276,6 +334,10 @@ class NextMotor(
      * Motor spins in reverse (negated).
      */
     REVERSE(DcMotorSimple.Direction.REVERSE),
+  }
+
+  companion object {
+    val motorEventLoop: EventLoop = EventLoop()
   }
 }
 
