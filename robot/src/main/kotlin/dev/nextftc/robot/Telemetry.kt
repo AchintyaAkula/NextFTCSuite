@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry as SdkTelemetry
  * simultaneously (e.g., standard Driver Station, FTC Dashboard, custom loggers).
  */
 object Telemetry {
-  private val backends: MutableSet<TelemetryBackend> = mutableSetOf(DSTelemetryBackend)
+  private val backends: MutableSet<TelemetryBackend> = mutableSetOf(DriverStationTelemetry)
 
   /**
    * Registers a new [TelemetryBackend] to receive telemetry updates.
@@ -109,39 +109,34 @@ internal class SdkTelemetryBackend(val sdkTelemetry: SdkTelemetry) : TelemetryBa
   override fun addLine(line: String) {
     sdkTelemetry.addLine(line)
   }
+
+  override fun equals(other: Any?): Boolean =
+    other is SdkTelemetryBackend && sdkTelemetry == other.sdkTelemetry
+
+  override fun hashCode(): Int = sdkTelemetry.hashCode()
 }
 
 /**
- * The default [TelemetryBackend] that automatically hooks into the Driver Station telemetry.
- * Relies on Sinister's OpModeManager injection to capture the active OpMode's telemetry instance.
+ * A backend for sending telemetry data to the Driver Station.
  */
-internal object DSTelemetryBackend :
-  TelemetryBackend,
-  OnCreateEventLoop,
-  OpModeManagerNotifier.Notifications {
-  private lateinit var sdkTelemetry: SdkTelemetry
+internal object DriverStationTelemetry : TelemetryBackend {
+  lateinit var telemetry: SdkTelemetry
+
+  override fun update() {
+    if (::telemetry.isInitialized) {
+      telemetry.update()
+    }
+  }
 
   override fun addData(key: String, value: String) {
-    sdkTelemetry.addData(key, value)
+    if (::telemetry.isInitialized) {
+      telemetry.addData(key, value)
+    }
   }
 
   override fun addLine(line: String) {
-    sdkTelemetry.addLine(line)
+    if (::telemetry.isInitialized) {
+      telemetry.addLine(line)
+    }
   }
-
-  override fun update() {
-    sdkTelemetry.update()
-  }
-
-  override fun onCreateEventLoop(context: Context, ftcEventLoop: FtcEventLoop) {
-    ftcEventLoop.opModeManager.registerListener(this)
-  }
-
-  override fun onOpModePreInit(opMode: OpMode?) {
-    sdkTelemetry = opMode?.telemetry!!
-  }
-
-  override fun onOpModePreStart(opMode: OpMode?) {}
-
-  override fun onOpModePostStop(opMode: OpMode?) {}
 }
