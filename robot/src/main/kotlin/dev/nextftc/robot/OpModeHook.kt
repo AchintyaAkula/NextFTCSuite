@@ -13,7 +13,7 @@ import com.qualcomm.hardware.lynx.LynxModule
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.robot.triggers.Trigger
-import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.Telemetry as SdkTelemetry
 
 /**
  * Provides lifecycle hooks that tap into the various stages of a [NextOpMode].
@@ -21,6 +21,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * automatically without requiring the user to clutter their OpMode code.
  */
 interface OpModeHook {
+  /** Called immediately before the OpMode's onInit phase. */
+  fun beforeInit() {}
+
+  /** Called immediately after the OpMode's onInit phase. */
+  fun afterInit() {}
+
+  /** Called immediately before the OpMode's disabledPeriodic (init_loop) phase. */
+  fun beforeDisabled() {}
+
+  /** Called immediately after the OpMode's disabledPeriodic (init_loop) phase. */
+  fun afterDisabled() {}
+
   /** Called immediately before the OpMode's onStart phase. */
   fun beforeStart() {}
 
@@ -61,16 +73,23 @@ internal object SchedulerHook : OpModeHook {
 }
 
 /**
- * Hook responsible for updating the telemetry.
+ * Internal hook responsible for pushing updates to the unified [Telemetry] system.
+ * Automatically synchronizes backend telemetry outputs during both the init_loop
+ * and active periodic phases.
  */
-class TelemetryHook(val telemetry: Telemetry) : OpModeHook {
+internal object TelemetryHook : OpModeHook {
+  override fun afterDisabled() {
+    Telemetry.update()
+  }
+
   override fun afterPeriodic() {
-    telemetry.update()
+    Telemetry.update()
   }
 }
 
 /**
  * Internal hook responsible for ticking the motor event loop.
+ * Continuously evaluates and updates all NextMotor control states.
  */
 internal object MotorHook : OpModeHook {
   override fun afterPeriodic() {
@@ -79,7 +98,10 @@ internal object MotorHook : OpModeHook {
 }
 
 /**
- * (Optional) Hook responsible for bulk-reading the hubs
+ * (Optional) Hook responsible for managing bulk hardware reads.
+ * Automatically switches Lynx hubs to MANUAL caching mode on start,
+ * and clears the bulk cache at the end of each periodic cycle to
+ * ensure fresh hardware data per loop while minimizing I/O overhead.
  */
 object BulkReadHook : OpModeHook {
   private val lynxHubs: List<LynxModule> by lazy {

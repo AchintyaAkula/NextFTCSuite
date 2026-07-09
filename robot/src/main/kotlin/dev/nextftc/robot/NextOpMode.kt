@@ -30,13 +30,17 @@ abstract class NextOpMode internal constructor(private val hooks: MutableList<Op
     this.hooks += RobotHook(robot)
     this.hooks += SchedulerHook
     this.hooks += MotorHook
-    this.hooks += TelemetryHook(telemetry)
+    this.hooks += TelemetryHook
   }
 
   final override fun runOpMode() {
+    hooks.forEach(OpModeHook::beforeInit)
     onInit()
+    hooks.forEach(OpModeHook::afterInit)
     while (opModeInInit()) {
+      hooks.forEach(OpModeHook::beforeDisabled)
       disabledPeriodic()
+      hooks.forEach(OpModeHook::afterDisabled)
     }
     waitForStart()
     hooks.forEach(OpModeHook::beforeStart)
