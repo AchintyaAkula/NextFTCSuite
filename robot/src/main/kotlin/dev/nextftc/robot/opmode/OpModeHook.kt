@@ -6,14 +6,16 @@
  *  https://opensource.org/license/bsd-3-clause.
  */
 
-package dev.nextftc.robot
+package dev.nextftc.robot.opmode
 
 import com.pedropathing.ivy.Scheduler
 import com.qualcomm.hardware.lynx.LynxModule
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.actuators.NextMotor
+import dev.nextftc.robot.Mechanism
+import dev.nextftc.robot.NextRobot
+import dev.nextftc.robot.Telemetry
 import dev.nextftc.robot.triggers.Trigger
-import org.firstinspires.ftc.robotcore.external.Telemetry as SdkTelemetry
 
 /**
  * Provides lifecycle hooks that tap into the various stages of a [NextOpMode].
@@ -73,7 +75,7 @@ internal object SchedulerHook : OpModeHook {
 }
 
 /**
- * Internal hook responsible for pushing updates to the unified [Telemetry] system.
+ * Internal hook responsible for pushing updates to the unified [dev.nextftc.robot.Telemetry] system.
  * Automatically synchronizes backend telemetry outputs during both the init_loop
  * and active periodic phases.
  */

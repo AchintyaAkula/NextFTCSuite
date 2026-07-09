@@ -1,19 +1,12 @@
-/*
- * Copyright (c) 2026 NextFTC Team
- *
- *  Use of this source code is governed by an BSD-3-clause
- *  license that can be found in the LICENSE.md file at the root of this repository or at
- *  https://opensource.org/license/bsd-3-clause.
- */
-
-package dev.nextftc.robot
+package dev.nextftc.robot.opmode
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import dev.nextftc.robot.NextRobot
 
 /**
  * Base class for all NextFTC OpModes.
  *
- * Automatically injects the scanned [NextRobot] instance and handles the lifecycle
+ * Automatically injects the scanned [dev.nextftc.robot.NextRobot] instance and handles the lifecycle
  * execution, calling various [OpModeHook]s and managing the internal command scheduler.
  *
  * @param hooks Internal hooks used to manage robot mechanisms and the scheduler loop.
@@ -21,9 +14,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 abstract class NextOpMode internal constructor(private val hooks: MutableList<OpModeHook>) :
   LinearOpMode() {
   /**
-   * Secondary constructor invoked by the [RobotOpModeScanner] during automatic registration.
+   * Secondary constructor invoked by the [NextFTCOpModeScanner] during automatic registration.
    *
-   * @param robot The automatically resolved [NextRobot] instance.
+   * @param robot The automatically resolved [dev.nextftc.robot.NextRobot] instance.
    * @param hooks Additional custom hooks to execute during the OpMode lifecycle.
    */
   constructor(robot: NextRobot, vararg hooks: OpModeHook) : this(hooks.toMutableList()) {

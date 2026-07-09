@@ -1,10 +1,5 @@
 package dev.nextftc.robot
 
-import android.content.Context
-import com.qualcomm.ftccommon.FtcEventLoop
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier
-import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
 import org.firstinspires.ftc.robotcore.external.Telemetry as SdkTelemetry
 
 /**
@@ -37,7 +32,7 @@ object Telemetry {
 
   /**
    * Triggers an update/flush on all registered backends.
-   * Called automatically by [TelemetryHook].
+   * Called automatically by [dev.nextftc.robot.opmode.TelemetryHook].
    */
   @JvmStatic fun update() {
     backends.forEach(TelemetryBackend::update)

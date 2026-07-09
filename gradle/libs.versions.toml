@@ -22,6 +22,7 @@ ftc-robot-core = { group = "org.firstinspires.ftc", name = "RobotCore", version.
 ftc-hardware = { group = "org.firstinspires.ftc", name = "Hardware", version.ref = "ftc" }
 ftc-common = { group = "org.firstinspires.ftc", name = "FtcCommon", version.ref = "ftc" }
 sloth = { module = "dev.frozenmilk.sinister:Sloth", version.ref = "sloth" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 ivy = { module = "com.pedropathing:ivy", version.ref = "ivy" }
 
 [bundles]

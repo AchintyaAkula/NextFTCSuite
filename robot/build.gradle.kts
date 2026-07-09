@@ -47,6 +47,7 @@ dependencies {
   implementation(libs.functional.interfaces)
   compileOnly(libs.bundles.ftc)
   implementation(libs.sloth)
+  implementation(libs.kotlin.reflect)
 
   testImplementation(libs.bundles.kotest)
   testImplementation(kotlin("test"))
