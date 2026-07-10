@@ -40,8 +40,6 @@ internal object RobotScanner : Scanner {
   override val targets: SearchTarget = WideSearch()
 
   override fun scan(loader: ClassLoader, cls: Class<*>) {
-    if (cls.isSynthetic || cls.isLocalClass || cls.isAnonymousClass) return
-
     val modifiers = cls.modifiers
     if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) return
 

@@ -32,8 +32,6 @@ object NextFTCOpModeScanner : OpModeScanner() {
 
   @Suppress("UNCHECKED_CAST")
   override fun scan(loader: ClassLoader, cls: Class<*>, registrationHelper: RegistrationHelper) {
-    if (cls.isSynthetic || cls.isLocalClass || cls.isAnonymousClass) return
-
     val modifiers = cls.modifiers
     if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) return
 
