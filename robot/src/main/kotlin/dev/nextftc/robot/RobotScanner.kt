@@ -8,16 +8,16 @@
 
 package dev.nextftc.robot
 
-import com.qualcomm.robotcore.util.RobotLog
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import dev.frozenmilk.sinister.Scanner
 import dev.frozenmilk.sinister.targeting.SearchTarget
 import dev.frozenmilk.sinister.targeting.WideSearch
 import dev.frozenmilk.sinister.util.log.Logger
 import dev.frozenmilk.util.graph.Graph
 import dev.frozenmilk.util.graph.rule.AdjacencyRule
+import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.hasAnnotation
 
 /**
  * Scans the user's project for an implementation of [NextRobot] during startup.
@@ -40,40 +40,51 @@ internal object RobotScanner : Scanner {
   override val targets: SearchTarget = WideSearch()
 
   override fun scan(loader: ClassLoader, cls: Class<*>) {
+    if (cls.isSynthetic || cls.isLocalClass || cls.isAnonymousClass) return
+
+    val modifiers = cls.modifiers
+    if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) return
+
+    if (!NextRobot::class.java.isAssignableFrom(cls)) return
+
     val kcls = cls.kotlin
 
-    if (kcls.visibility == KVisibility.PUBLIC && kcls.isSubclassOf(NextRobot::class) && !kcls.isAbstract) {
-      RobotLog.i("Found NextFTC robot class: $cls")
-
-      val objectInstance = kcls.objectInstance
-
-      if (objectInstance != null) {
-        robot = objectInstance as NextRobot
-        robotClass = kcls
-
-        if (foundRobot) {
-          foundMultiple = true
-        }
-        foundRobot = true
-        return
-      }
-
-      val constructor = kcls.constructors.find { it.parameters.isEmpty() }
-      if (constructor != null) {
-        robot = constructor.call() as NextRobot
-        robotClass = kcls
-
-        if (foundRobot) {
-          foundMultiple = true
-        }
-        foundRobot = true
-      }
-
-      Logger.w(
-        "NextFTC",
-        "Unable to instantiate NextFTC robot class: $cls. Ensure it is either a singleton object or has a public no-argument constructor.",
-      )
+    if (kcls.hasAnnotation<Disabled>()) {
+      Logger.i("NextFTC", "Skipping disabled NextFTC robot class: $kcls")
+      return
     }
+
+    Logger.i("NextFTC", "Found NextFTC robot class: $kcls")
+
+    val objectInstance = kcls.objectInstance
+
+    if (objectInstance != null) {
+      robot = objectInstance as NextRobot
+      robotClass = kcls
+
+      if (foundRobot) {
+        foundMultiple = true
+      }
+      foundRobot = true
+      return
+    }
+
+    val constructor = kcls.constructors.find { it.parameters.isEmpty() }
+    if (constructor != null) {
+      robot = constructor.call() as NextRobot
+      robotClass = kcls
+
+      if (foundRobot) {
+        foundMultiple = true
+      }
+      foundRobot = true
+      return
+    }
+
+    Logger.w(
+      "NextFTC",
+      "Unable to instantiate NextFTC robot class: $cls. Ensure it is either a singleton object or has a public no-argument constructor.",
+    )
   }
 
   override fun afterScan(loader: ClassLoader) {

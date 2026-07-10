@@ -10,11 +10,10 @@ import dev.frozenmilk.sinister.util.log.Logger
 import dev.frozenmilk.util.graph.rule.dependsOn
 import dev.nextftc.robot.RobotScanner
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta
+import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
-import kotlin.reflect.KVisibility
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 
 /**
@@ -33,32 +32,37 @@ object NextFTCOpModeScanner : OpModeScanner() {
 
   @Suppress("UNCHECKED_CAST")
   override fun scan(loader: ClassLoader, cls: Class<*>, registrationHelper: RegistrationHelper) {
-    val kcls = cls.kotlin
+    if (cls.isSynthetic || cls.isLocalClass || cls.isAnonymousClass) return
 
-    if (kcls.visibility == KVisibility.PUBLIC && kcls.isSubclassOf(OpMode::class) && !kcls.isAbstract) {
-      if (kcls.hasAnnotation<Disabled>()) return
+    val modifiers = cls.modifiers
+    if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) return
 
-      val metaResult = opModeMetaFromClass(kcls)
-      val constructorResult = opModeConstructorFromClass(kcls as KClass<out OpMode>)
+    if (!OpMode::class.java.isAssignableFrom(cls)) return
 
-      when (metaResult) {
-        is OpModeMetaCheckResult.FoundAnnotation -> {
-          when (constructorResult) {
-            is OpModeConstructorCheckResult.FoundConstructor -> {
-              Logger.i("NextFTC", "Found NextFTC OpMode class: $cls")
-              registrationHelper.register(metaResult.meta, constructorResult.constructor)
-            }
-            is OpModeConstructorCheckResult.NoConstructorFound -> {
-              Logger.w("NextFTC", "No valid constructor found for NextFTC OpMode class: $cls")
-            }
+    val kcls = cls.kotlin as KClass<OpMode>
+
+    if (kcls.hasAnnotation<Disabled>()) {
+      Logger.i("NextFTC", "Skipping disabled NextFTC OpMode class: $kcls")
+      return
+    }
+
+    when (val metaResult = opModeMetaFromClass(kcls)) {
+      is OpModeMetaCheckResult.FoundAnnotation -> {
+        when (val constructorResult = opModeConstructorFromClass(kcls)) {
+          is OpModeConstructorCheckResult.FoundConstructor -> {
+            Logger.i("NextFTC", "Found NextFTC OpMode class: $cls")
+            registrationHelper.register(metaResult.meta, constructorResult.constructor)
+          }
+          is OpModeConstructorCheckResult.NoConstructorFound -> {
+            Logger.w("NextFTC", "No valid constructor found for NextFTC OpMode class: $cls")
           }
         }
-        is OpModeMetaCheckResult.NoAnnotationPresent -> {
-          Logger.w(
-            "NextFTC",
-            "No @NextAutonomous or @NextTeleop annotation found for NextFTC OpMode class: $cls",
-          )
-        }
+      }
+      is OpModeMetaCheckResult.NoAnnotationPresent -> {
+        Logger.w(
+          "NextFTC",
+          "No @NextAutonomous or @NextTeleop annotation found for NextFTC OpMode class: $cls",
+        )
       }
     }
   }
