@@ -35,9 +35,9 @@ object NextFTCOpModeScanner : OpModeScanner() {
     val modifiers = cls.modifiers
     if (!Modifier.isPublic(modifiers) || Modifier.isAbstract(modifiers)) return
 
-    if (!OpMode::class.java.isAssignableFrom(cls)) return
+    if (!NextOpMode::class.java.isAssignableFrom(cls)) return
 
-    val kcls = cls.kotlin as KClass<OpMode>
+    val kcls = cls.kotlin as KClass<NextOpMode>
 
     if (kcls.hasAnnotation<Disabled>()) {
       Logger.i("NextFTC", "Skipping disabled NextFTC OpMode class: $kcls")
@@ -49,7 +49,7 @@ object NextFTCOpModeScanner : OpModeScanner() {
         when (val constructorResult = opModeConstructorFromClass(kcls)) {
           is OpModeConstructorCheckResult.FoundConstructor -> {
             Logger.i("NextFTC", "Found NextFTC OpMode class: $cls")
-            registrationHelper.register(metaResult.meta, constructorResult.constructor)
+            registrationHelper.register(metaResult.meta) { BoundNextOpMode(constructorResult.constructor) }
           }
           is OpModeConstructorCheckResult.NoConstructorFound -> {
             Logger.w("NextFTC", "No valid constructor found for NextFTC OpMode class: $cls")
@@ -73,7 +73,7 @@ sealed interface OpModeMetaCheckResult {
 }
 
 sealed interface OpModeConstructorCheckResult {
-  data class FoundConstructor(val constructor: () -> OpMode) : OpModeConstructorCheckResult
+  data class FoundConstructor(val constructor: () -> NextOpMode) : OpModeConstructorCheckResult
 
   data class NoConstructorFound(val opModeName: String) : OpModeConstructorCheckResult
 }
@@ -105,7 +105,7 @@ internal fun opModeMetaFromClass(cls: KClass<*>): OpModeMetaCheckResult {
   return OpModeMetaCheckResult.NoAnnotationPresent(cls.simpleName!!)
 }
 
-internal fun opModeConstructorFromClass(cls: KClass<out OpMode>): OpModeConstructorCheckResult {
+internal fun opModeConstructorFromClass(cls: KClass<out NextOpMode>): OpModeConstructorCheckResult {
   if (RobotScanner.foundRobot) {
     val constructor = cls.constructors.find { it.parameters.size == 1 }
     if (constructor != null) {

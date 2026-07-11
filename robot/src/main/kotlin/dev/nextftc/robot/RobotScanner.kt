@@ -10,11 +10,14 @@ package dev.nextftc.robot
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import dev.frozenmilk.sinister.Scanner
+import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoopScanner
 import dev.frozenmilk.sinister.targeting.SearchTarget
 import dev.frozenmilk.sinister.targeting.WideSearch
 import dev.frozenmilk.sinister.util.log.Logger
 import dev.frozenmilk.util.graph.Graph
 import dev.frozenmilk.util.graph.rule.AdjacencyRule
+import dev.frozenmilk.util.graph.rule.dependsOn
+import dev.nextftc.hardware.RobotController
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.hasAnnotation
@@ -34,7 +37,8 @@ internal object RobotScanner : Scanner {
   var foundRobot = false
   var foundMultiple = false
 
-  override val loadAdjacencyRule: AdjacencyRule<Scanner, Graph<Scanner>> = Scanner.INDEPENDENT
+  override val loadAdjacencyRule: AdjacencyRule<Scanner, Graph<Scanner>> =
+    Scanner.INDEPENDENT and dependsOn(OnCreateEventLoopScanner)
   override val unloadAdjacencyRule: AdjacencyRule<Scanner, Graph<Scanner>> = Scanner.INDEPENDENT
 
   override val targets: SearchTarget = WideSearch()
