@@ -21,7 +21,9 @@ class LazyHardware<T>(private val initializer: () -> T) : ReadOnlyProperty<Any?,
       onInit.forEach { block -> block.configure(hardwareObject) }
       Log.d(
         "LazyHardware",
-        "Initialized $hardwareObject in property ${property.name} in class ${thisRef?.let { it::class.simpleName } ?: "Unknown"}",
+        "Initialized $hardwareObject in property ${property.name} in class ${thisRef?.let {
+          it::class.simpleName
+        } ?: "Unknown"}",
       )
     }
   }

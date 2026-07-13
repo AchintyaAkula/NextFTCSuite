@@ -21,7 +21,7 @@ class NextLynxModule internal constructor(initializer: () -> LynxModule, @JvmFie
   enum class Type {
     CONTROL_HUB,
     EXPANSION_HUB,
-    SERVO_HUB
+    SERVO_HUB,
   }
 
   private val module by LazyHardware(initializer)

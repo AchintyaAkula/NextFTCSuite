@@ -14,8 +14,8 @@ import com.qualcomm.ftccommon.FtcEventLoop
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
-import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.nextftc.units.celsius
 import dev.nextftc.units.measuretypes.Temperature
 import dev.nextftc.units.measuretypes.Voltage
@@ -58,7 +58,9 @@ object RobotController : OnCreateEventLoop {
   @JvmStatic
   @get:JvmName("controlHub")
   val controlHub: NextLynxModule by lazy {
-    NextLynxModule({ hardwareMap.getAll(LynxModule::class.java).first { it.isParent } }, NextLynxModule.Type.CONTROL_HUB)
+    NextLynxModule({
+      hardwareMap.getAll(LynxModule::class.java).first { it.isParent }
+    }, NextLynxModule.Type.CONTROL_HUB)
   }
 
   /**
