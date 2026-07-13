@@ -12,14 +12,19 @@ import dev.nextftc.units.volts
 import org.firstinspires.ftc.robotcore.external.navigation.TempUnit
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit
 
-class NextLynxModule(initializer: () -> LynxModule, @JvmField val type: Type) {
+/**
+ * Represents a Lynx module. A module can be a control hub, expansion hub, or servo hub.
+ *
+ * Users should not instantiate this class directly. Instead, use [RobotController.controlHub], [RobotController.expansionHub], or [RobotController.servoHubs] to access the available modules.
+ */
+class NextLynxModule internal constructor(initializer: () -> LynxModule, @JvmField val type: Type) {
   enum class Type {
     CONTROL_HUB,
     EXPANSION_HUB,
     SERVO_HUB
   }
 
-  val module by LazyHardware(initializer)
+  private val module by LazyHardware(initializer)
 
   /** Current module temperature. */
   val temperature: Temperature
