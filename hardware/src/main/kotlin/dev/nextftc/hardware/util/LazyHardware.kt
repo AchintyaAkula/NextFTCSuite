@@ -1,7 +1,9 @@
 package dev.nextftc.hardware.util
 
 import android.util.Log
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import dev.nextftc.functionalInterfaces.Configurator
+import dev.nextftc.hardware.RobotController
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -13,12 +15,13 @@ class LazyHardware<T>(private val initializer: () -> T) : ReadOnlyProperty<Any?,
 
   override fun getValue(thisRef: Any?, property: KProperty<*>): T {
     if (value != null) return value!!
-    return initializer.invoke().also {
-      value = it
-      onInit.forEach { block -> block.configure(it) }
+
+    return initializer.invoke().also { hardwareObject ->
+      value = hardwareObject
+      onInit.forEach { block -> block.configure(hardwareObject) }
       Log.d(
         "LazyHardware",
-        "Initialized $it in property ${property.name} in class ${thisRef!!::class.simpleName}",
+        "Initialized $hardwareObject in property ${property.name} in class ${thisRef?.let { it::class.simpleName } ?: "Unknown"}",
       )
     }
   }

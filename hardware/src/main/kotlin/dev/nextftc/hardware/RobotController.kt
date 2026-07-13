@@ -11,11 +11,10 @@ package dev.nextftc.hardware
 import android.annotation.SuppressLint
 import android.content.Context
 import com.qualcomm.ftccommon.FtcEventLoop
-import com.qualcomm.hardware.lynx.LynxDcMotorController
 import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.hardware.lynx.LynxServoController
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
 import dev.nextftc.units.celsius
 import dev.nextftc.units.measuretypes.Temperature
@@ -52,55 +51,66 @@ object RobotController : OnCreateEventLoop {
     get() = eventLoop.opModeManager.hardwareMap
 
   /**
-   * The parent [LynxModule], typically the Control Hub.
+   * The parent [NextLynxModule], typically the Control Hub.
    *
    * @throws NoSuchElementException when no parent module is available.
    */
   @JvmStatic
   @get:JvmName("controlHub")
-  val controlHub: LynxModule
-    get() = hardwareMap.getAll(LynxModule::class.java).first { it.isParent }
+  val controlHub: NextLynxModule by lazy {
+    NextLynxModule({ hardwareMap.getAll(LynxModule::class.java).first { it.isParent } }, NextLynxModule.Type.CONTROL_HUB)
+  }
 
   /**
-   * The first attached Expansion Hub, or `null` if one is not present.
+   * The first attached Expansion Hub.
+   *
+   * @throws NoSuchElementException when accessed if an Expansion Hub is not present.
    */
   @JvmStatic
   @get:JvmName("expansionHub")
-  val expansionHub: LynxModule?
-    get() = hardwareMap.getAll(LynxModule::class.java).firstOrNull {
-      !it.isParent && it.revProductNumber == LynxConstants.EXPANSION_HUB_PRODUCT_NUMBER
-    }
+  val expansionHub: NextLynxModule by lazy {
+    NextLynxModule({
+      hardwareMap.getAll(LynxModule::class.java).first {
+        !it.isParent && it.revProductNumber == LynxConstants.EXPANSION_HUB_PRODUCT_NUMBER
+      }
+    }, NextLynxModule.Type.EXPANSION_HUB)
+  }
 
   /**
    * All Servo Hubs attached to the robot.
    */
   @JvmStatic
   @get:JvmName("servoHubs")
-  val servoHubs: List<LynxModule>
-    get() = hardwareMap.getAll(LynxModule::class.java).filter {
-      it.revProductNumber == LynxConstants.SERVO_HUB_PRODUCT_NUMBER
+  val servoHubs: List<NextLynxModule> = object : AbstractList<NextLynxModule>() {
+    private val hubs by lazy {
+      hardwareMap.getAll(LynxModule::class.java).filter {
+        it.revProductNumber == LynxConstants.SERVO_HUB_PRODUCT_NUMBER
+      }.map { NextLynxModule({ it }, NextLynxModule.Type.SERVO_HUB) }
     }
+    override val size: Int get() = hubs.size
+    override fun get(index: Int): NextLynxModule = hubs[index]
+  }
 
   /**
    * Current Control Hub temperature.
    */
   @JvmStatic
   val temperature: Temperature
-    get() = controlHub.getTemperature(TempUnit.CELSIUS).celsius
+    get() = controlHub.temperature
 
   /**
    * Current Control Hub input voltage.
    */
   @JvmStatic
   val inputVoltage: Voltage
-    get() = controlHub.getInputVoltage(VoltageUnit.VOLTS).volts
+    get() = controlHub.inputVoltage
 
   /**
    * Current Control Hub auxiliary voltage.
    */
   @JvmStatic
   val auxiliaryVoltage: Voltage
-    get() = controlHub.getAuxiliaryVoltage(VoltageUnit.VOLTS).volts
+    get() = controlHub.auxiliaryVoltage
 
   /**
    * Lifecycle callback used to initialize runtime context for hardware access.
@@ -113,15 +123,3 @@ object RobotController : OnCreateEventLoop {
     eventLoop = ftcEventLoop
   }
 }
-
-/**
- * Creates a [LynxDcMotorController] bound to this module.
- */
-internal val LynxModule.motorController
-  get() = LynxDcMotorController(RobotController.appContext, this)
-
-/**
- * Creates a [LynxServoController] bound to this module.
- */
-internal val LynxModule.servoController
-  get() = LynxServoController(RobotController.appContext, this)

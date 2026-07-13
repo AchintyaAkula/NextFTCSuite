@@ -8,11 +8,10 @@
 
 package dev.nextftc.hardware.actuators
 
-import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.CRServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.RobotController
-import dev.nextftc.hardware.servoController
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.nextftc.hardware.util.Caching
 import dev.nextftc.hardware.util.LazyHardware
 
@@ -45,7 +44,7 @@ open class NextCRServo @JvmOverloads constructor(
    * @param port The servo port (in the range [0, 5]).
    * @param cacheTolerance Tolerance used by the [Caching] delegate for power updates; defaults to 0.01.
    */
-  @JvmOverloads constructor(module: LynxModule, port: Int, cacheTolerance: Double = 0.01) : this(
+  @JvmOverloads constructor(module: NextLynxModule, port: Int, cacheTolerance: Double = 0.01) : this(
     { CRServoImplEx(module.servoController, port, ServoConfigurationType.getStandardServoType()) },
     cacheTolerance,
   )

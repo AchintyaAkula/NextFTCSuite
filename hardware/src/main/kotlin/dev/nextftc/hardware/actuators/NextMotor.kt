@@ -8,7 +8,6 @@
 
 package dev.nextftc.hardware.actuators
 
-import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.DcMotorImplEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
@@ -17,7 +16,7 @@ import dev.nextftc.control.feedback.PIDController
 import dev.nextftc.control.feedforward.SimpleFFCoefficients
 import dev.nextftc.control.feedforward.SimpleFeedforward
 import dev.nextftc.hardware.RobotController
-import dev.nextftc.hardware.motorController
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.nextftc.hardware.util.AnalogFeedback
 import dev.nextftc.hardware.util.Caching
 import dev.nextftc.hardware.util.EventLoop
@@ -70,7 +69,7 @@ class NextMotor @JvmOverloads constructor(
    * @param cacheTolerance Power caching tolerance.
    */
   @JvmOverloads constructor(
-    module: LynxModule,
+    module: NextLynxModule,
     port: Int,
     anglePerCount: Angle = 1.0.radians,
     cacheTolerance: Double = 0.01,

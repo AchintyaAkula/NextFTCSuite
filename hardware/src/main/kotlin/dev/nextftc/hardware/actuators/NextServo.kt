@@ -8,14 +8,13 @@
 
 package dev.nextftc.hardware.actuators
 
-import com.qualcomm.hardware.lynx.LynxModule
-import com.qualcomm.robotcore.hardware.PwmControl
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.RobotController
-import dev.nextftc.hardware.servoController
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.nextftc.hardware.util.Caching
 import dev.nextftc.hardware.util.LazyHardware
+import com.qualcomm.robotcore.hardware.PwmControl
 
 /**
  * Lightweight wrapper around a [ServoImplEx] that provides a more user-friendly interface for controlling servo position and PWM range.
@@ -56,7 +55,7 @@ open class NextServo @JvmOverloads constructor(
    * as a [NextMotor.Direction] which defaults to [NextMotor.Direction.FORWARD]
    */
   @JvmOverloads constructor(
-    module: LynxModule,
+    module: NextLynxModule,
     port: Int,
     cacheTolerance: Double = 0.01,
     direction: NextMotor.Direction = NextMotor.Direction.FORWARD,
