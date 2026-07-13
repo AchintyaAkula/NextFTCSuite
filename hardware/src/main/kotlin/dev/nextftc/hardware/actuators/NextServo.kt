@@ -10,7 +10,6 @@ package dev.nextftc.hardware.actuators
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.PwmControl
-import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.RobotController
@@ -34,12 +33,12 @@ import dev.nextftc.hardware.util.LazyHardware
  * @param cacheTolerance Tolerance used by the [Caching] delegate for
  * position updates; defaults to 0.01.
  * @param direction The initial direction of the servo defined by the user
- * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
+ * as a [NextMotor.Direction] which defaults to [NextMotor.Direction.FORWARD]
  */
 open class NextServo @JvmOverloads constructor(
   initializer: () -> ServoImplEx,
   val cacheTolerance: Double = 0.01,
-  direction: Servo.Direction = Servo.Direction.FORWARD,
+  direction: NextMotor.Direction = NextMotor.Direction.FORWARD,
 ) {
   /**
    * Constructor to create a NextServo using a LynxModule and port number.
@@ -54,13 +53,13 @@ open class NextServo @JvmOverloads constructor(
    * @param port The servo port (in the range [0, 5])
    * @param cacheTolerance Tolerance used by the [Caching] delegate for position updates; defaults to 0.01.
    * @param direction The initial direction of the servo defined by the user
-   * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
+   * as a [NextMotor.Direction] which defaults to [NextMotor.Direction.FORWARD]
    */
   @JvmOverloads constructor(
     module: LynxModule,
     port: Int,
     cacheTolerance: Double = 0.01,
-    direction: Servo.Direction = Servo.Direction.FORWARD,
+    direction: NextMotor.Direction = NextMotor.Direction.FORWARD,
   ) : this(
     { ServoImplEx(module.servoController, port, ServoConfigurationType.getStandardServoType()) },
     cacheTolerance,
@@ -79,12 +78,12 @@ open class NextServo @JvmOverloads constructor(
    * @param name The configuration name for the servo, usually found on the Driver Station
    * @param cacheTolerance Tolerance used by the [Caching] delegate for position updates; defaults to 0.01.
    * @param direction The initial direction of the servo defined by the user
-   * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
+   * as a [NextMotor.Direction] which defaults to [NextMotor.Direction.FORWARD]
    */
   @JvmOverloads constructor(
     name: String,
     cacheTolerance: Double = 0.01,
-    direction: Servo.Direction = Servo.Direction.FORWARD,
+    direction: NextMotor.Direction = NextMotor.Direction.FORWARD,
   ) : this(
     { RobotController.hardwareMap[name] as ServoImplEx },
     cacheTolerance,
@@ -92,7 +91,7 @@ open class NextServo @JvmOverloads constructor(
   )
 
   private val lazyServo = LazyHardware(initializer).apply {
-    applyAfterInit { it.direction = direction }
+    applyAfterInit { it.direction = direction.servoDirection }
   }
   private val servo by lazyServo
 
@@ -106,14 +105,14 @@ open class NextServo @JvmOverloads constructor(
    *
    * This property allows indirect access to the direction property of the [Servo] class
    */
-  var direction: Servo.Direction
-    get() = servo.direction
+  var direction: NextMotor.Direction = direction
     set(direction) {
       if (lazyServo.isInitialized) {
-        servo.direction = direction
+        servo.direction = direction.servoDirection
       } else {
-        lazyServo.applyAfterInit { it.direction = direction }
+        lazyServo.applyAfterInit { it.direction = direction.servoDirection }
       }
+      field = direction
     }
 
   /**

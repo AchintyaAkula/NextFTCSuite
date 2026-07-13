@@ -11,6 +11,7 @@ package dev.nextftc.hardware.actuators
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.DcMotorImplEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.Servo
 import dev.nextftc.control.feedback.PIDCoefficients
 import dev.nextftc.control.feedback.PIDController
 import dev.nextftc.control.feedforward.SimpleFFCoefficients
@@ -385,16 +386,16 @@ class NextMotor @JvmOverloads constructor(
   /**
    * Motor rotation direction.
    */
-  enum class Direction(val sdkDirection: DcMotorSimple.Direction) {
+  enum class Direction(val sdkDirection: DcMotorSimple.Direction, val servoDirection: Servo.Direction) {
     /**
      * Motor spins forward (in its default/positive direction).
      */
-    FORWARD(DcMotorSimple.Direction.FORWARD),
+    FORWARD(DcMotorSimple.Direction.FORWARD, Servo.Direction.FORWARD),
 
     /**
      * Motor spins in reverse (negated).
      */
-    REVERSE(DcMotorSimple.Direction.REVERSE),
+    REVERSE(DcMotorSimple.Direction.REVERSE, Servo.Direction.REVERSE),
   }
 
   companion object {

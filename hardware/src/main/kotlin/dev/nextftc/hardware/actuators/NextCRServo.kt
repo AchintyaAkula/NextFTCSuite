@@ -10,7 +10,6 @@ package dev.nextftc.hardware.actuators
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.CRServoImplEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.RobotController
 import dev.nextftc.hardware.servoController
@@ -26,7 +25,7 @@ import dev.nextftc.hardware.util.LazyHardware
  * ```
  * val crServo = NextCRServo("intakeServo")
  * crServo.power = 0.75
- * crServo.direction = DcMotorSimple.Direction.REVERSE
+ * crServo.direction = NextMotor.Direction.REVERSE
  * ```
  *
  * @param initializer A function returning the backing [CRServoImplEx]. It will be
@@ -69,26 +68,26 @@ open class NextCRServo @JvmOverloads constructor(
   }
 
   /**
-   * Direction of the servo. Setting this to [DcMotorSimple.Direction.REVERSE]
+   * Direction of the servo. Setting this to [NextMotor.Direction.REVERSE]
    * causes positive [power] values to spin the servo the opposite way,
    * and vice versa.
    */
-  var direction: DcMotorSimple.Direction
-    get() = servo.direction
+  var direction: NextMotor.Direction = NextMotor.Direction.FORWARD
     set(value) {
+      field = value
       if (lazyServo.isInitialized) {
-        servo.direction = value
+        servo.direction = value.sdkDirection
       } else {
-        lazyServo.applyAfterInit { it.direction = value }
+        lazyServo.applyAfterInit { it.direction = value.sdkDirection }
       }
     }
 
   /**
-   * Sets the servo's direction to [DcMotorSimple.Direction.REVERSE], causing
+   * Sets the servo's direction to [NextMotor.Direction.REVERSE], causing
    * positive power values to spin the servo the opposite way.
    */
   fun reverse() = apply {
-    direction = DcMotorSimple.Direction.REVERSE
+    direction = NextMotor.Direction.REVERSE
   }
 
   /**
