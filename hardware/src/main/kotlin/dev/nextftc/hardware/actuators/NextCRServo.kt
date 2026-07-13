@@ -34,7 +34,10 @@ import dev.nextftc.hardware.util.LazyHardware
  * @param cacheTolerance Tolerance used by the [Caching] delegate for
  * power updates; defaults to 0.01.
  */
-open class NextCRServo(initializer: () -> CRServoImplEx, val cacheTolerance: Double = 0.01) {
+open class NextCRServo @JvmOverloads constructor(
+  initializer: () -> CRServoImplEx,
+  val cacheTolerance: Double = 0.01,
+) {
   /**
    * Constructor to create a NextCRServo using a LynxModule and port number.
    *
@@ -53,7 +56,8 @@ open class NextCRServo(initializer: () -> CRServoImplEx, val cacheTolerance: Dou
     cacheTolerance,
   )
 
-  private val servo by LazyHardware(initializer)
+  private val lazyServo = LazyHardware(initializer)
+  private val servo by lazyServo
 
   /**
    * Power applied to the servo, in the range [-1.0, 1.0].
@@ -72,7 +76,11 @@ open class NextCRServo(initializer: () -> CRServoImplEx, val cacheTolerance: Dou
   var direction: DcMotorSimple.Direction
     get() = servo.direction
     set(value) {
-      servo.direction = value
+      if (lazyServo.isInitialized) {
+        servo.direction = value
+      } else {
+        lazyServo.applyAfterInit { it.direction = value }
+      }
     }
 
   /**

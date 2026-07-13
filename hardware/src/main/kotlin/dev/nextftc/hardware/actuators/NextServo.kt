@@ -10,6 +10,7 @@ package dev.nextftc.hardware.actuators
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.PwmControl
+import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.ServoImplEx
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.ServoConfigurationType
 import dev.nextftc.hardware.RobotController
@@ -32,8 +33,14 @@ import dev.nextftc.hardware.util.LazyHardware
  * invoked lazily the first time the servo is accessed.
  * @param cacheTolerance Tolerance used by the [Caching] delegate for
  * position updates; defaults to 0.01.
+ * @param direction The initial direction of the servo defined by the user
+ * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
  */
-open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double = 0.01) {
+open class NextServo @JvmOverloads constructor(
+  initializer: () -> ServoImplEx,
+  val cacheTolerance: Double = 0.01,
+  direction: Servo.Direction = Servo.Direction.FORWARD,
+) {
   /**
    * Constructor to create a NextServo using a LynxModule and port number.
    *
@@ -46,18 +53,68 @@ open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double 
    * and [RobotController.servoHubs]
    * @param port The servo port (in the range [0, 5])
    * @param cacheTolerance Tolerance used by the [Caching] delegate for position updates; defaults to 0.01.
+   * @param direction The initial direction of the servo defined by the user
+   * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
    */
-  @JvmOverloads constructor(module: LynxModule, port: Int, cacheTolerance: Double = 0.01) : this(
+  @JvmOverloads constructor(
+    module: LynxModule,
+    port: Int,
+    cacheTolerance: Double = 0.01,
+    direction: Servo.Direction = Servo.Direction.FORWARD,
+  ) : this(
     { ServoImplEx(module.servoController, port, ServoConfigurationType.getStandardServoType()) },
     cacheTolerance,
+    direction,
   )
 
-  @JvmOverloads constructor(name: String, cacheTolerance: Double = 0.01) : this(
+  /**
+   * Constructor to create a NextServo using configuration name
+   *
+   * Example:
+   * ```
+   * // Creates a NextServo with the config name: "armServo"
+   * val servo = NextServo("armServo")
+   * ```
+   *
+   * @param name The configuration name for the servo, usually found on the Driver Station
+   * @param cacheTolerance Tolerance used by the [Caching] delegate for position updates; defaults to 0.01.
+   * @param direction The initial direction of the servo defined by the user
+   * as a [Servo.Direction] which defaults to [Servo.Direction.FORWARD]
+   */
+  @JvmOverloads constructor(
+    name: String,
+    cacheTolerance: Double = 0.01,
+    direction: Servo.Direction = Servo.Direction.FORWARD,
+  ) : this(
     { RobotController.hardwareMap[name] as ServoImplEx },
     cacheTolerance,
+    direction,
   )
 
-  private val servo by LazyHardware(initializer)
+  private val lazyServo = LazyHardware(initializer).apply {
+    applyAfterInit { it.direction = direction }
+  }
+  private val servo by lazyServo
+
+  /**
+   * Allows user to change servo's direction configuration
+   *
+   * It updates the internal direction of the servo
+   *
+   * Getter returns the current direction of the servo
+   * Setter lazily updates the servo after initialization
+   *
+   * This property allows indirect access to the direction property of the [Servo] class
+   */
+  var direction: Servo.Direction
+    get() = servo.direction
+    set(direction) {
+      if (lazyServo.isInitialized) {
+        servo.direction = direction
+      } else {
+        lazyServo.applyAfterInit { it.direction = direction }
+      }
+    }
 
   /**
    * The commanded servo position in the range `[0.0, 1.0]`.
@@ -83,8 +140,12 @@ open class NextServo(initializer: () -> ServoImplEx, val cacheTolerance: Double 
    */
   var pwmRange: PwmControl.PwmRange
     get() = servo.pwmRange
-    set(value) {
-      servo.pwmRange = value
+    set(range) {
+      if (lazyServo.isInitialized) {
+        servo.pwmRange = range
+      } else {
+        lazyServo.applyAfterInit { it.pwmRange = range }
+      }
     }
 
   /**

@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
  *
  * @author 28shettr
  */
-class NextColorDistanceSensor(
+class NextColorDistanceSensor @JvmOverloads constructor(
   colorInitializer: () -> NormalizedColorSensor,
   distanceInitializer: (() -> DistanceSensor)? = null,
 ) {
@@ -57,7 +57,8 @@ class NextColorDistanceSensor(
     },
   )
 
-  private val colorSensor by LazyHardware(colorInitializer)
+  private val lazySensor = LazyHardware(colorInitializer)
+  private val colorSensor by lazySensor
   private val distanceSensor: DistanceSensor? by lazy { distanceInitializer?.invoke() }
 
   private var cachedDistanceCm: Double = Double.NaN
@@ -82,7 +83,11 @@ class NextColorDistanceSensor(
   var gain: Float
     get() = colorSensor.gain
     set(gain) {
-      colorSensor.gain = gain
+      if (lazySensor.isInitialized) {
+        colorSensor.gain = gain
+      } else {
+        lazySensor.applyAfterInit { it.gain = gain }
+      }
     }
 
   /** Reads the color sensor (and distance sensor, if present) and refreshes the cache. Call this once per loop, before reading any properties. */

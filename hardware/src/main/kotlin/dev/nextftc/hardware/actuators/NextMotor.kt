@@ -53,7 +53,7 @@ import dev.nextftc.units.measuretypes.Voltage as VoltageMeasure
  * @param anglePerCount Conversion factor from encoder counts to angle. Defaults to 1.0 radian.
  * @param cacheTolerance Power caching tolerance to reduce redundant hardware writes. Defaults to 0.01.
  */
-class NextMotor(
+class NextMotor @JvmOverloads constructor(
   initializer: () -> DcMotorImplEx,
   var anglePerCount: Angle = 1.0.radians,
   cacheTolerance: Double = 0.01,
@@ -98,7 +98,8 @@ class NextMotor(
     motorEventLoop.bind(this::update)
   }
 
-  private val motor by LazyHardware(initializer)
+  private val lazyMotor = LazyHardware(initializer)
+  private val motor by lazyMotor
 
   /**
    * Position control constants (PID and feedforward gains).
@@ -159,7 +160,11 @@ class NextMotor(
   var direction = Direction.FORWARD
     set(value) {
       field = value
-      motor.direction = value.sdkDirection
+      if (lazyMotor.isInitialized) {
+        motor.direction = value.sdkDirection
+      } else {
+        lazyMotor.applyAfterInit { it.direction = value.sdkDirection }
+      }
     }
 
   /**
