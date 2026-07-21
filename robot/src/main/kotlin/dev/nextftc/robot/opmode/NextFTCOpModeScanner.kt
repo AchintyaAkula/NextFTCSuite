@@ -9,6 +9,7 @@ import dev.frozenmilk.sinister.targeting.WideSearch
 import dev.frozenmilk.sinister.util.log.Logger
 import dev.frozenmilk.util.graph.rule.dependsOn
 import dev.nextftc.robot.RobotScanner
+import dev.nextftc.robot.RobotState
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -111,7 +112,7 @@ internal fun opModeConstructorFromClass(cls: KClass<out NextOpMode>): OpModeCons
     if (constructor != null) {
       val paramType = constructor.parameters[0].type.classifier as KClass<*>
       if (paramType.isSuperclassOf(RobotScanner.robotClass)) {
-        return OpModeConstructorCheckResult.FoundConstructor { constructor.call(RobotScanner.robot) }
+        return OpModeConstructorCheckResult.FoundConstructor { constructor.call(RobotState.robot) }
       }
     }
   }

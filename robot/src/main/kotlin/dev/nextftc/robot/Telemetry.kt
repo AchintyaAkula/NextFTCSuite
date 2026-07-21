@@ -1,5 +1,10 @@
 package dev.nextftc.robot
 
+import android.content.Context
+import com.qualcomm.ftccommon.FtcEventLoop
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier
+import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
 import org.firstinspires.ftc.robotcore.external.Telemetry as SdkTelemetry
 
 /**
@@ -114,7 +119,7 @@ internal class SdkTelemetryBackend(val sdkTelemetry: SdkTelemetry) : TelemetryBa
 /**
  * A backend for sending telemetry data to the Driver Station.
  */
-internal object DriverStationTelemetry : TelemetryBackend {
+internal object DriverStationTelemetry : TelemetryBackend, OpModeManagerNotifier.Notifications {
   lateinit var telemetry: SdkTelemetry
 
   override fun update() {
@@ -134,4 +139,12 @@ internal object DriverStationTelemetry : TelemetryBackend {
       telemetry.addLine(line)
     }
   }
+
+  override fun onOpModePreInit(opMode: OpMode?) {
+    telemetry = opMode?.telemetry ?: return
+  }
+
+  override fun onOpModePreStart(opMode: OpMode?) {}
+
+  override fun onOpModePostStop(opMode: OpMode?) {}
 }

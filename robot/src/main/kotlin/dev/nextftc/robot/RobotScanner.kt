@@ -8,9 +8,13 @@
 
 package dev.nextftc.robot
 
+import android.content.Context
+import com.qualcomm.ftccommon.FtcEventLoop
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import dev.frozenmilk.sinister.Scanner
+import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoop
 import dev.frozenmilk.sinister.sdk.apphooks.OnCreateEventLoopScanner
+import dev.frozenmilk.sinister.sdk.opmodes.SinisterRegisteredOpModes
 import dev.frozenmilk.sinister.targeting.SearchTarget
 import dev.frozenmilk.sinister.targeting.WideSearch
 import dev.frozenmilk.sinister.util.log.Logger
@@ -28,11 +32,11 @@ import kotlin.reflect.full.hasAnnotation
  * [dev.nextftc.robot.opmode.NextFTCOpModeScanner] can properly inject the robot instance into OpModes.
  */
 internal object RobotScanner : Scanner {
-  /** The singleton or freshly constructed instance of the user's robot. */
-  lateinit var robot: NextRobot
-
   /** The class reference of the user's robot. */
   lateinit var robotClass: KClass<*>
+
+  /** The constructor of the robot class */
+  lateinit var robotConstructor: () -> NextRobot
 
   var foundRobot = false
   var foundMultiple = false
@@ -61,7 +65,7 @@ internal object RobotScanner : Scanner {
     val objectInstance = kcls.objectInstance
 
     if (objectInstance != null) {
-      robot = objectInstance as NextRobot
+      robotConstructor = { objectInstance as NextRobot }
       robotClass = kcls
 
       if (foundRobot) {
@@ -73,7 +77,7 @@ internal object RobotScanner : Scanner {
 
     val constructor = kcls.constructors.find { it.parameters.isEmpty() }
     if (constructor != null) {
-      robot = constructor.call() as NextRobot
+      robotConstructor = { constructor.call() as NextRobot }
       robotClass = kcls
 
       if (foundRobot) {
@@ -85,7 +89,10 @@ internal object RobotScanner : Scanner {
 
     Logger.w(
       "NextFTC",
-      "Unable to instantiate NextFTC robot class: $cls. Ensure it is either a singleton object or has a public no-argument constructor.",
+      buildString {
+        append("Unable to find appropriate constructor for $cls. ")
+        append("Ensure it is either a singleton object or has a public no-argument constructor.")
+      },
     )
   }
 
@@ -108,4 +115,18 @@ internal object RobotScanner : Scanner {
   }
 
   override fun unload(loader: ClassLoader, cls: Class<*>) {}
+}
+
+/**
+ * Holder for the NextFTC robot class and instance. This is initialized during the [OnCreateEventLoop] phase of the app lifecycle.
+ * The robot instance is created using the constructor found by [RobotScanner].
+ */
+object RobotState : OnCreateEventLoop {
+  /** The singleton or freshly constructed instance of the user's robot. */
+  internal lateinit var robot: NextRobot
+  
+  override fun onCreateEventLoop(context: Context, ftcEventLoop: FtcEventLoop) {
+    robot = RobotScanner.robotConstructor()
+    ftcEventLoop.opModeManager.registerListener(DriverStationTelemetry)
+  }
 }
