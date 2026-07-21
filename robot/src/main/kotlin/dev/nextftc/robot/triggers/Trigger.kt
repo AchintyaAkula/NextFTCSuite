@@ -26,17 +26,10 @@ import dev.nextftc.hardware.util.EventLoop
  *
  * <p>Triggers can easily be composed for advanced functionality using the [and], [or], [negate] operators.
  */
-class Trigger(private val loop: EventLoop, private val condition: () -> Boolean) : () -> Boolean {
-
-  /**
-   * Creates a new trigger based on the given condition.
-   *
-   * <p>Polled by the default scheduler button loop.
-   *
-   * @param condition the condition represented by this trigger
-   */
-  constructor(condition: () -> Boolean) : this(defaultEventLoop, condition)
-
+class Trigger @JvmOverloads constructor(
+  private val loop: EventLoop = defaultEventLoop,
+  private val condition: () -> Boolean,
+) : () -> Boolean {
   companion object {
     val defaultEventLoop = EventLoop()
   }

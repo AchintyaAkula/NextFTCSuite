@@ -12,12 +12,15 @@ import dev.nextftc.hardware.util.EventLoop
  * @param eventLoop The event loop to bind the button triggers to.
  * @param gamepad The underlying FTC gamepad instance to read data from.
  */
-class CommandGamepad(private val eventLoop: EventLoop, private val gamepad: Gamepad) {
+class CommandGamepad @JvmOverloads constructor(
+  private val eventLoop: EventLoop = Trigger.defaultEventLoop,
+  private val gamepad: Gamepad,
+) {
   /** A range trigger that evaluates to how far the x value of the left stick is moved. */
   @get:JvmName("leftStickX")
   val leftStickX = RangeTrigger(eventLoop) { gamepad.left_stick_x.toDouble() }
 
-  /** A range trigger that evaluates to how far the y value of the right stick is moved. */
+  /** A range trigger that evaluates to how far the y value of the left stick is moved. */
   @get:JvmName("leftStickY")
   val leftStickY = RangeTrigger(eventLoop) { gamepad.left_stick_y.toDouble() }
 

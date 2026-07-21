@@ -9,17 +9,14 @@ import dev.nextftc.hardware.util.EventLoop
  * <p>This allows you to bind analog inputs to command-based [Trigger]s based on their value,
  * e.g. `gamepad.rightTrigger.isOver(0.5).onTrue(intakeCommand)`.
  */
-class RangeTrigger(private val loop: EventLoop, private val supplier: () -> Double) : () -> Double {
+class RangeTrigger @JvmOverloads constructor(
+  private val loop: EventLoop = Trigger.defaultEventLoop,
+  private val supplier: () -> Double,
+) : () -> Double {
 
   /**
-   * Creates a new range trigger based on the given supplier.
-   *
-   * <p>Polled by the default scheduler button loop.
-   *
-   * @param supplier supplies the current analog value
+   * The current value of the trigger.
    */
-  constructor(supplier: () -> Double) : this(Trigger.defaultEventLoop, supplier)
-
   val value: Double get() = supplier()
 
   override fun invoke(): Double = supplier()
